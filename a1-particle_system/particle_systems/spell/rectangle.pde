@@ -14,16 +14,14 @@ public class Rectangle {
   void update() {
     pushMatrix();
     noStroke();
-    //z -= move;
-    x += move;
+    z -= move;
+    //x += move;
     for (int i = 1; i <= trailCount; i++) {
       pushMatrix();
       fill(0, 255, 0, 256-(i*(256/(trailCount))));
-      //  translate(x, y, z+i*move);
-      //translate(x, y, z+i*move*3);
-      translate(x-i*move*3, y, z);
-      //box(w*(0.1*(trailCount-i)));
-      box(w-5*i);
+      translate(x, y, z+i*move*3);
+      //translate(x-i*move*3, y, z);
+      box(w*(0.1*(trailCount-i)));
       popMatrix();
     }
     println("");

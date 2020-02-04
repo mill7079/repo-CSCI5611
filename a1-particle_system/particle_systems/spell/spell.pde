@@ -1,4 +1,5 @@
-Rectangle[] rects = new Rectangle[0];
+//Rectangle[] rects = new Rectangle[0];
+Point[] rects = new Point[0];
 
 void setup() {
   size(600,600,P3D);
@@ -11,7 +12,9 @@ void draw() {
   //rect(mouseX, mouseY, 50,50);
   pushMatrix();
   translate(mouseX, mouseY);
-  box(50);
+  //box(50);
+  strokeWeight(5);
+  point(mouseX, mouseY, 0);
   popMatrix();
   
   for (int i = 0; i < rects.length; i++) {
@@ -20,6 +23,7 @@ void draw() {
 }
 
 void mouseClicked() {
-  rects = (Rectangle[]) append(rects, new Rectangle(mouseX, mouseY, 50, 50));
+  //rects = (Rectangle[]) append(rects, new Rectangle(mouseX, mouseY, 50, 50));
+  rects = (Point[]) append(rects, new Point(mouseX, mouseY));
   
 }
