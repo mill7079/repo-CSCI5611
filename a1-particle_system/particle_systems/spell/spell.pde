@@ -1,5 +1,3 @@
-//Rectangle[] rects = new Rectangle[0];
-// Point[] rects = new Point[0];
 ArrayList<Point> points = new ArrayList<Point>();
 int idleParticles = 50, idleDisk = 50;
 int spellParticles = 150, spellDisk = 10;
@@ -7,6 +5,14 @@ int spellParticles = 150, spellDisk = 10;
 boolean cast = false;
 int spell = 0;
 float spellX, spellY;
+static int spellFlag = 0;
+
+static float shieldX, shieldY, shieldZ, sRadius;
+
+// camera
+/*boolean rotate = true;
+float cenx, ceny, fov = PI/3.0;
+float cameraZ = (height/2.0) / tan(fov/2.0);*/
 
 void setup() {
   size(600,600,P3D);
@@ -18,6 +24,10 @@ void draw() {
   pushMatrix();
   pushStyle();
   translate(height/2, width/2, -1000);
+  shieldX = height/2;
+  shieldY = width/2;
+  shieldZ = -1000;
+  sRadius = 100;
   noStroke();
   fill(0,125,255,25);
   sphere(100);
@@ -54,18 +64,25 @@ void draw() {
   }
   clean();
   println(points.size(), "framerate: ", frameRate);
+  
+  // moveCamera();
 }
+
 
 void mouseClicked() {
   //rects = (Rectangle[]) append(rects, new Rectangle(mouseX, mouseY, 50, 50));
   // rects = (Point[]) append(rects, new Point(mouseX, mouseY));
   //points.add(new Point(mouseX, mouseY, false)); // replace with spell cast
   cast = true;
-  spell = 25;
+  spell = 50;
   spellX = mouseX;
   spellY = mouseY;
+  // somehow this doesn't change the colors of subsequent spells?? not sure how but hallelujah
+  spellFlag = floor(random(9));
   drawParticles(spellParticles, spellDisk, false, spellX, spellY);
+  //spellFlag = floor(random(9));
 }
+
 
 void clean() {
   for (int i = points.size()-1; i >= 0; i--) {
@@ -91,3 +108,36 @@ void drawParticles(int numParticles, float radius, boolean idle, float x, float 
     p.update();
   }
 }
+/*
+void keyPressed() {
+  if (key == 'r' || key == 'R') {
+    rotate = !rotate;
+  }
+}
+
+void moveCamera() {
+  if (keyPressed && keyCode == UP) {
+    if (rotate) {
+      ceny++;
+    } else {
+      fov -= PI/64;
+    }
+  } else if (keyPressed && keyCode == DOWN) {
+    if (rotate) {
+      ceny--;
+    } else {
+      fov += PI/64;
+    }
+  } else if (keyPressed && keyCode == LEFT) {
+    if (rotate) {
+      cenx++;
+      //eyex++;
+    }
+  } else if (keyPressed && keyCode == RIGHT) {
+    if (rotate) {
+      cenx--;
+      //eyex--;
+    }
+  }
+  perspective(fov, float(width)/float(height), cameraZ/10.0, cameraZ*10.0);
+}*/
