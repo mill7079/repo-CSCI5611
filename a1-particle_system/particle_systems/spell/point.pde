@@ -95,13 +95,13 @@ public class Point {
     }
     
     //trails
-    for (int i = 10; i < trailCount; i++) {
+    /*for (int i = 10; i < trailCount; i++) {
       //stroke(125+i*4.5, i*10, 200+random(55), 256-(i*(256/(trailCount)))); // random adds a bit of sparkle, maybe
       strokeWeight(w*(0.1*(trailCount-i)));
       //point(x, y, z+i*move*3);
       point(pos.x, pos.y, pos.z+i*move*3);
     }
-    if (trailCount < maxTrails) trailCount++;
+    if (trailCount < maxTrails) trailCount++;*/
     
     //if (z <= -3750) a -= 50; // TEMPORARY UNTIL SHIELD COLLISION
     if (pos.z <= -5000) a -= 50; // if the particle never hits a sphere it'll go on forever so it must be killed manually

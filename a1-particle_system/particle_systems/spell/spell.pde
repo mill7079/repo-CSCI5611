@@ -29,7 +29,7 @@ void draw() {
   shieldZ = -1000;
   sRadius = 100;
   noStroke();
-  fill(0,125,255,25);
+  fill(125,125,255,75);
   sphere(100);
   popStyle();
   popMatrix();
