@@ -104,7 +104,7 @@ public class Point {
     if (trailCount < maxTrails) trailCount++;
     
     //if (z <= -3750) a -= 50; // TEMPORARY UNTIL SHIELD COLLISION
-    //if (pos.z <= -3750) a -= 50; // TEMPORARY UNTIL SHIELD COLLISION
+    if (pos.z <= -5000) a -= 50; // if the particle never hits a sphere it'll go on forever so it must be killed manually
   }
   
   void twinkle() {
