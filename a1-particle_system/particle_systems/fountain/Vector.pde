@@ -46,4 +46,9 @@ public class Vector{
     return sqrt(x*x + y*y + z*z);
   }
   
+  Vector normalize() {
+    float m = this.mag();
+    return new Vector(x/m, y/m, z/m);
+  }
+  
 }
