@@ -115,6 +115,8 @@ public class Point {
     color[] c = colors[flag];
     stroke(c[floor(random(c.length))]);
     //point(x, y, z);
+    if (floor(random(500))%60 == 0) pos = pos.add(new Vector(random(-50,50), random(-50,50),0));
+    else pos = pos.add(new Vector(random(-3,3), random(-3,3),0));
     point(pos.x, pos.y, pos.z);
   }
   
