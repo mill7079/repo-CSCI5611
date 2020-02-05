@@ -9,7 +9,7 @@ public class Drop {
     vel = new Vector(0, 1, 0);
     //vel.add(new Vector(0.2*random(1), 0, 0.1*random(1)));
     vel = vel.add(new Vector(-25*random(0.9,1), -50, 0.5*random(1)));
-    col = new Vector(0,0,255);
+    col = new Vector(0,0,230+random(25));
     life = 0;
   }
   
@@ -18,7 +18,7 @@ public class Drop {
   }
   
   void update() {
-    stroke(0,0,255);
+    stroke(col.x, col.y, col.z);
     //pos.add(vel.mult(vel,dt));
     pos = pos.add(vel.mult(dt));
     vel = vel.add(new Vector(0, grav, 0).mult(dt));
