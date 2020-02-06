@@ -3,12 +3,18 @@ import queasycam.*;
 QueasyCam cam;
 ArrayList<Drop> water = new ArrayList<Drop>();
 
-int numParticles = 10;
-static float dt = 0.15;
+float genRate = 1500, dt = 0.05, numParticles = 1500*dt;
+
+float[] box, waterbox; // center model coords of bucket and center blue box in bucket representing water
+float wDiff = 40, bDiff = 50; // difference between center and edge of box for water/box coords
+
+PImage blur;
 
 void setup() {
   size(600,600,P3D);
   cam = new QueasyCam(this);
+  drawContext();
+  blur = loadImage("blur.png");
 }
 
 void draw() {
@@ -20,6 +26,7 @@ void draw() {
   }
   
   clean();
+  println("particles:", water.size(), "frame rate:", frameRate);
 }
 
 
@@ -34,6 +41,26 @@ void drawContext() {
   fill(125, 125, 125);
   box(200,200,100);
   
+  // box to catch water
+  pushMatrix();
+  stroke(0);
+  fill(175,175,175);
+  translate(-200,-10);
+  box = new float[]{modelX(-200,-10,0), modelY(-200,-10,0), modelZ(-200,-10,0)};
+  // translate(0, 0);  // why is this here?? hmm
+  box(bDiff*2);
+  
+  // water
+  pushMatrix();
+  noStroke();
+  fill(100,150,240);
+  translate(0, -11, 0);
+  waterbox = new float[]{modelX(0,-11,0), modelY(0,-11,0), modelZ(0,-11,0)};
+  box(wDiff*2);
+  popMatrix();
+  
+  popMatrix();
+  
   // draw sphere stack for water to come out of
   pushMatrix();
   noStroke();
@@ -45,17 +72,18 @@ void drawContext() {
   translate(0,-25);
   fill(0);
   sphere(10);
-  //generateParticles(0);
-  /*for (int i = 0; i < numParticles; i++) {
-    float[] pos = rndSphere(5, 0);
-    water.add(new Drop(pos[0]+475, pos[1]+260, pos[2]));
-    println(pos);
-  }*/
   popMatrix();
   
   popMatrix();
   
   popMatrix();
+  
+  /*pushMatrix();
+  fill(255,0,0);
+  translate(waterbox[0], waterbox[1], waterbox[2]);
+  box(80);
+  //circle(water[0], water[1],50);
+  popMatrix();*/
 }
 
 // sample a sphere
@@ -64,7 +92,6 @@ void generateParticles(float y) {
     float[] pos = rndSphere(5, y);
     //water.add(new Drop(pos[0], pos[1], pos[2]));
     water.add(new Drop(pos[0]+475, pos[1]+260, pos[2]));
-    println(pos);
   }
 }
 
