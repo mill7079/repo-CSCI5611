@@ -1,4 +1,7 @@
+//import queasycam.*;
+
 ArrayList<Point> points = new ArrayList<Point>();
+// I know this technically isn't the way he said to do the generation rate in class but it works
 int idleParticles = 50, idleDisk = 50;
 int spellParticles = 150, spellDisk = 10;
 
@@ -14,58 +17,44 @@ static float shieldX, shieldY, shieldZ, sRadius;
 float cenx, ceny, fov = PI/3.0;
 float cameraZ = (height/2.0) / tan(fov/2.0);*/
 
+/*QueasyCam cam;
+boolean active = true;*/
+
 void setup() {
   size(600,600,P3D);
   background(0);
+  /*cam = new QueasyCam(this);
+  cam.controllable = true;*/
 }
 
 void draw() {
-  background(0);
-  pushMatrix();
-  pushStyle();
-  translate(height/2, width/2, -1000);
-  shieldX = height/2;
-  shieldY = width/2;
-  shieldZ = -1000;
-  sRadius = 100;
-  noStroke();
-  fill(125,125,255,75);
-  sphere(100);
-  popStyle();
-  popMatrix();
-  /*fill(0,255,0);
-  //rect(mouseX, mouseY, 50,50);
-  pushMatrix();
-  translate(mouseX, mouseY);
-  //box(50);
-  strokeWeight(5);
-  point(mouseX, mouseY, 0);
-  popMatrix();*/
-  
-  
-  
-  /*for (int i = 0; i < rects.length; i++) {
-    rects[i].update();
-  }*/
-  
-  /*for (int i = 0; i < numIdleParticles; i++) {
-    float[] pos = rndDisk(50);
-    points.add(new Point(pos[0]+mouseX, pos[1]+mouseY, true));
-  }
-  
-  for (Point p : points) {
-    p.update();
-  }*/
-  if (spell > 0) {
-    drawParticles(spellParticles, spellDisk, false, spellX, spellY);
-    spell --;
-  } else {
-    drawParticles(idleParticles, idleDisk, true, mouseX, mouseY);
-  }
-  clean();
-  println(points.size(), "framerate: ", frameRate);
-  
-  // moveCamera();
+  //if (active) {
+    background(0);
+    
+    // shield 
+    pushMatrix();
+    pushStyle();
+    translate(height/2, width/2, -1000);
+    shieldX = height/2;
+    shieldY = width/2;
+    shieldZ = -1000;
+    sRadius = 100;
+    noStroke();
+    fill(125,125,255,75);
+    //fill(255);
+    sphere(100);
+    popStyle();
+    popMatrix();
+    
+    if (spell > 0) {
+      drawParticles(spellParticles, spellDisk, false, spellX, spellY);
+      spell --;
+    } //else {
+      drawParticles(idleParticles, idleDisk, true, mouseX, mouseY);
+    //}
+    clean();
+    println(points.size(), "framerate: ", frameRate);
+   //} 
 }
 
 
@@ -73,13 +62,18 @@ void mouseClicked() {
   //rects = (Rectangle[]) append(rects, new Rectangle(mouseX, mouseY, 50, 50));
   // rects = (Point[]) append(rects, new Point(mouseX, mouseY));
   //points.add(new Point(mouseX, mouseY, false)); // replace with spell cast
-  cast = true;
-  spell = 50;
-  spellX = mouseX;
-  spellY = mouseY;
-  // somehow this doesn't change the colors of subsequent spells?? not sure how but hallelujah
-  spellFlag = floor(random(9));
-  drawParticles(spellParticles, spellDisk, false, spellX, spellY);
+  //if (active) {
+    cast = true;
+    spell = 50;
+    spellX = mouseX;
+    spellY = mouseY;
+    // somehow this doesn't change the colors of subsequent spells?? not sure how but hallelujah
+    spellFlag = floor(random(9));
+    drawParticles(spellParticles, spellDisk, false, spellX, spellY);
+  /*} else {
+    //cam = new QueasyCam(this);
+    cam.controllable = !cam.controllable;
+  }*/
   //spellFlag = floor(random(9));
 }
 
@@ -108,13 +102,25 @@ void drawParticles(int numParticles, float radius, boolean idle, float x, float 
     p.update();
   }
 }
-/*
-void keyPressed() {
-  if (key == 'r' || key == 'R') {
-    rotate = !rotate;
-  }
-}
 
+/*void keyPressed() {
+  if (key == ' ') {
+    active = !active;
+    //if (cam == null) {
+    if (!active) {
+      //cam = new QueasyCam(this);
+      noLoop();
+    } else {
+      //cam = null;
+      loop();
+    }
+  }
+  //if (key == 'r' || key == 'R') {
+    //rotate = !rotate;
+  //}
+}*/
+
+/*
 void moveCamera() {
   if (keyPressed && keyCode == UP) {
     if (rotate) {

@@ -2,6 +2,7 @@ public class Point {
   
   int trailCount = 1, maxTrails = 20, move = 100;
   int w = 1;
+  ArrayList<Vector> trails = new ArrayList<Vector>();
   
   //float x, y, z = 0; // xpos, ypos, zpos
   Vector pos, vel;
@@ -31,7 +32,7 @@ public class Point {
     pos = new Vector(x, y, 0);
     vel = new Vector(0,0,-move);
     this.a = random(255);
-    if (floor(a) % 35 == 0) {
+    /*if (floor(a) % 35 == 0) {
       r = 50;
       b = 255;
     } else if (floor(a) % 40 == 0) {
@@ -40,7 +41,7 @@ public class Point {
     } else {
       r = 125;
       b = 240;
-    }
+    }*/
     
     idle = i;
     
@@ -54,12 +55,17 @@ public class Point {
     if (idle) {
       twinkle();
     } else {
-      move(); 
+      move();
+      trails.add(pos);
+      if (trails.size() >= maxTrails) trails.remove(0);
     }
   }
   
   void move() {
+    // update color of particles
     updateColor();
+    
+    // different particle movement if rebounding off shield
     if (rebound) {
       pos = pos.add(vel.mult(dt));
       vel = vel.add(new Vector(random(-10,10), grav, random(-10,10)).mult(dt));
@@ -68,10 +74,13 @@ public class Point {
       a -= random(50)*dt; // use alpha to judge lifetime
       return;
     }
+    
+    // move point
     strokeWeight(w);
     pos = pos.add(vel.mult(dt));
     vel = vel.add(new Vector(0.1*random(-2,2), 0.1*random(-2,2), -random(1)));
     point(pos.x, pos.y, pos.z);
+    
     /*
     //point(x, y, z);
     point(pos.x, pos.y, pos.z);
@@ -79,7 +88,7 @@ public class Point {
     pos.z -= (move + random(10));
     */
     
-    // Vector intersect = new Vector(shieldX - x, shieldY - y, shieldZ - z);
+    // test for intersection with sphere; if within sphere, move out; find new particle velocity after rebound
     Vector intersect = new Vector(shieldX - pos.x, shieldY - pos.y, shieldZ - pos.z);
     if (intersect.mag() <= sRadius) {
       //z += (sRadius - intersect.mag() + 1);
@@ -102,8 +111,16 @@ public class Point {
       point(pos.x, pos.y, pos.z+i*move*3);
     }
     if (trailCount < maxTrails) trailCount++;*/
+    /*pushStyle();
+    for (int i = 0; i < trails.size(); i++) {
+      Vector v = trails.get(i);
+      strokeWeight(w*(0.1*(trailCount-i)));
+      stroke(lerpColor(colors[flag][current], colors[flag][(current+1)%colors[flag].length], frames * lerpMod),i*0.1*255);
+      point(v.x, v.y, v.z);
+    }
+    popStyle();*/
     
-    //if (z <= -3750) a -= 50; // TEMPORARY UNTIL SHIELD COLLISION
+    // non-intersect death condition
     if (pos.z <= -5000) a -= 50; // if the particle never hits a sphere it'll go on forever so it must be killed manually
   }
   
