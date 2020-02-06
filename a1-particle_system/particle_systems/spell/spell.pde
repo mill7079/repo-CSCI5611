@@ -28,7 +28,6 @@ void setup() {
 }
 
 void draw() {
-  //if (active) {
     background(0);
     
     // shield 
@@ -49,19 +48,15 @@ void draw() {
     if (spell > 0) {
       drawParticles(spellParticles, spellDisk, false, spellX, spellY);
       spell --;
-    } //else {
-      drawParticles(idleParticles, idleDisk, true, mouseX, mouseY);
-    //}
+    }
+    // always draw idle particles
+    drawParticles(idleParticles, idleDisk, true, mouseX, mouseY);
     clean();
     println(points.size(), "framerate: ", frameRate);
-   //} 
 }
 
 
 void mouseClicked() {
-  //rects = (Rectangle[]) append(rects, new Rectangle(mouseX, mouseY, 50, 50));
-  // rects = (Point[]) append(rects, new Point(mouseX, mouseY));
-  //points.add(new Point(mouseX, mouseY, false)); // replace with spell cast
   //if (active) {
     cast = true;
     spell = 50;
@@ -74,7 +69,6 @@ void mouseClicked() {
     //cam = new QueasyCam(this);
     cam.controllable = !cam.controllable;
   }*/
-  //spellFlag = floor(random(9));
 }
 
 
@@ -115,35 +109,4 @@ void drawParticles(int numParticles, float radius, boolean idle, float x, float 
       loop();
     }
   }
-  //if (key == 'r' || key == 'R') {
-    //rotate = !rotate;
-  //}
-}*/
-
-/*
-void moveCamera() {
-  if (keyPressed && keyCode == UP) {
-    if (rotate) {
-      ceny++;
-    } else {
-      fov -= PI/64;
-    }
-  } else if (keyPressed && keyCode == DOWN) {
-    if (rotate) {
-      ceny--;
-    } else {
-      fov += PI/64;
-    }
-  } else if (keyPressed && keyCode == LEFT) {
-    if (rotate) {
-      cenx++;
-      //eyex++;
-    }
-  } else if (keyPressed && keyCode == RIGHT) {
-    if (rotate) {
-      cenx--;
-      //eyex--;
-    }
-  }
-  perspective(fov, float(width)/float(height), cameraZ/10.0, cameraZ*10.0);
 }*/
