@@ -12,6 +12,8 @@ public class Point {
   float r, b, a; // alpha value for twinkle/death
   boolean idle, rebound = false;
   
+  Vector prev_pos = new Vector(0,0,0);
+  
   //colors hehe
   color[] ace = new color[]{color(129, 0, 129), color(0), color(164), color(255)};
   color[] ar = new color[]{color(58, 166, 63), color(168, 212, 122), color(255), color(170), color(0)};
@@ -30,7 +32,7 @@ public class Point {
     /*this.x = x;
     this.y = y;*/
     pos = new Vector(x, y, 0);
-    vel = new Vector(0,0,-move);
+    vel = new Vector(0.1*random(-2,2), 0.1*random(-2,2),-move);
     this.a = random(255);
     /*if (floor(a) % 35 == 0) {
       r = 50;
@@ -77,18 +79,17 @@ public class Point {
     
     // move point
     strokeWeight(w);
+    // not sure if just setting it to pos screws with things so to be safe...
+    prev_pos.x = pos.x;
+    prev_pos.y = pos.y;
+    prev_pos.z = pos.z;
     pos = pos.add(vel.mult(dt));
     vel = vel.add(new Vector(0.1*random(-2,2), 0.1*random(-2,2), -random(1)));
     point(pos.x, pos.y, pos.z);
     
-    /*
-    //point(x, y, z);
-    point(pos.x, pos.y, pos.z);
-    //z -= (move + random(10));
-    pos.z -= (move + random(10));
-    */
     
     // test for intersection with sphere; if within sphere, move out; find new particle velocity after rebound
+    
     Vector intersect = new Vector(shieldX - pos.x, shieldY - pos.y, shieldZ - pos.z);
     if (intersect.mag() <= sRadius) {
       //z += (sRadius - intersect.mag() + 1);
@@ -102,6 +103,58 @@ public class Point {
       Vector scaleNormal = normal.mult(dot);
       vel = vel.sub(scaleNormal);
     }
+    
+    
+    
+    //// CCD
+    //// only need to test if particle is closer to sphere, hopefully speeds things a bit
+    //if (pos.z <= shieldZ/2) {/*
+    //  // a = |V|^2 
+    //  //float a = sq(vel.mag()); 
+    //  float a = vel.dot(vel);
+      
+    //  // b = 2V . (P0 - C)
+    //  Vector temp = prev_pos.sub(shield);
+    //  //float b = vel.mult(2).dot(temp);
+    //  float b = 2*vel.dot(temp);
+      
+    //  // c = |P0 - C|^2 - r^2
+    //  float c = temp.dot(temp) - sq(sRadius);
+      
+    //  // solve using quadratic formula - is it + or - ???
+    //  
+      
+    //  /*Vector dist = shield.sub(prev_pos);
+    //  float lv = dist.dot(vel.normalize()); // maybe not normalize?
+    //  float z = lv - sqrt(sq(sRadius) - dist.dot(dist) - sq(lv));*/
+        
+    //  float x = (-b + sqrt(sq(b) - 4*a*c))/(2*a);
+    //  float y = (-b - sqrt(sq(b) - 4*a*c))/(2*a);
+      
+    //  // intersection occurred
+    //  /*if (x >= 0 || y >= 0) {
+    //    // need smallest t for closest intersection point
+    //    float t;
+    //    if (x >= 0 && x < y) t = x;
+    //    else t = y;*/
+    //  if (t > 0) {
+        
+    //  //if (z > 0) {
+    //    //z += (sRadius - intersect.mag() + 1);
+    //    // pos.z += (sRadius - intersect.mag() + 1);
+    //    pos = prev_pos.add(vel.mult(t));
+    //    //pos.z = prev_pos.z - z;
+    //    rebound = true;
+        
+    //    // r = d-2(d.n)n to find reflection vector
+    //    Vector normal = new Vector(pos.x - shieldX, pos.y - shieldY, pos.z - shieldZ).normalize();
+    //    float dot = vel.dot(normal); // d . n
+    //    dot *= 2;
+    //    Vector scaleNormal = normal.mult(dot);
+    //    vel = vel.sub(scaleNormal);
+    //  }
+    //}
+    
     
     //trails
     /*for (int i = 10; i < trailCount; i++) {
@@ -121,7 +174,7 @@ public class Point {
     popStyle();*/
     
     // non-intersect death condition
-    if (pos.z <= -5000) a -= 50; // if the particle never hits a sphere it'll go on forever so it must be killed manually
+    if (pos.z <= 2*shieldZ) a -= 50; // if the particle never hits a sphere it'll go on forever so it must be killed manually
   }
   
   void twinkle() {

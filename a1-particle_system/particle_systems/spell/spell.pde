@@ -11,14 +11,15 @@ float spellX, spellY;
 static int spellFlag = 0;
 
 static float shieldX, shieldY, shieldZ, sRadius;
+Vector shield;
 
 // camera
 /*boolean rotate = true;
 float cenx, ceny, fov = PI/3.0;
 float cameraZ = (height/2.0) / tan(fov/2.0);*/
 
-/*QueasyCam cam;
-boolean active = true;*/
+//QueasyCam cam;
+boolean active = true;
 
 void setup() {
   size(600,600,P3D);
@@ -33,10 +34,11 @@ void draw() {
     // shield 
     pushMatrix();
     pushStyle();
-    translate(height/2, width/2, -1000);
+    translate(height/2, width/2, -1500);
     shieldX = height/2;
     shieldY = width/2;
-    shieldZ = -1000;
+    shieldZ = -1500;
+    shield = new Vector(shieldX, shieldY, shieldZ);
     sRadius = 100;
     noStroke();
     fill(125,125,255,75);
@@ -97,7 +99,7 @@ void drawParticles(int numParticles, float radius, boolean idle, float x, float 
   }
 }
 
-/*void keyPressed() {
+void keyPressed() {
   if (key == ' ') {
     active = !active;
     //if (cam == null) {
@@ -109,4 +111,4 @@ void drawParticles(int numParticles, float radius, boolean idle, float x, float 
       loop();
     }
   }
-}*/
+}
