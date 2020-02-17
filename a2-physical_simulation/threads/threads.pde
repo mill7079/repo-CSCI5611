@@ -1,13 +1,13 @@
 import queasycam.*;
 
 float gravity = 10, rest = 20;
-float k = 40, kv = 40; //changing k changes rest length, changing kv changes stiffness
+float k = 40, kv = 140; //changing k changes rest length, changing kv changes stiffness
 
 ArrayList<Ball> balls = new ArrayList<Ball>();
 float dt = 0.015; // need small dt
 int numBalls = 5;
 
-float initY = 300;
+float initX = 300;
 
 QueasyCam cam;
 
@@ -16,7 +16,7 @@ void setup() {
   //cam = new QueasyCam(this);
   
   for (int i = 0; i < numBalls; i++) {
-    balls.add(new Ball(initY,i,0,i)); 
+    balls.add(new Ball(initX + (10*i),i+10,0,i)); 
   }
 }
 
@@ -31,6 +31,8 @@ void draw() {
 
 // need to call multiple times for small dt
 void updateBalls() {
+  
+  println("\n*************NEW UPDATE CALL**************\n");
   
   for (int i = 0; i < balls.size(); i++) {
     Ball cur = balls.get(i);
@@ -48,58 +50,82 @@ void updateBalls() {
     // all this code is really messy but at the moment I just want it to work
     
     //hooke's law
-    float force1;
+    float string1, damp1, stringLength;
+    float stringx, stringy;
     
+    println("cur pos: "+cur.pos);
     if (other == null) { // deal with first ball
-      float string1 = -k * ((cur.pos.y) - rest);
-      float damp1 = -kv * cur.vel.y;
-      force1 = string1 + damp1;
+      println("other null");
+      //string1 = -k * ((cur.pos.y) - rest);
+      //damp1 = -kv * cur.vel.y;
+      
+      stringx = cur.pos.x - initX;
+      stringy = cur.pos.y;
+      stringLength = sqrt(sq(stringx) + sq(stringy));
     } else {
-      float string1 = -k * ((cur.pos.y - other.pos.y) - rest);
-      float damp1 = -kv * (cur.vel.y - other.vel.y);
-      force1 = string1 + damp1;
+      //string1 = -k * ((cur.pos.y - other.pos.y) - rest);
+      //damp1 = -kv * (cur.vel.y - other.vel.y);
+      
+      stringx = cur.pos.x - other.pos.x;
+      stringy = cur.pos.y - other.pos.y;
+      stringLength = sqrt(sq(stringx) + sq(stringy));
     }
- 
-    float force2 = 0; // deal with second ball
-    if (next != null) {
-      float string2 = -k * ((next.pos.y - cur.pos.y) - rest);
-      float damp2 = -kv * (next.vel.y - cur.vel.y);
-      force2 = string2 + damp2;
+    println("stringx: "+stringx);
+    println("stringy: "+stringy);
+    println("stringLength: "+stringLength);
+    println("curr pos: " + cur.pos);
+    //force1 = string1 + damp1;
+    string1 = -k * (stringLength - rest);
+    println("string1:",string1);
+    
+    float dirX = stringx/stringLength;
+    float dirY = stringy/stringLength;
+    println("dirX:",dirX,"dirY:",dirY);
+    float vel = (cur.vel.x * dirX) + (cur.vel.y * dirY);
+    println("vel:",vel);
+    cur.projVel = vel;
+    
+    if (other == null) {
+      damp1 = -kv * vel;
+    } else {
+      damp1 = -kv * (vel - other.projVel);
     }
     
-    balls.get(i).update(force1, force2);
+    float springX1 = (string1 + damp1) * dirX;
+    float springY1 = (string1 + damp1) * dirY;
+    
+    
+    
+    // calculate force for next spring to properly update ball
+    //float force2 = 0;  // deal with last ball
+    float springX2 = 0;
+    float springY2 = 0; 
+    if (next != null) {
+        //float string2 = -k * ((next.pos.y - cur.pos.y) - rest);
+        //float damp2 = -kv * (next.vel.y - cur.vel.y);
+        //force2 = string2 + damp2;
+      stringx = next.pos.x - cur.pos.x;
+      stringy = next.pos.y - cur.pos.y;
+      stringLength = sqrt(sq(stringx) + sq(stringy));
+      
+      float string2 = -k * (stringLength - rest);
+      
+      dirX = stringx/stringLength;
+      dirY = stringy/stringLength;
+      vel = (next.vel.x * dirX) + (next.vel.y * dirY);
+      next.projVel = vel;
+      
+      float damp2 = -kv * (vel - cur.projVel);
+      
+      springX2 = (string2 + damp2) * dirX;
+      springY2 = (string2 + damp2) * dirY;
+    }
+    
+    //balls.get(i).update(force1, force2);
+    balls.get(i).update(springX1, springY1, springX2, springY2);
+    
+    println();
+    
+    //noLoop();
   }
 }
-
-/*
-//find distance between ball and anchor
-  float sx = (ballX - anchorX);
-  float sy = (ballY - anchorY);
-  float stringLen = sqrt(sx*sx + sy*sy);
-  //println(stringLen, " ", restLen);
-  
-// part of hooke's (string2, string1, etc)
-  float stringF = -k*(stringLen - restLen);
-  
-//?????
-  float dirX = sx/stringLen;
-  float dirY = sy/stringLen;
-  
-//calculate vectorized damping? maybe? idk what's going on
-  float projVel = velX*dirX + velY*dirY;
-  float dampF = -kv*(projVel - 0);
-  
-  float springForceX = (stringF+dampF)*dirX;
-  float springForceY = (stringF+dampF)*dirY;
-  
-  velX += (springForceX/mass)*dt;
-  velY += ((springForceY+grav)/mass)*dt;
-  
-  ballX += velX*dt;
-  ballY += velY*dt;
-  
-  if (ballY+radius > floor){
-    velY *= -.9;
-    ballY = floor - radius;
-  }
-  */

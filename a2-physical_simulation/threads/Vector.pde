@@ -58,4 +58,7 @@ public class Vector{
     return new Vector(x/m, y/m, z/m);
   }
   
+  String toString() {
+    return "x: " + x + " y: " + y + " z: " + z;
+  }
 }
