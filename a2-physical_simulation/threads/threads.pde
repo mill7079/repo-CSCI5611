@@ -1,9 +1,9 @@
 float gravity = 10, rest = 20;
-float k = 40, kv = 340; //changing k changes rest length, changing kv changes stiffness
+float k = 40, kv = 340; // issues with k? for now don't increase past 60
 
 ArrayList<Ball> balls = new ArrayList<Ball>();
 float dt = 0.015; // need small dt
-int numBalls = 5;
+int numBalls = 5; // don't increase past 7 or it dies miserably
 
 float initX = 300;
 
@@ -27,7 +27,7 @@ void draw() {
 // need to call multiple times because of small dt
 void updateBalls() {
   
-  println("\n*************NEW UPDATE CALL**************\n");
+  //println("\n*************NEW UPDATE CALL**************\n");
   
   for (int i = 0; i < balls.size(); i++) {
     Ball cur = balls.get(i);
@@ -44,7 +44,7 @@ void updateBalls() {
     
     // all this code is really messy but at the moment I just want it to work...which it doesn't
     
-    //hooke's law
+    //hooke's law - find force of first spring (between current and previous balls)
     float string1, damp1, stringLength;
     float stringx, stringy, stringz;
     
@@ -66,22 +66,22 @@ void updateBalls() {
       stringz = cur.pos.z - other.pos.z;
       stringLength = sqrt(sq(stringx) + sq(stringy) + sq(stringz));
     }
-    println("stringx: "+stringx);
+    /*println("stringx: "+stringx);
     println("stringy: "+stringy);
     println("stringz: "+stringz);
     println("stringLength: "+stringLength);
-    println("cur pos: " + cur.pos);
+    println("cur pos: " + cur.pos);*/
     //force1 = string1 + damp1;
     string1 = -k * (stringLength - rest);
-    println("string1:",string1);
+    //println("string1:",string1);
     
     float dirX = stringx / stringLength;
     float dirY = stringy / stringLength;
     float dirZ = stringz / stringLength;
-    println("dirX:",dirX,"dirY:",dirY,"dirZ:",dirZ);
+    //println("dirX:",dirX,"dirY:",dirY,"dirZ:",dirZ);
     float vel = (cur.vel.x * dirX) + (cur.vel.y * dirY) + (cur.vel.z * dirZ);
-    println("cur vel:",cur.vel);
-    println("vel:",vel);
+    //println("cur vel:",cur.vel);
+    //println("vel:",vel);
     cur.projVel = vel;
     
     if (other == null) {
@@ -95,7 +95,7 @@ void updateBalls() {
     float springZ1 = (string1 + damp1) * dirZ;
     
     
-    // calculate force for next spring to properly update ball
+    // calculate force for next spring (between current and next balls) to properly update current ball
     //float force2 = 0;  // deal with last ball
     float springX2 = 0;
     float springY2 = 0; 
