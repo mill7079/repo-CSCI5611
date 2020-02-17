@@ -32,15 +32,18 @@ public class Ball {
     popMatrix();
   }
   
-  void update(float xforce1, float yforce1, float xforce2, float yforce2) {
+  //void update(float xforce1, float yforce1, float xforce2, float yforce2) {
+  void update(float xforce1, float yforce1, float zforce1, float xforce2, float yforce2, float zforce2) {
     //println("vel x before: " + vel.x);
     println("xforce1: " + xforce1 + " xforce2: "+xforce2);
     vel.x += ((xforce1 / mass) - (xforce2 / mass)) * dt;
     vel.y += (gravity + ((yforce1 / mass) - (yforce2 / mass))) * dt;
+    vel.z += ((zforce1 / mass) - (zforce2 / mass)) * dt;
     //println("vel x after: " + vel.x);
     
     pos.x += (vel.x * dt);
     pos.y += (vel.y * dt);
+    pos.z += (vel.z * dt);
   }
 
 }
