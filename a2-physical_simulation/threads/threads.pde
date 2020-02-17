@@ -80,8 +80,12 @@ void updateBalls() {
   
 // part of hooke's (string2, string1, etc)
   float stringF = -k*(stringLen - restLen);
+  
+//?????
   float dirX = sx/stringLen;
   float dirY = sy/stringLen;
+  
+//calculate vectorized damping? maybe? idk what's going on
   float projVel = velX*dirX + velY*dirY;
   float dampF = -kv*(projVel - 0);
   

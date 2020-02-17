@@ -1,6 +1,6 @@
 import queasycam.*;
 
-float genRate = 3000, dt = 0.05, toGen = genRate*dt;
+float genRate = 6000, dt = 0.05, toGen = genRate*dt;
 
 QueasyCam cam;
 Vector genPos, spherePos;
@@ -9,6 +9,10 @@ float genRad = 1;
 float angle = 0;
 
 ArrayList<Drop> water = new ArrayList<Drop>();
+
+boolean active = true;
+//boolean firework = false, state = false; // false = rising, true = explode
+Firework boom = null;
 
 void setup() {
   size(600,600,P3D);
@@ -26,6 +30,13 @@ void draw() {
   for (Drop d : water) d.update();
   
   clean();
+  
+  if (boom != null) boom.update();
+  
+  int boomparts = 0;
+  if (boom != null) boomparts = boom.particles.size();
+  
+  println("particles:", water.size()+boomparts, "frame rate: ", frameRate); 
 }
 
 void context() {
@@ -88,4 +99,19 @@ float[] rndSphere(float rad, float y) {
   
   // extrude y
   return new float[]{xz[0], y + sqrt(rad*rad - xz[0]*xz[0] - xz[1]*xz[1]), xz[1]};
+}
+
+void keyPressed() {
+  if (key == ' ') {
+    active = !active;
+    if (!active) {
+      noLoop();
+    } else {
+      loop();
+    }
+  }
+  
+  if (key == 'f' || key == 'F') {
+    boom = new Firework();
+  }
 }
