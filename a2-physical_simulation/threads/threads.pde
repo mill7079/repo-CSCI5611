@@ -24,7 +24,7 @@ void draw() {
   }
 }
 
-// need to call multiple times for small dt
+// need to call multiple times because of small dt
 void updateBalls() {
   
   println("\n*************NEW UPDATE CALL**************\n");

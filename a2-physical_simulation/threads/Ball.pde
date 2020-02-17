@@ -1,6 +1,6 @@
 public class Ball {
   Vector pos;
-  Vector vel = new Vector(0,0,0);
+  Vector vel = new Vector(0,1,0);
   float accel;
   
   float rad = 1, mass = 30;
