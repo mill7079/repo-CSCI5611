@@ -48,11 +48,12 @@ public class Cloth {
           Sphere s = (Sphere)o;
           float dist = o.pos.sub(p.pos).mag();
           
-          if (dist < s.radius + 0.1) {
+          if (dist <= s.radius + 0.1) {
             Vector normal = s.pos.sub(p.pos).mult(-1).normalize();
             Vector bounce = normal.mult(p.vel.dot(normal));
             p.vel = p.vel.sub(bounce.mult(1.5));
             p.pos = p.pos.add(normal.mult(0.1 + s.radius - dist));
+            p.vel = p.vel.mult(0.99);
           }
         }
         
@@ -164,6 +165,8 @@ public class Cloth {
           p.pos = new Vector(topX + i*restLen,topY, topZ-j* restLen);
         }
         p.vel = p.vn;
+        // slow cloth down so it doesn't flail around endlessly
+        p.vel = p.vel.mult(0.9999);
         p.pos = p.pos.add(p.vel.mult(dt));
       }
     } // fix top

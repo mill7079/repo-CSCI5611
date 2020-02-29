@@ -16,6 +16,9 @@ void settings() {
 
 void setup() {
   cam = new Camera(); //<>//
+  
+  cam.position = new PVector (170,50,100);
+  cam.theta = PI/6;
   // credit for image goes to RoosterTeeth Animation
   tex = loadImage("qrow.jpg");
    //<>//
@@ -25,9 +28,9 @@ void setup() {
   
   obstacles = new ArrayList<Obstacle>();
   //obstacles.add(new Sphere(new Vector(75,125,-200), 50, new Vector(255,0,0)));
-  obstacles.add(new Sphere(new Vector(85,55,-170), 20, new Vector(255,0,0)));
+  obstacles.add(new Sphere(new Vector(105,65,-150), 50, new Vector(255,0,0)));
   //obstacles.add(new Sphere(new Vector(-80,145,-200), 50, new Vector(150,0,200)));
-  obstacles.add(new Sphere(new Vector(-30,35,-130), 30, new Vector(150,0,200)));
+  obstacles.add(new Sphere(new Vector(-30,35,-130), 20, new Vector(150,0,200)));
   
   cur = obstacles.get(0);
 }
@@ -114,6 +117,7 @@ void draw_cloth() {
   // draw a border around the cloth
   pushStyle();
   stroke(0);
+  strokeWeight(3);
   for (int i = 0; i < sheet.cloth.length; i++) {
     if (i == sheet.cloth.length-1) {
       for (int j = 0; j < sheet.cloth[i].length - 1; j++) {
