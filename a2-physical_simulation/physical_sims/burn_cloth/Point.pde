@@ -2,7 +2,8 @@ public class Point {
   
   Vector pos, vel, vn;
   
-  ArrayList<Point> neighbors;
+  ArrayList<Point> neighbors; // neighbors in all four directions to facilitate four-way burning
+  ArrayList<Point> link_neighbors; // right and lower neighbors (i.e. like how cloth physics are computed) to facilitate cloth falling apart
   ArrayList<Spark> fire;
   int frames;
   boolean burning = false;
@@ -14,6 +15,7 @@ public class Point {
     frames = 0;
     
     neighbors = new ArrayList<Point>();
+    link_neighbors = new ArrayList<Point>();
     fire = new ArrayList<Spark>();
   }
   

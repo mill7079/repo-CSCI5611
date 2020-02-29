@@ -32,6 +32,7 @@ void setup() {
   //obstacles.add(new Sphere(new Vector(-80,145,-200), 50, new Vector(150,0,200)));
   //obstacles.add(new Sphere(new Vector(-30,35,-130), 30, new Vector(150,0,200)));
   //obstacles.add(new Sphere(new Vector(0, floor, 0), 5, new Vector(0,0,0)));
+  obstacles.add(new Sphere(new Vector(0, floor, 0), 5, new Vector(0,0,0)));
   obstacles.add(new HeatSource(new Vector(0, floor, 0), 5, new Vector(0,0,0)));
   
   cur = obstacles.get(0);
@@ -45,8 +46,6 @@ void update() {
 
 void keyPressed() {
   cam.HandleKeyPressed();
-  
-  print(key < 5);
   
   if (key == '1') {
     if (obstacles.size() >= 2) {
@@ -100,7 +99,7 @@ void draw() {
 } //<>//
 
 void draw_cloth() {
-  
+  /*
   // texture, maybe HEY IT WORKS
   textureMode(NORMAL);
   for (int i = 0; i < sheet.cloth.length - 1; i++) {
@@ -120,22 +119,13 @@ void draw_cloth() {
       
       vertex(p2.pos.x, p2.pos.y, p2.pos.z, u, v);
       
-      /*
-      if (p.burning) {
-        pushMatrix();
-        pushStyle();
-        fill(155,125,0);
-        translate(p.pos.x, p.pos.y, p.pos.z);
-        sphere(1);
-        popStyle();
-        popMatrix();
-      }*/
     }
     endShape();
   }
-  
+  */
   draw_fire();
   
+  /*
   // draw a border around the cloth
   pushStyle();
   stroke(0);
@@ -148,6 +138,26 @@ void draw_cloth() {
       }
     }
     Point p = sheet.cloth[i][0];
+  }
+  popStyle();
+  */
+  
+  // draw grid if cloth is burned
+  pushStyle();
+  stroke(0);
+  strokeWeight(2);
+  for (int i = 0; i < sheet.cloth.length; i++) {
+    for (int j = 0; j < sheet.cloth.length; j++) {
+      Point p = sheet.cloth[i][j];
+      if (i != sheet.cloth.length - 1 && p.link_neighbors.contains(sheet.cloth[i+1][j])) {
+        Point p2 = sheet.cloth[i+1][j];
+        line(p.pos.x, p.pos.y, p.pos.z, p2.pos.x, p2.pos.y, p2.pos.z);
+      }
+      if (j != sheet.cloth[i].length - 1 && p.link_neighbors.contains(sheet.cloth[i][j+1])) {
+        Point p2 = sheet.cloth[i][j+1];
+        line(p.pos.x, p.pos.y, p.pos.z, p2.pos.x, p2.pos.y, p2.pos.z);
+      }
+    }
   }
   popStyle();
   
@@ -191,5 +201,5 @@ void clean() {
     p.clean();
     count += p.fire.size();
   }
-  println(count);
+  //println(count);
 }
