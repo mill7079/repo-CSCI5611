@@ -73,9 +73,9 @@ public class Cloth {
     for (int i = 0; i < cloth.length; i++) {
       for (int j = 0; j < cloth[i].length; j++) {
         Point p0 = cloth[i][j];
-        // Vector half_pos1 = p0.pos.add(p0.vn.mult(dt).add(g.mult(0.5*dt*dt)));
+        // Vector half_pos1 = p0.pos.add(p0.vn.mult(dt).add(g.mult(0.5*sq(dt))));
         // midpoint: move forward 1/2 time step
-        p0.pos = p0.pos.add(p0.vn.mult(dt).add(g.mult(0.5*dt*dt)));
+        p0.pos = p0.pos.add(p0.vn.mult(dt).add(g.mult(0.5*sq(dt))));
         p0.vn = p0.vn.add(g.mult(dt));
         
         if (i != cloth.length-1) {
@@ -95,10 +95,10 @@ public class Cloth {
           // technically part of the position change was applied earlier
           // but it doesn't seem to matter if you just update the position first and only add the force here
           Vector forceDir = e.mult(f/mass);
-          p0.pos = p0.pos.add(forceDir.mult(0.5*dt*dt));
+          p0.pos = p0.pos.add(forceDir.mult(0.5*sq(dt)));
           p0.vn = p0.vn.add(forceDir.mult(dt));
           
-          p.pos = p.pos.sub(forceDir.mult(0.5*dt*dt));
+          p.pos = p.pos.sub(forceDir.mult(0.5*sq(dt)));
           p.vn = p.vn.sub(forceDir.mult(dt));
         }
         
@@ -109,7 +109,7 @@ public class Cloth {
     for (int i = 0; i < cloth.length; i++) {
       for (int j = 0; j < cloth[i].length; j++) {
         Point p0 = cloth[i][j];
-        p0.pos = p0.pos.add(p0.vn.mult(dt).add(g.mult(0.5*dt*dt)));
+        p0.pos = p0.pos.add(p0.vn.mult(dt).add(g.mult(0.5*sq(dt))));
         p0.vn = p0.vn.add(g.mult(dt));
         
         if (j != cloth[i].length-1) {
@@ -125,10 +125,10 @@ public class Cloth {
           float f = -ks * (restLen - l) - kd * (v1 - v2);
           
           Vector forceDir = e.mult(f/mass);
-          p0.pos = p0.pos.add(forceDir.mult(0.5*dt*dt));
+          p0.pos = p0.pos.add(forceDir.mult(0.5*sq(dt)));
           p0.vn = p0.vn.add(forceDir.mult(dt));
           
-          p.pos = p.pos.sub(forceDir.mult(0.5*dt*dt));
+          p.pos = p.pos.sub(forceDir.mult(0.5*sq(dt)));
           p.vn = p.vn.sub(forceDir.mult(dt));
         }
       }
