@@ -21,7 +21,7 @@ public class Cloth {
   public Cloth() {
     ks = 1000;
     kd = 1050;
-    restLen = 1;
+    restLen = 5;
     
     topX = 10;
     topY = 10;

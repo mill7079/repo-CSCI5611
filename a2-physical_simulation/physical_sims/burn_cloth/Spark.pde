@@ -23,7 +23,7 @@ public class Spark {
   void update() {
     pushStyle();
     stroke(col.x, col.y, col.z);
-    strokeWeight(random(5));
+    strokeWeight(random(10));
     point(pos.x, pos.y, pos.z);
     popStyle();
     
