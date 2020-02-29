@@ -15,17 +15,17 @@ void settings() {
 }
 
 void setup() {
-  cam = new Camera(); //<>//
+  cam = new Camera();
   
   cam.position = new PVector (270,-5,250);
   cam.theta = PI/6;
   cam.phi = -PI/24;
   // credit for image goes to RoosterTeeth Animation
   tex = loadImage("qrow.jpg");
-   //<>//
+  
   floor = height/2;
-   //<>//
-  sheet = new Cloth(); //<>//
+  
+  sheet = new Cloth();
   
   obstacles = new ArrayList<Obstacle>();
   //obstacles.add(new Sphere(new Vector(75,125,-200), 50, new Vector(255,0,0)));
@@ -86,9 +86,9 @@ void draw() {
     cur.move_shape(new Vector(mouseX - cam.position.x, mouseY - cam.position.y, cur.pos.z));
   }
   
-  draw_cloth(); //<>//
+  draw_cloth();
   draw_obstacles();
-} //<>//
+} 
 
 void draw_cloth() {
   
@@ -139,7 +139,7 @@ void draw_cloth() {
   popStyle();
   
   surface.setTitle("Frame Rate: "+frameRate);
-} //<>//
+}
 
 void draw_obstacles() {
   pushStyle();
