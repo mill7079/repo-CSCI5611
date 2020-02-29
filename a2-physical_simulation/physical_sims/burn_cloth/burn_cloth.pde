@@ -10,7 +10,7 @@ Obstacle cur;
 
 boolean moveShape = false;
 
-int numParticles = 5;
+int numParticles = 3;
 
 void settings() {
     size(1000, 1000, P3D);
