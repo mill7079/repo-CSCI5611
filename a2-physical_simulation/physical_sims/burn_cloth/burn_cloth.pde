@@ -18,6 +18,7 @@ void settings() {
 
 void setup() {
   cam = new Camera(); //<>//
+  cam.position = new PVector(150,150,500);
   // credit for image: https://picsart.com/hashtag/elmo/popular-stickers
   tex = loadImage("elmo.jpg");
    //<>//
@@ -27,14 +28,9 @@ void setup() {
   sheet.setNeighbors();
   
   obstacles = new ArrayList<Obstacle>();
-  //obstacles.add(new Sphere(new Vector(75,125,-200), 50, new Vector(255,0,0)));
-  //obstacles.add(new Sphere(new Vector(85,55,-170), 20, new Vector(255,0,0)));
-  //obstacles.add(new Sphere(new Vector(-80,145,-200), 50, new Vector(150,0,200)));
-  //obstacles.add(new Sphere(new Vector(-30,35,-130), 30, new Vector(150,0,200)));
-  //obstacles.add(new Sphere(new Vector(0, floor, 0), 5, new Vector(0,0,0)));
   obstacles.add(new Sphere(new Vector(0, floor, 0), 5, new Vector(0,0,0)));
-  obstacles.add(new HeatSource(new Vector(0, floor, 0), 5, new Vector(0,0,0)));
-  obstacles.add(new CutSource(new Vector(0, floor, 0), 5, new Vector(255,255,0)));
+  obstacles.add(new HeatSource(new Vector(300, floor, 0), 5, new Vector(0,0,0)));
+  obstacles.add(new CutSource(new Vector(300, floor, 0), 5, new Vector(255,255,0)));
   
   cur = obstacles.get(0);
 }
@@ -56,9 +52,9 @@ void keyPressed() {
     if (obstacles.size() >= 3) cur = obstacles.get(2);
   }
   
-  if (key == 'm' || key == 'M') {
-    moveShape = !moveShape;
-  }
+  if (key == 'm' || key == 'M') moveShape = !moveShape;
+  else if (key == 'z' || key == 'Z') cur.pos.z += 5;
+  else if (key == 'x' || key == 'X') cur.pos.z -= 5;
 }
 void keyReleased() {
   cam.HandleKeyReleased();
@@ -68,13 +64,10 @@ void draw() {
   // this line from example camera usage code
   cam.Update( 1.0/frameRate );
   
-  //println("frame rate:" ,frameRate);
   background(160);
 
   // have to update multiple times with small dt for fast cloth
   for(int i = 0; i < 35; i++) update();
-  
-  //println("div * dt: " + sheet.di.mult(dt));
   
   // draw a floor because i keep losing the simulation with the damn 3d camera
   pushMatrix();
@@ -84,7 +77,7 @@ void draw() {
   popMatrix();
   
   if (moveShape) {
-    cur.move_shape(new Vector(mouseX, mouseY, cur.pos.z));
+    cur.move_shape(new Vector(mouseX - cam.position.x, mouseY - cam.position.y, cur.pos.z));
   }
   
   draw_cloth(); //<>//
@@ -99,29 +92,7 @@ void draw() {
 
 void draw_cloth() {
   
-  // texture. if used with burning cloth it looks like it's melting and it's absolutely hilarious
-  /*textureMode(NORMAL);
-  for (int i = 0; i < sheet.cloth.length - 1; i++) {
-    beginShape(TRIANGLE_STRIP);
-    texture(tex);
-    noStroke();
-    for (int j = 0; j < sheet.cloth[i].length; j++) {
-      Point p = sheet.cloth[i][j];
-      Point p2 = sheet.cloth[i+1][j];
-      
-      float u = map(j, 0, sheet.cloth.length, 0, 1);
-      float v = map(i, 0, sheet.cloth[i].length, 0, 1);
-      
-      vertex(p.pos.x, p.pos.y, p.pos.z, u, v);
-      
-      v = map(i+1, 0, sheet.cloth[i].length, 0, 1);
-      
-      vertex(p2.pos.x, p2.pos.y, p2.pos.z, u, v);
-      
-    }
-    endShape();
-  }*/
-  
+  // texture, stops drawing when springs are broken (i.e. burned or torn)
   textureMode(NORMAL);
   for (int i = 0; i < sheet.cloth.length - 1; i++) {
     beginShape(TRIANGLE_STRIP);
@@ -146,9 +117,9 @@ void draw_cloth() {
     endShape();
   }
   
-  
   draw_fire();
   
+  /*
   // draw grid in parts where cloth isn't burned
   pushStyle();
   stroke(0);
@@ -167,7 +138,7 @@ void draw_cloth() {
     }
   }
   popStyle();
-  
+  */
   surface.setTitle("Frame Rate: "+frameRate);
   
 } //<>//
