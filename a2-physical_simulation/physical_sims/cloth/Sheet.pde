@@ -26,9 +26,7 @@ public class Cloth {
     topY = 10;
     topZ = -120;
     
-    //cd = 0.0001234;
     cd = 1001;
-    //ap = 0.0001234
     ap = 1001;
     
     cloth = new Point[30][30];
@@ -53,9 +51,7 @@ public class Cloth {
           if (dist < s.radius + 0.1) {
             Vector normal = s.pos.sub(p.pos).mult(-1).normalize();
             Vector bounce = normal.mult(p.vel.dot(normal));
-            //this.ClothParticle[i][j].vel.sub(PVector.mult(bounce,1+e_ball));
             p.vel = p.vel.sub(bounce.mult(1.5));
-            //this.ClothParticle[i][j].pos.add(PVector.mult(n,.1+radius-d));// move out
             p.pos = p.pos.add(normal.mult(0.1 + s.radius - dist));
           }
         }
@@ -190,7 +186,6 @@ public class Cloth {
     Vector sum = p.vn.add(p2.vn.add(p3.vn.add(p4.vn)));
     Vector v = sum.div(4).sub(airV);
     
-    //Vector n = p.pos.sub(p2.pos).cross(p.pos.sub(p3.pos)).normalize();
     Vector n = cross.normalize();
     
     float a = cross.mag() * (v.dot(n)/v.mag());

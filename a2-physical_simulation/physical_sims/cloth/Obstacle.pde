@@ -8,7 +8,7 @@ public abstract class Obstacle {
   }
   
   abstract void draw_shape();
-  void move_shape(Vector new_pos) { // user input, click to move? activate move with mouse movement? idk
+  void move_shape(Vector new_pos) {
     pos = new_pos;
   }
   
