@@ -99,9 +99,9 @@ void draw() {
 } //<>//
 
 void draw_cloth() {
-  /*
-  // texture, maybe HEY IT WORKS
-  textureMode(NORMAL);
+  
+  // texture. if used with burning cloth it looks like it's melting and it's absolutely hilarious
+  /*textureMode(NORMAL);
   for (int i = 0; i < sheet.cloth.length - 1; i++) {
     beginShape(TRIANGLE_STRIP);
     texture(tex);
@@ -121,28 +121,36 @@ void draw_cloth() {
       
     }
     endShape();
+  }*/
+  
+  textureMode(NORMAL);
+  for (int i = 0; i < sheet.cloth.length - 1; i++) {
+    beginShape(TRIANGLE_STRIP);
+    texture(tex);
+    noStroke();
+    for (int j = 0; j < sheet.cloth[i].length; j++) {
+      Point p = sheet.cloth[i][j];
+      Point p2 = sheet.cloth[i+1][j];
+      if (p.link_neighbors.contains(p2)) {
+      
+        float u = map(j, 0, sheet.cloth.length, 0, 1);
+        float v = map(i, 0, sheet.cloth[i].length, 0, 1);
+        
+        vertex(p.pos.x, p.pos.y, p.pos.z, u, v);
+        
+        v = map(i+1, 0, sheet.cloth[i].length, 0, 1);
+        
+        vertex(p2.pos.x, p2.pos.y, p2.pos.z, u, v);
+      }
+      
+    }
+    endShape();
   }
-  */
+  
+  
   draw_fire();
   
-  /*
-  // draw a border around the cloth
-  pushStyle();
-  stroke(0);
-  for (int i = 0; i < sheet.cloth.length; i++) {
-    if (i == sheet.cloth.length-1) {
-      for (int j = 0; j < sheet.cloth[i].length - 1; j++) {
-        Point p1 = sheet.cloth[i][j];
-        Point p2 = sheet.cloth[i][j+1];
-        line(p1.pos.x, p1.pos.y, p1.pos.z, p2.pos.x, p2.pos.y, p2.pos.z);
-      }
-    }
-    Point p = sheet.cloth[i][0];
-  }
-  popStyle();
-  */
-  
-  // draw grid if cloth is burned
+  // draw grid in parts where cloth isn't burned
   pushStyle();
   stroke(0);
   strokeWeight(2);

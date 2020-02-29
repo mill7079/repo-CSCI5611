@@ -21,7 +21,7 @@ public class Cloth {
   public Cloth() {
     ks = 1000;
     kd = 1050;
-    restLen = 5;
+    restLen = 10;
     
     topX = 10;
     topY = 10;
@@ -32,7 +32,7 @@ public class Cloth {
     //ap = 0.0001234
     ap = 1001;
     
-    cloth = new Point[30][30];
+    cloth = new Point[20][20];
     for (int i = 0; i < cloth.length; i++) {
       for (int j = 0; j < cloth[i].length; j++) {
         //cloth[i][j] = new Point(new Vector(topX + i*restLen,topY, topZ-j* restLen), new Vector(0,0,0));
