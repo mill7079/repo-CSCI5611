@@ -8,7 +8,7 @@ public class Spark {
   
   public Spark(Vector pos) {
     this.pos = pos;
-    col = new Vector(255, 215, 0);
+    col = new Vector(255, 235, 0);
     end_col = new Vector(150,0,0);
     vel = new Vector(random(-3,3),-1000,random(-3,3));
     
@@ -17,12 +17,15 @@ public class Spark {
   }
   
   boolean isDead() {
-    return life >= maxLife;
+    return life + random(5) >= maxLife + random(10);
   }
   
   void update() {
+    pushStyle();
     stroke(col.x, col.y, col.z);
+    strokeWeight(random(5));
     point(pos.x, pos.y, pos.z);
+    popStyle();
     
     pos = pos.add(vel.mult(dt));
     vel.x *= 0.5;
@@ -34,10 +37,10 @@ public class Spark {
   }
   
   void updateColor() {
-    col.x -= 0.1;
-    col.y -= 3;
+    col.x -= 0.5;
+    col.y -= 6;
     
-    if (col.y < 50) col.x -= 5;
+    if (col.y < 50) col.x -= 8;
   }
   
 }

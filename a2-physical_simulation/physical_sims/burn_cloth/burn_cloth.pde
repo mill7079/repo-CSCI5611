@@ -10,14 +10,14 @@ Obstacle cur;
 
 boolean moveShape = false;
 
-int numParticles = 10;
+int numParticles = 5;
 
 void settings() {
     size(1000, 1000, P3D);
 }
 
 void setup() {
-  //cam = new Camera(); //<>//
+  cam = new Camera(); //<>//
   // credit for image: https://picsart.com/hashtag/elmo/popular-stickers
   tex = loadImage("elmo.jpg");
    //<>//
@@ -43,9 +43,8 @@ void update() {
   sheet.handleCollisions();
 }
 
-// camera stuff (thanks, Liam!)
 void keyPressed() {
-  //cam.HandleKeyPressed();
+  cam.HandleKeyPressed();
   
   print(key < 5);
   
@@ -64,12 +63,12 @@ void keyPressed() {
   }
 }
 void keyReleased() {
-  //cam.HandleKeyReleased();
+  cam.HandleKeyReleased();
 }
 
 void draw() {
   // this line from example camera usage code
-  //cam.Update( 1.0/frameRate );
+  cam.Update( 1.0/frameRate );
   
   //println("frame rate:" ,frameRate);
   background(160);
@@ -95,6 +94,9 @@ void draw() {
   
   sheet.incFrames();
   sheet.spreadBurn();
+  sheet.doneBurn();
+  
+  clean();
 } //<>//
 
 void draw_cloth() {
@@ -105,18 +107,16 @@ void draw_cloth() {
     beginShape(TRIANGLE_STRIP);
     texture(tex);
     noStroke();
-    for (int j = 0; j < sheet.cloth[0].length; j++) {
+    for (int j = 0; j < sheet.cloth[i].length; j++) {
       Point p = sheet.cloth[i][j];
       Point p2 = sheet.cloth[i+1][j];
       
-      /*float u = map(p.pos.x, 0, sheet.cloth.length, 0, 1);
-      float v = map(p.pos.y, 0, sheet.cloth[0].length, 0, 1);*/
       float u = map(j, 0, sheet.cloth.length, 0, 1);
-      float v = map(i, 0, sheet.cloth[0].length, 0, 1);
+      float v = map(i, 0, sheet.cloth[i].length, 0, 1);
       
       vertex(p.pos.x, p.pos.y, p.pos.z, u, v);
       
-      v = map(i+1, 0, sheet.cloth[0].length, 0, 1);
+      v = map(i+1, 0, sheet.cloth[i].length, 0, 1);
       
       vertex(p2.pos.x, p2.pos.y, p2.pos.z, u, v);
       
@@ -178,14 +178,18 @@ void draw_fire() {
 }
 
 void clean() {
+  int count = 0;
   for (Obstacle o : obstacles) {
     if (!(o instanceof HeatSource)) continue;
     
     HeatSource h = (HeatSource) o;
     h.clean();
+    count += h.fire.size();
   }
   
   for (Point p : sheet.burns) {
     p.clean();
+    count += p.fire.size();
   }
+  println(count);
 }

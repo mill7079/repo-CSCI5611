@@ -2,6 +2,7 @@ public class Cloth {
   
   Point[][] cloth;
   ArrayList<Point> burns; // hold points that are burning
+  ArrayList<Spring> broken; // keep track of which springs have been cut/burned
   
   float topX, topY, topZ;
   float ks, kd, restLen;
@@ -246,7 +247,8 @@ public class Cloth {
     
     ArrayList<Point> newburns = new ArrayList<Point>();
     for (Point p : burns) {
-      if ((p.frames % 30) != 0 || p.neighbors.size() == 0) continue;
+      //if ((p.frames % 30) != 0 || p.neighbors.size() == 0) continue;
+      if ((p.frames % 20) != 0 || p.neighbors.size() == 0) continue;
       
       ArrayList<Point> removes = new ArrayList<Point>();
       for (Point pn : p.neighbors) {
@@ -262,5 +264,14 @@ public class Cloth {
     
     burns.addAll(newburns);
   } // spread burn
+  
+  void doneBurn() {
+    for (int i = burns.size()-1; i >= 0; i--) {
+      if (burns.get(i).frames >= (360 + random(21))) { 
+        burns.get(i).burning = false;
+        burns.remove(i);
+      }
+    }
+  }
   
 }
