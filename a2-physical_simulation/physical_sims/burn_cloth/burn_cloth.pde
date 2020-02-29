@@ -34,6 +34,7 @@ void setup() {
   //obstacles.add(new Sphere(new Vector(0, floor, 0), 5, new Vector(0,0,0)));
   obstacles.add(new Sphere(new Vector(0, floor, 0), 5, new Vector(0,0,0)));
   obstacles.add(new HeatSource(new Vector(0, floor, 0), 5, new Vector(0,0,0)));
+  obstacles.add(new CutSource(new Vector(0, floor, 0), 5, new Vector(255,255,0)));
   
   cur = obstacles.get(0);
 }
@@ -48,13 +49,11 @@ void keyPressed() {
   cam.HandleKeyPressed();
   
   if (key == '1') {
-    if (obstacles.size() >= 2) {
-      cur = obstacles.get(1);
-    }
+    if (obstacles.size() >= 2) cur = obstacles.get(1);
   } else if (key == '0') {
-    if (obstacles.size() >= 1) {
-      cur = obstacles.get(0);
-    }
+    if (obstacles.size() >= 1) cur = obstacles.get(0);
+  } else if (key == '2') {
+    if (obstacles.size() >= 3) cur = obstacles.get(2);
   }
   
   if (key == 'm' || key == 'M') {

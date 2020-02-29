@@ -63,6 +63,8 @@ public class Cloth {
             if (o instanceof HeatSource) {
               burns.add(p);
               p.burning = true;
+            } else if (o instanceof CutSource) {
+              p.link_neighbors.clear();
             }
           }
         }
