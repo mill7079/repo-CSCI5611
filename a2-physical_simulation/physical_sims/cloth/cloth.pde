@@ -17,7 +17,7 @@ void settings() {
 void setup() {
   cam = new Camera(); //<>//
   
-  cam.position = new PVector (170,50,100);
+  cam.position = new PVector (170,25,100);
   cam.theta = PI/6;
   // credit for image goes to RoosterTeeth Animation
   tex = loadImage("qrow.jpg");
@@ -30,7 +30,7 @@ void setup() {
   //obstacles.add(new Sphere(new Vector(75,125,-200), 50, new Vector(255,0,0)));
   obstacles.add(new Sphere(new Vector(105,65,-150), 50, new Vector(255,0,0)));
   //obstacles.add(new Sphere(new Vector(-80,145,-200), 50, new Vector(150,0,200)));
-  obstacles.add(new Sphere(new Vector(-30,35,-130), 20, new Vector(150,0,200)));
+  obstacles.add(new Sphere(new Vector(-30,55,-160), 40, new Vector(150,0,200)));
   
   cur = obstacles.get(0);
 }
@@ -55,9 +55,9 @@ void keyPressed() {
     }
   }
   
-  if (key == 'm' || key == 'M') {
-    moveShape = !moveShape;
-  }
+  if (key == 'm' || key == 'M') moveShape = !moveShape;
+  else if (key == 'z' || key == 'Z') cur.pos.z += 5;
+  else if (key == 'x' || key == 'X') cur.pos.z -= 5;
 }
 void keyReleased() {
   cam.HandleKeyReleased();
@@ -81,7 +81,8 @@ void draw() {
   popMatrix();
   
   if (moveShape) {
-    cur.move_shape(new Vector(mouseX, mouseY, cur.pos.z));
+    //cur.move_shape(new Vector(mouseX, mouseY, cur.pos.z));
+    cur.move_shape(new Vector(mouseX - cam.position.x, mouseY - cam.position.y, cur.pos.z));
   }
   
   draw_cloth(); //<>//

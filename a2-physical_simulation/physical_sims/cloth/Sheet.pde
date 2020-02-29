@@ -32,7 +32,7 @@ public class Cloth {
     cloth = new Point[30][30];
     for (int i = 0; i < cloth.length; i++) {
       for (int j = 0; j < cloth[i].length; j++) {
-        cloth[i][j] = new Point(new Vector(topX + i*restLen,topY, topZ-j* restLen), new Vector(0,0,0));
+        cloth[i][j] = new Point(new Vector(topX + i*restLen, topY, topZ - j*restLen), new Vector(0,0,0));
       }
     }
   }
@@ -53,7 +53,7 @@ public class Cloth {
             Vector bounce = normal.mult(p.vel.dot(normal));
             p.vel = p.vel.sub(bounce.mult(1.5));
             p.pos = p.pos.add(normal.mult(0.1 + s.radius - dist));
-            p.vel = p.vel.mult(0.99);
+            p.vel = p.vel.mult(0.999);
           }
         }
         
