@@ -18,10 +18,10 @@ public class Sphere extends Obstacle {
     popMatrix();
   }
   
-  public boolean check_point(Vector p) {
+  public boolean check_point(Point p) {
     float c_rad = rad + agent.rad;
     
-    if (pos.sub(p).mag() <= c_rad) return false;
+    if (pos.sub(p.pos).mag() <= c_rad) return false;
     else return true;
    
   }

@@ -3,6 +3,7 @@ public class Point {
   Vector pos;
   ArrayList<Point> neighbors;
   Point parent;
+  boolean discovered = false;
   
   public Point(Vector p) {
     pos = p;

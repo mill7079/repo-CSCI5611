@@ -22,7 +22,7 @@ public class Agent {
   }
   
   public void update() {
-    println("update");
+    //println("update");
   }
   
 }

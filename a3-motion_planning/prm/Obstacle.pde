@@ -9,6 +9,6 @@ public abstract class Obstacle {
   }
   
   abstract void draw_obs();
-  abstract boolean check_point(Vector p);
+  abstract boolean check_point(Point p);
   
 }
