@@ -21,7 +21,9 @@ void setup() {
   points.add(start);
   points.add(end);
   buildGraph(start);
-  println(bfs(start));
+  bfs(start, end);
+  
+  agent.createPath(end);
   
   size(600,600,P3D);
   background(255);
@@ -111,8 +113,6 @@ void buildGraph(Point root) {
   
   // base case - end doesn't need neighbors
   // use == to check if same object
-  //println(end);
-  //println(root);
   if (root == end) return;
   //if (root.equals(end)) return; //<>//
   
@@ -122,8 +122,6 @@ void buildGraph(Point root) {
   for (Point p : points) {
     // avoid adding self to neighbors
     if (p == root) continue;
-    //println(p.pos.sub(root.pos).mag());
-    //println(n_rad);
     
     //if (p.pos.sub(root.pos).mag() <= n_rad && root.parent != null && !root.parent.equals(p)) {
     if (p.pos.sub(root.pos).mag() <= n_rad && root.parent != p) {
@@ -139,7 +137,7 @@ void buildGraph(Point root) {
 // implement BFS search
 // returns null if goal not found
 // path is backtraced through parent
-Point bfs(Point root) {
+Point bfs(Point root, Point goal) {
   ArrayList<Point> q = new ArrayList<Point>();
   root.discovered = true;
   q.add(root);
@@ -148,7 +146,8 @@ Point bfs(Point root) {
     Point v = q.get(0);
     q.remove(0);
     
-    if (v == end) return v;
+    //if (v == end) return v;
+    if (v == goal) return v;
     
     for(Point p : v.neighbors) {
       if (!p.discovered) {
