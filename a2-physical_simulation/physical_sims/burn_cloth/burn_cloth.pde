@@ -17,14 +17,14 @@ void settings() {
 }
 
 void setup() {
-  cam = new Camera(); //<>//
+  cam = new Camera();
   cam.position = new PVector(150,150,500);
   // credit for image: https://picsart.com/hashtag/elmo/popular-stickers
   tex = loadImage("elmo.jpg");
-   //<>//
+
   floor = height/2;
-   //<>//
-  sheet = new Cloth(); //<>//
+  
+  sheet = new Cloth();
   sheet.setNeighbors();
   
   obstacles = new ArrayList<Obstacle>();
@@ -80,7 +80,7 @@ void draw() {
     cur.move_shape(new Vector(mouseX - cam.position.x, mouseY - cam.position.y, cur.pos.z));
   }
   
-  draw_cloth(); //<>//
+  draw_cloth();
   draw_obstacles();
   
   sheet.incFrames();
@@ -88,7 +88,7 @@ void draw() {
   sheet.doneBurn();
   
   clean();
-} //<>//
+}
 
 void draw_cloth() {
   
@@ -141,7 +141,7 @@ void draw_cloth() {
   */
   surface.setTitle("Frame Rate: "+frameRate);
   
-} //<>//
+}
 
 void draw_obstacles() {
   pushStyle();
