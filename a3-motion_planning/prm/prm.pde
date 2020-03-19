@@ -9,7 +9,7 @@ Point end = new Point(end_pos);
 
 ArrayList<Point> points;
 
-int num_points = 40;
+int num_points = 50;
 int board_size = 20;
 
 void setup() {
@@ -27,6 +27,8 @@ void setup() {
   
   size(600,600,P3D);
   background(255);
+  
+  validPath(start_pos, end_pos);
 }
 
 void draw() {
@@ -45,20 +47,20 @@ void drawBoard() {
   popStyle();
   popMatrix();
   
-  obs.draw_obs();
-  
-  agent.update();
-  agent.drawAgent();
-  
   //draw goal
   pushMatrix();
   pushStyle();
   translate(9,-9,0);
   noStroke();
   fill(220,90,90);
-  sphere(0.5);
+  sphere(0.3);
   popStyle();
   popMatrix();
+  
+  obs.draw_obs();
+  
+  agent.update();
+  agent.drawAgent();
   
   // draw milestones and graph
   for (Point p : points) {
@@ -66,6 +68,7 @@ void drawBoard() {
     stroke(0);
     point(p.pos.x, p.pos.y, p.pos.z);
     
+    /*
     // draw line to parent
     strokeWeight(1);
     if (p.parent != null) line(p.pos.x, p.pos.y, p.pos.z, p.parent.pos.x, p.parent.pos.y, p.parent.pos.z);
@@ -73,6 +76,21 @@ void drawBoard() {
     // draw lines to children in different color
     stroke(129, 0, 129);
     for (Point n : p.neighbors) line(p.pos.x, p.pos.y, p.pos.z, n.pos.x, n.pos.y, n.pos.z);
+    */
+    
+    if (p.parent!=null && !validPath(p.parent.pos, p.pos)) {
+      println("fuck this shit");
+      println(p.parent.pos);
+      println(p.pos);
+      strokeWeight(6);
+      stroke(255);
+      line(p.pos.x, p.pos.y, p.pos.z, p.parent.pos.x, p.parent.pos.y, p.parent.pos.z);
+      strokeWeight(10);
+      stroke(0,255,0);
+      point(p.parent.pos.x, p.parent.pos.y, p.parent.pos.z);
+      stroke(0,0,255);
+      point(p.pos.x, p.pos.y, p.pos.z);
+    }
     
     // debug
     /*
@@ -100,7 +118,7 @@ ArrayList<Point> samplePoints() {
   ArrayList<Point> points = new ArrayList<Point>();
   
   while(points.size() < num_points) {
-    Point point = new Point(new Vector(random(-9,9), random(-9,9), 0));
+    Point point = new Point(new Vector(random(-9.5,9.5), random(-9.5,9.5), 0));
     if (!points.contains(point) && obs.check_point(point)) points.add(point);
   }
   
@@ -116,7 +134,7 @@ void buildGraph(Point root) {
   if (root == end) return;
   //if (root.equals(end)) return; //<>//
   
-  float n_rad = board_size/2.5;
+  float n_rad = board_size/3.0;
   
   // if a point is close enough to the previous level and isn't the parent of that level it is a neighbor
   for (Point p : points) {
@@ -124,7 +142,8 @@ void buildGraph(Point root) {
     if (p == root) continue;
     
     //if (p.pos.sub(root.pos).mag() <= n_rad && root.parent != null && !root.parent.equals(p)) {
-    if (p.pos.sub(root.pos).mag() <= n_rad && root.parent != p) {
+    if (p.pos.sub(root.pos).mag() <= n_rad && root.parent != p) { // without CCD
+    //if (p.pos.sub(root.pos).mag() <= n_rad && root.parent != p && ((validPath(root.pos,p.pos) || (validPath(p.pos,root.pos))))) { // with CCd
       //println("neighbor added");
       root.addNeighbor(p);
     }
@@ -159,6 +178,32 @@ Point bfs(Point root, Point goal) {
   }
   
   return null;
+}
+
+boolean validPath(Vector a, Vector b) {
+  Vector v = b.sub(a).normalize();
+  //Vector v = a.sub(b).normalize();
+  //Vector v = b.sub(a);
+  
+  Sphere o = null;
+  if (obs instanceof Sphere) o = (Sphere)obs;
+  
+  Vector toSphere = a.sub(obs.pos);
+  float A = 1;
+  //float B = v.mult(2).dot(a.sub(obs.pos));
+  //float B = v.mult(2).dot(toSphere);
+  float B = 2*v.dot(toSphere);
+  //float C = sq((a.sub(obs.pos).mag())) - (o.c_rad*o.c_rad);
+  float C = toSphere.dot(toSphere) - (o.c_rad*o.c_rad);
+  
+  float det = B*B - 4*A*C;
+  //println(det);
+  // use discriminant to determine intersection
+  if (det >= 0 && det <= 1) {
+    println("invalid");
+    return false;
+  }
+  return true;
 }
 
 

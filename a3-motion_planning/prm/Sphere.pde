@@ -1,10 +1,12 @@
 public class Sphere extends Obstacle {
   
   float rad;
+  float c_rad;
   
   public Sphere(Vector p, color c, float r) {
     super(p, c);
     rad = r;
+    c_rad = rad + agent.rad;
   }
   
   public void draw_obs() {
@@ -19,11 +21,8 @@ public class Sphere extends Obstacle {
   }
   
   public boolean check_point(Point p) {
-    float c_rad = rad + agent.rad;
-    
     if (pos.sub(p.pos).mag() <= c_rad) return false;
     else return true;
-   
   }
   
 }

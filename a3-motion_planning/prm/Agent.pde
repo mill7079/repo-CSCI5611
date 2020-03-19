@@ -42,30 +42,17 @@ public class Agent {
     curPath = path.get(1).sub(path.get(0));
   }
   
-  /*
-  public void update() {
-    println("update");
-    //int curIndex = 1;
-    for (int i = 0; i < path.size() - 1; i++) {
-      Vector curPath = path.get(i+1).sub(path.get(i));
-      Sphere changePath = new Sphere(path.get(i+1), color(0), 0.1); // may need to increase radius
-      while(changePath.check_point(new Point(pos))) {
-        pos = pos.add(curPath.mult(0.15)); // ???? how to move???
-      }
-    }
-  } */
-  
   public void update() {
     if (nextPoint >= path.size()) return;
     Sphere goalPoint = new Sphere(path.get(nextPoint), color(0), pointRad);
     if (!goalPoint.check_point(new Point(pos))) { // agent ready to switch path parts
+      pos = goalPoint.pos;
       nextPoint++;
       if (nextPoint >= path.size()) return;
       curPath = path.get(nextPoint).sub(path.get(nextPoint - 1));
     } else {
-      println(curPath);
+      //println(curPath);
       pos = pos.add(curPath.mult(dt));
-      //pos = pos.add(curPath);
     }
     
     
