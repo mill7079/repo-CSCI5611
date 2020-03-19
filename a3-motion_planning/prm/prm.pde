@@ -14,7 +14,7 @@ int board_size = 20;
 
 void setup() {
   cam = new Camera();
-  agent = new Agent(0.5, color(90,205,90));
+  agent = new Agent(0.5, color(168, 212, 122));
   obs = new Sphere(new Vector(0,0,0), color(50,100,255), 2);
   
   points = samplePoints();
@@ -41,21 +41,32 @@ void draw() {
 void drawBoard() {
   pushMatrix();
   pushStyle();
-  //translate(-9,9,0);
+  stroke(0);
+  strokeWeight(6);
   fill(125,125,125);
   box(board_size,board_size,0.00001);
   popStyle();
   popMatrix();
   
-  //draw goal
-  pushMatrix();
+  // draw start/goal
   pushStyle();
-  translate(9,-9,0);
   noStroke();
-  fill(220,90,90);
+  
+  //start
+  pushMatrix();
+  fill(90,220,90);
+  translate(-9,9,0);
   sphere(0.3);
-  popStyle();
   popMatrix();
+  
+  // goal
+  pushMatrix();
+  fill(220,90,90);
+  translate(9,-9,0);
+  sphere(0.3);
+  popMatrix();
+  
+  popStyle();
   
   obs.draw_obs();
   
@@ -68,18 +79,14 @@ void drawBoard() {
     stroke(0);
     point(p.pos.x, p.pos.y, p.pos.z);
     
-    
-    // draw line to parent
-    strokeWeight(1);
-    if (p.parent != null) line(p.pos.x, p.pos.y, p.pos.z, p.parent.pos.x, p.parent.pos.y, p.parent.pos.z);
-    
     // draw lines to children in different color
     stroke(129, 0, 129);
+    strokeWeight(1);
     for (Point n : p.neighbors) line(p.pos.x, p.pos.y, p.pos.z, n.pos.x, n.pos.y, n.pos.z);
     
-    
+    // debugging CCD
+    /*
     if (p.parent!=null && !validPath(p.parent.pos, p.pos)) {
-      println("fuck this shit");
       println(p.parent.pos);
       println(p.pos);
       strokeWeight(6);
@@ -91,8 +98,9 @@ void drawBoard() {
       stroke(0,0,255);
       point(p.pos.x, p.pos.y, p.pos.z);
     }
+    */
     
-    // debug
+    // debugging graph build
     /*
     pushMatrix();
     translate(p.pos.x, p.pos.y, p.pos.z);
@@ -102,7 +110,7 @@ void drawBoard() {
   }
   
   // draw BFS path
-  stroke(255,0,0);
+  stroke(58, 166, 63);
   strokeWeight(3);
   Point mid = end;
   while (mid != start) {
