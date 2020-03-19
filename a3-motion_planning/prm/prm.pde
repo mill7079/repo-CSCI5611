@@ -68,7 +68,7 @@ void drawBoard() {
     stroke(0);
     point(p.pos.x, p.pos.y, p.pos.z);
     
-    /*
+    
     // draw line to parent
     strokeWeight(1);
     if (p.parent != null) line(p.pos.x, p.pos.y, p.pos.z, p.parent.pos.x, p.parent.pos.y, p.parent.pos.z);
@@ -76,7 +76,7 @@ void drawBoard() {
     // draw lines to children in different color
     stroke(129, 0, 129);
     for (Point n : p.neighbors) line(p.pos.x, p.pos.y, p.pos.z, n.pos.x, n.pos.y, n.pos.z);
-    */
+    
     
     if (p.parent!=null && !validPath(p.parent.pos, p.pos)) {
       println("fuck this shit");
@@ -142,8 +142,8 @@ void buildGraph(Point root) {
     if (p == root) continue;
     
     //if (p.pos.sub(root.pos).mag() <= n_rad && root.parent != null && !root.parent.equals(p)) {
-    if (p.pos.sub(root.pos).mag() <= n_rad && root.parent != p) { // without CCD
-    //if (p.pos.sub(root.pos).mag() <= n_rad && root.parent != p && ((validPath(root.pos,p.pos) || (validPath(p.pos,root.pos))))) { // with CCd
+    //if (p.pos.sub(root.pos).mag() <= n_rad && root.parent != p) { // without CCD
+    if (p.pos.sub(root.pos).mag() <= n_rad && root.parent != p && ((validPath(root.pos,p.pos) || (validPath(p.pos,root.pos))))) { // with CCd
       //println("neighbor added");
       root.addNeighbor(p);
     }
@@ -181,25 +181,30 @@ Point bfs(Point root, Point goal) {
 }
 
 boolean validPath(Vector a, Vector b) {
-  Vector v = b.sub(a).normalize();
+  Vector v = b.sub(a);
+  v = v.normalize();
   //Vector v = a.sub(b).normalize();
   //Vector v = b.sub(a);
   
   Sphere o = null;
   if (obs instanceof Sphere) o = (Sphere)obs;
-  
-  Vector toSphere = a.sub(obs.pos);
+  //Vector toSphere = a.sub(obs.pos);
+  Vector toSphere = obs.pos.sub(a);
   float A = 1;
+  //float A = sq(b.x-a.x)+sq(b.y-a.y)+sq(b.z-a.z);
   //float B = v.mult(2).dot(a.sub(obs.pos));
   //float B = v.mult(2).dot(toSphere);
   float B = 2*v.dot(toSphere);
+  //float B = 2*((b.x-a.x)*(a.x-obs.pos.x) + (b.y-a.y)*(a.y-obs.pos.y) + (b.z-a.z)*(a.z-obs.pos.z));
   //float C = sq((a.sub(obs.pos).mag())) - (o.c_rad*o.c_rad);
   float C = toSphere.dot(toSphere) - (o.c_rad*o.c_rad);
+  //float C = sq(obs.pos.x) + sq(obs.pos.y) + sq(obs.pos.z) + sq(a.x) + sq(a.y) + sq(a.z) - 2*(obs.pos.x*a.x + obs.pos.y*a.y + obs.pos.z*a.z) - sq(o.c_rad);
   
-  float det = B*B - 4*A*C;
+  float det = (B*B) - (4*A*C);
   //println(det);
   // use discriminant to determine intersection
-  if (det >= 0 && det <= 1) {
+  //if (det >= 0 && det <= 1) {
+  if (det >= 0) {
     println("invalid");
     return false;
   }
