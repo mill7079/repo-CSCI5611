@@ -35,7 +35,7 @@ public class Agent {
     while (endPos != start.pos) {
       path.add(0, endPos);
       e = e.parent;
-      println("endPos:",endPos, "e:",e);
+      //println("endPos:",endPos, "e:",e);
       endPos = e.pos;
     }
     path.add(0,endPos);
@@ -60,6 +60,13 @@ public class Agent {
     }
     
     
+  }
+  
+  public void reset(Point end) {
+    nextPoint = 1;
+    path = new ArrayList<Vector>();
+    
+    createPath(end);
   }
   
 }

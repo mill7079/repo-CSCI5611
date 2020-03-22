@@ -12,6 +12,8 @@ ArrayList<Point> points;
 int num_points = 100;
 int board_size = 20;
 
+int rcount = 0;
+
 void setup() {
   cam = new Camera();
   agent = new Agent(0.5, color(168, 212, 122));
@@ -27,8 +29,6 @@ void setup() {
   
   size(600,600,P3D);
   background(255);
-  
-  //validPath(start_pos, end_pos);
 }
 
 void draw() {
@@ -36,6 +36,11 @@ void draw() {
   cam.Update( 1.0/frameRate );
   
   drawBoard();
+  
+  agent.update();
+  agent.drawAgent();
+  
+  drawGraph();
 }
 
 void drawBoard() {
@@ -69,11 +74,10 @@ void drawBoard() {
   popStyle();
   
   obs.draw_obs();
-  
-  agent.update();
-  agent.drawAgent();
-  
-  // draw milestones and graph
+}
+
+void drawGraph() {
+  // draw milestones and graph1
   for (Point p : points) {
     strokeWeight(5);
     stroke(0);
@@ -84,7 +88,7 @@ void drawBoard() {
     strokeWeight(1);
     for (Point n : p.neighbors) line(p.pos.x, p.pos.y, p.pos.z, n.pos.x, n.pos.y, n.pos.z);
     
-    // debugging CCD
+    // debugging CCD - draw white line for invalid path
     /*
     if (p.parent!=null && !validPath(p.parent.pos, p.pos)) {
       println(p.parent.pos);
@@ -100,7 +104,7 @@ void drawBoard() {
     }
     */
     
-    // debugging graph build
+    // debugging graph build - draw sphere for neighbor range
     /*
     pushMatrix();
     translate(p.pos.x, p.pos.y, p.pos.z);
@@ -113,12 +117,10 @@ void drawBoard() {
   stroke(58, 166, 63);
   strokeWeight(3);
   Point mid = end;
-  while (mid != start) {
-    if (mid.parent != null) {
-      Point par = mid.parent;
-      line(mid.pos.x, mid.pos.y, mid.pos.z, par.pos.x, par.pos.y, par.pos.z);
-      mid = par;
-    }
+  while (mid != start && mid.parent != null) {
+    Point par = mid.parent;
+    line(mid.pos.x, mid.pos.y, mid.pos.z, par.pos.x, par.pos.y, par.pos.z);
+    mid = par;
   }
 }
 
@@ -135,8 +137,6 @@ ArrayList<Point> samplePoints() {
 
 // builds graph of neighbors - first called using root = start
 void buildGraph(Point root) {
-  println("building graph");
-  
   // base case - end doesn't need neighbors
   if (root == end) return;
   
@@ -167,6 +167,7 @@ Point bfs(Point root, Point goal) {
   
   while(q.size() > 0) {
     Point v = q.get(0);
+    //println("v:",v);
     q.remove(0);
     
     //if (v == end) return v;
@@ -205,6 +206,16 @@ boolean validPath(Vector a, Vector b) {
   return true;
 }
 
+void clear() {
+  /*
+  for (Point p : points) {
+    p.parent = null;
+    p.neighbors = new ArrayList<Point>();
+  }
+  */
+  points = new ArrayList<Point>();
+}
+
 
 void keyPressed() {
   cam.HandleKeyPressed();
@@ -214,20 +225,32 @@ void keyReleased() {
 }
 
 void mouseClicked() {
+  println("mouse clicked");
+  clear();
+  
   Vector mouse = new Vector(mouseX, mouseY, 0);
-  end_pos = mouse;
+  //float boardX = (mouseX/width) * (board_size) - board_size/2;
+  //float boardY = (mouseY/height) * (board_size) - board_size/2;
+  float boardX = -(board_size/2.0) + board_size * (mouseX/((float)(width-1)));
+  float boardY = -(board_size/2.0) + board_size * (mouseY/((float)(height-1)));
+  Vector board = new Vector(boardX, boardY, 0);
+  println("mouse:",mouse,"board:",board);
+  
+  end_pos = board;
   start_pos = agent.pos;
   start = new Point(start_pos);
   end = new Point(end_pos);
+  //start.pos = agent.pos;
+  //end.pos = mouse;
   
   points = samplePoints();
-  println(points.size());
   points.add(start);
   points.add(end);
-  println(points.size());
-  //buildGraph(start);
-  //println(bfs(start, end));
   
+  buildGraph(start);
+  println(bfs(start, end));
+  
+  agent.reset(end);
   //agent.createPath(end);
   
 }
