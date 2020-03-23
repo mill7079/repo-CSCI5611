@@ -9,7 +9,7 @@ Point end = new Point(end_pos);
 
 ArrayList<Point> points;
 
-int num_points = 100;
+int num_points = 50;
 int board_size = 20;
 
 int rcount = 0;
@@ -22,8 +22,10 @@ void setup() {
   points = samplePoints();
   points.add(start);
   points.add(end);
-  buildGraph(start);
-  bfs(start, end);
+  //buildGraph(start);
+  buildGraph();
+  //bfs(start, end);
+  ucs(start, end);
   
   agent.createPath(end);
   
@@ -60,14 +62,14 @@ void drawBoard() {
   //start
   pushMatrix();
   fill(90,220,90);
-  translate(-9,9,0);
+  translate(start_pos.x,start_pos.y,start_pos.z);
   sphere(0.3);
   popMatrix();
   
   // goal
   pushMatrix();
   fill(220,90,90);
-  translate(9,-9,0);
+  translate(end_pos.x,end_pos.y,end_pos.z);
   sphere(0.3);
   popMatrix();
   
@@ -135,26 +137,21 @@ ArrayList<Point> samplePoints() {
   return points;
 }
 
-// builds graph of neighbors - first called using root = start
-void buildGraph(Point root) {
-  // base case - end doesn't need neighbors
-  if (root == end) return;
+void buildGraph() {
+  for (Point cur : points) {
+    float n_rad = board_size/3.0;
   
-  float n_rad = board_size/3.0;
-  
-  // if a point is close enough to the previous level and isn't the parent of that level it is a neighbor
-  for (Point p : points) {
-    // avoid adding self to neighbors
-    if (p == root) continue;
-    
-    //if (p.pos.sub(root.pos).mag() <= n_rad && root.parent != p) { // without CCD
-    if (p.pos.sub(root.pos).mag() <= n_rad && root.parent != p && ((validPath(root.pos,p.pos) || (validPath(p.pos,root.pos))))) { // with CCD
-      root.addNeighbor(p);
+    // if a point is close enough to the previous level it is a neighbor
+    for (Point p : points) {
+      // avoid adding self to neighbors
+      if (p == cur) continue;
+      
+      //if (p.pos.sub(cur.pos).mag() <= n_rad && ((validPath(cur.pos,p.pos) || (validPath(p.pos,cur.pos))))) { // with CCD
+      if (p.pos.sub(cur.pos).mag() <= n_rad && goodPath(cur.pos,p.pos)) {
+        cur.addNeighbor(p);
+      }
     }
   }
-  
-  // recursively find neighbors of all children
-  for (Point p : root.neighbors) if (p.neighbors.size() == 0) buildGraph(p);
 }
 
 // implement BFS search
@@ -185,6 +182,39 @@ Point bfs(Point root, Point goal) {
   return null;
 }
 
+// uniform cost search - returns null if no path is found
+Point ucs(Point root, Point goal) {
+  Point node = null;
+  PriorityQueue<Point> frontier = new PriorityQueue<Point>();
+  frontier.push(root, 0);
+  //.Point prev;
+  while(frontier.size() > 0) {
+    //.prev = node;
+    PriorityQueue.Node temp = frontier.pop();
+    node = (Point)temp.k;
+    float curr_cost = temp.v;
+    //.node.parent = prev;
+    
+    if (node == goal) return goal;
+    
+    node.discovered = true;
+    for(Point n : node.neighbors) {
+      float cost = n.pos.sub(node.pos).mag();
+      if (!n.discovered && !frontier.contains(n)) {
+        frontier.push(n, curr_cost + cost);
+        n.parent = node;
+      } else if (frontier.contains(n) && !n.discovered){
+        frontier.updateCost(n, curr_cost + cost, node);
+        //n.parent = node;
+      }
+    }
+  }
+  
+  return null;
+}
+
+/*
+// check if path between vectors intersects the obstacle
 boolean validPath(Vector a, Vector b) {
   Vector v = b.sub(a);
   v = v.normalize();
@@ -205,14 +235,33 @@ boolean validPath(Vector a, Vector b) {
   }
   return true;
 }
+*/
+
+//ccd but working
+boolean goodPath(Vector start, Vector end) {
+  Vector v = end.sub(start).normalize();
+  
+  Sphere o = null;
+  if (obs instanceof Sphere) o = (Sphere)obs;
+  Vector w = o.pos.sub(start);
+  
+  float a = 1;
+  float b = -2*v.dot(w);
+  float c = w.dot(w) - sq(o.c_rad);
+  
+  float d = (b*b) - (4*a*c); // discriminant
+  
+  if (d >= 0) {
+    float t = (-b - sqrt(d))/(2*a);
+    if (t > 0 && t < end.sub(start).mag()) {
+      return false;
+    }
+  }
+  
+  return true;
+}
 
 void clear() {
-  /*
-  for (Point p : points) {
-    p.parent = null;
-    p.neighbors = new ArrayList<Point>();
-  }
-  */
   points = new ArrayList<Point>();
 }
 
@@ -225,10 +274,11 @@ void keyReleased() {
 }
 
 void mouseClicked() {
-  println("mouse clicked");
+  //println("mouse clicked");
+  Vector mouse = new Vector(mouseX, mouseY, 0);
+  if (!obs.check_point(new Point(mouse))) return;
   clear();
   
-  Vector mouse = new Vector(mouseX, mouseY, 0);
   //float boardX = (mouseX/width) * (board_size) - board_size/2;
   //float boardY = (mouseY/height) * (board_size) - board_size/2;
   float boardX = -(board_size/2.0) + board_size * (mouseX/((float)(width-1)));
@@ -247,8 +297,10 @@ void mouseClicked() {
   points.add(start);
   points.add(end);
   
-  buildGraph(start);
-  println(bfs(start, end));
+  //buildGraph(start);
+  buildGraph();
+  //println(bfs(start, end));
+  println(ucs(start,end));
   
   agent.reset(end);
   //agent.createPath(end);

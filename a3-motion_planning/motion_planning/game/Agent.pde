@@ -54,7 +54,6 @@ public class Agent {
       if (nextPoint >= path.size()) return;
       curPath = path.get(nextPoint).sub(path.get(nextPoint - 1));
     } else {
-      //println(curPath);
       //pos = pos.add(curPath.mult(dt));
       pos = pos.add(curPath.normalize().mult(dt));
     }
