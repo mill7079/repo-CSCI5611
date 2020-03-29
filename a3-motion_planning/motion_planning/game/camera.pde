@@ -4,7 +4,7 @@ class Camera
 {
   Camera()
   {
-    position      = new PVector( 0, 0, 30 ); // initial position
+    position      = new PVector( 0, 0, 0 ); // initial position
     theta         = 0; // rotation around Y axis. Starts with forward direction as ( 0, 0, -1 )
     phi           = 0; // rotation around X axis. Starts with up direction as ( 0, 1, 0 )
     moveSpeed     = 50;
