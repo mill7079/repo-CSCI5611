@@ -47,6 +47,11 @@ public class User extends Agent {
     noStroke();
     fill(col);
     sphere(rad);
+    
+    Vector dir = vel.mult(rad);
+    translate(dir.x, dir.y, dir.z);
+    fill(0);
+    sphere(rad/3.0);
     popStyle();
     popMatrix();
   }
