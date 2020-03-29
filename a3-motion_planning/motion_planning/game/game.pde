@@ -4,6 +4,7 @@ Agent agent;
 
 User user;
 int start_health = 100, start_atk = 10, start_def = 5;
+boolean user_moved = false;
 
 Vector start_pos = new Vector(-9, 9, 0);
 Point start = new Point(start_pos);
@@ -267,6 +268,24 @@ void clear() {
   points = new ArrayList<Point>();
 }
 
+void changeBoard(Vector point) {
+  start_pos = agent.pos;
+  end_pos = point;
+  start = new Point(start_pos);
+  end = new Point(end_pos);
+  
+  points = samplePoints();
+  points.add(start);
+  points.add(end);
+  
+  buildGraph();
+  
+  //println(bfs(start, end));
+  println(ucs(start,end));
+  
+  agent.reset(end);
+}
+
 
 void keyPressed() {
   cam.HandleKeyPressed();
@@ -304,6 +323,8 @@ void mouseClicked() {
   Vector board = new Vector(boardX, boardY, 0);
   println("mouse:",mouse,"board:",board);
   
+  changeBoard(board);
+  /*
   start_pos = agent.pos;
   end_pos = board;
   start = new Point(start_pos);
@@ -319,7 +340,7 @@ void mouseClicked() {
   println(ucs(start,end));
   
   agent.reset(end);
-  
+  */
 }
 
   
