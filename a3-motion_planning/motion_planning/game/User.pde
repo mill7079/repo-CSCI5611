@@ -23,7 +23,21 @@ public class User extends Agent {
   }
   
   public void update() {
+    handleCollisions();
     pos = pos.add(vel.mult(dt));
+  }
+  
+  public boolean handleCollisions() {
+    for (Obstacle o : obstacles) {
+      Sphere s = (Sphere) o;
+      if (rad + s.rad + 0.1 >= s.pos.sub(pos).mag()) {
+        Vector normal = s.pos.sub(pos).mult(-1).normalize();
+        pos = pos.add(normal.mult(0.1 + (s.rad + rad) - (s.pos.sub(pos).mag())));
+        return true;
+      }
+    }
+    return false;
+    
   }
   
   public void drawUser() {
