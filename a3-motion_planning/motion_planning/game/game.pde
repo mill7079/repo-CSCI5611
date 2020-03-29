@@ -75,6 +75,8 @@ void draw() {
   
   user.update();
   user.drawUser();
+  
+  if (frameCount % 10 == 0) changeBoard(user.pos);
 }
 
 void drawBoard() {
