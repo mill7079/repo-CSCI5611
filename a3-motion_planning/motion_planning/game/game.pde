@@ -4,7 +4,6 @@ Agent agent;
 
 User user;
 int start_health = 100, start_atk = 10, start_def = 5;
-boolean user_moved = false;
 
 Vector start_pos = new Vector(-9, 9, 0);
 Point start = new Point(start_pos);
@@ -18,13 +17,14 @@ int num_points = 500;
 int board_size = 20;
 float n_rad = board_size/3.0;
 
-//int rcount = 0;
+Vector new_obs_pos;
+int new_obs_rad = 0;
 
 void setup() {
   cam = new Camera();
   cam.position = new PVector( 0, 0, 30 );
   agent = new Agent(0.5, color(168, 212, 122));
-  user = new User(new Vector(-8,-8,0),0.5,color(0));
+  user = new User(new Vector(-8,-8,0),0.5);
   
   //obs = new Sphere(new Vector(0,0,0), color(50,100,255), 2);
   obstacles = new ArrayList<Obstacle>();
@@ -55,7 +55,7 @@ void draw() {
   agent.update();
   agent.drawAgent();
   
-  drawGraph();
+  //drawGraph();
   
   // draw mouse - debugging
   Vector mouse = new Vector(mouseX, mouseY, 0);
@@ -76,7 +76,7 @@ void draw() {
   user.update();
   user.drawUser();
   
-  if (frameCount % 10 == 0) changeBoard(user.pos);
+  if (frameCount % 10 == 0) changeGoal(user.pos);
 }
 
 void drawBoard() {
@@ -91,7 +91,7 @@ void drawBoard() {
   popMatrix();
   
   // draw start/goal
-  pushStyle();
+  /*pushStyle();
   noStroke();
   
   //start
@@ -108,7 +108,7 @@ void drawBoard() {
   sphere(0.3);
   popMatrix();
   
-  popStyle();
+  popStyle();*/
   
   //obs.draw_obs();
   for (Obstacle o : obstacles) o.draw_obs();
@@ -270,7 +270,7 @@ void clear() {
   points = new ArrayList<Point>();
 }
 
-void changeBoard(Vector point) {
+void changeGoal(Vector point) {
   start_pos = agent.pos;
   end_pos = point;
   start = new Point(start_pos);
@@ -292,16 +292,12 @@ void changeBoard(Vector point) {
 void keyPressed() {
   cam.HandleKeyPressed();
   if (key == 'i' || key == 'I') {
-    user.col = color(255);
     user.vel = new Vector(0,-1,0);
   } else if (key == 'k' || key == 'K') {
-    user.col = color(42,42,0);
     user.vel = new Vector(0,1,0);
   } else if (key == 'j' || key == 'J') {
-    user.col = color(255, 192, 35);
     user.vel = new Vector(-1,0,0);
   } else if (key == 'l' || key == 'L') {
-    user.col = color(0,255,0);
     user.vel = new Vector(1,0,0);
   }
 }
@@ -312,8 +308,8 @@ void keyReleased() {
 
 void mouseClicked() {
   Vector mouse = new Vector(mouseX, mouseY, 0);
-  for (Obstacle obs : obstacles) if (!obs.check_point(new Point(mouse))) return;
-  clear();
+  //for (Obstacle obs : obstacles) if (!obs.check_point(new Point(mouse))) return;
+  //clear();
   
   if (mouse.x > 500) mouse.x = 500;
   if (mouse.y > 500) mouse.y = 500;
@@ -323,26 +319,39 @@ void mouseClicked() {
   float boardX = -(board_size/2.0) + board_size * (mouse.x/(500.0));
   float boardY = -(board_size/2.0) + board_size * (mouse.y/(500.0));
   Vector board = new Vector(boardX, boardY, 0);
-  println("mouse:",mouse,"board:",board);
+  //println("mouse:",mouse,"board:",board);
   
-  changeBoard(board);
-  /*
-  start_pos = agent.pos;
-  end_pos = board;
-  start = new Point(start_pos);
-  end = new Point(end_pos);
+  Sphere s = new Sphere(board, color(random(255), random(255), random(255)), 1);
+  obstacles.add(s);
+}
+
+void mousePressed() {
+  Vector mouse = new Vector(mouseX, mouseY, 0);
+  //for (Obstacle obs : obstacles) if (!obs.check_point(new Point(mouse))) return;
+  //clear();
   
-  points = samplePoints();
-  points.add(start);
-  points.add(end);
+  if (mouse.x > 500) mouse.x = 500;
+  if (mouse.y > 500) mouse.y = 500;
   
-  buildGraph();
+  float boardX = -(board_size/2.0) + board_size * (mouse.x/(500.0));
+  float boardY = -(board_size/2.0) + board_size * (mouse.y/(500.0));
+  new_obs_pos = new Vector(boardX, boardY, 0);
+}
+
+void mouseReleased() {
+  Vector mouse = new Vector(mouseX, mouseY, 0);
+  //for (Obstacle obs : obstacles) if (!obs.check_point(new Point(mouse))) return;
+  //clear();
   
-  //println(bfs(start, end));
-  println(ucs(start,end));
+  if (mouse.x > 500) mouse.x = 500;
+  if (mouse.y > 500) mouse.y = 500;
   
-  agent.reset(end);
-  */
+  float boardX = -(board_size/2.0) + board_size * (mouse.x/(500.0));
+  float boardY = -(board_size/2.0) + board_size * (mouse.y/(500.0));
+  Vector rad_pos = new Vector(boardX, boardY, 0);
+  
+  Sphere s = new Sphere(new_obs_pos, color(random(255), random(255), random(255)), new_obs_pos.sub(rad_pos).mag());
+  obstacles.add(s);
 }
 
   

@@ -5,8 +5,8 @@ public class User extends Agent {
   private int exp = 0;
   Vector vel;
   
-  public User (Vector pos, float r, color c) {
-    super(r,c);
+  public User(Vector pos, float r) {
+    super(r,color(0,start_health,0));
     this.pos = pos;
     stats = new Vector(start_health, start_atk, start_def);
     vel = new Vector(0,0,0);

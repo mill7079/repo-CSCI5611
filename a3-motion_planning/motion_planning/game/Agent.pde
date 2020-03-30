@@ -29,12 +29,18 @@ public class Agent {
   // create path for agent to follow starting from end of path
   // (backtrace of parent nodes set with BFS)
   public void createPath(Point end) {
+    if (start.equals(end)) return;
     Point e = end;
     Vector endPos = end.pos;
     while (endPos != start.pos) {
       path.add(0, endPos);
       e = e.parent;
-      endPos = e.pos;
+      try {
+        endPos = e.pos;
+      } catch (Exception x) {
+        println(x);
+        return;
+      }
     }
     path.add(0,endPos);
     
