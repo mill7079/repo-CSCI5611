@@ -21,6 +21,6 @@ public class Point {
   }
   
   public boolean equals(Point p) {
-    return (pos.x-p.pos.x <= 0.001) && (pos.y-p.pos.y <= 0.001) && (pos.z-p.pos.z <= 0.001);
+    return (abs(pos.x-p.pos.x) <= 0.001) && (abs(pos.y-p.pos.y) <= 0.001) && (abs(pos.z-p.pos.z) <= 0.001);
   }
 }
