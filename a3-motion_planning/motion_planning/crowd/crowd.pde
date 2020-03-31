@@ -1,25 +1,35 @@
 Camera cam;
-Agent agent;
+//Agent agent;
 
 Vector start_pos = new Vector(-9, 9, 0);
-Point start = new Point(start_pos);
+//Point start = new Point(start_pos);
 Vector end_pos = new Vector(9, -9, 0);
-Point end = new Point(end_pos);
+//Point end = new Point(end_pos);
 
+ArrayList<Agent> agents;
 ArrayList<Point> points;
 ArrayList<Obstacle> obstacles;
 
-int num_points = 500;
+int num_points = 50;
 int board_size = 20;
 float n_rad = board_size/3.0;
+float a_rad = 0.5;
 
 Vector new_obs_pos;
 int new_obs_rad = 0;
 
+// separation, alignment, cohesion
+Vector sep, align, coh;
+float b_rad = 1;
+
 void setup() {
   cam = new Camera();
   cam.position = new PVector( 0, 0, 30 );
-  agent = new Agent(0.5, color(168, 212, 122));
+  
+  agents = new ArrayList<Agent>();
+  agents.add(new Agent(a_rad, color(168, 212, 122), new Point(start_pos), new Point(end_pos)));
+  agents.add(new Agent(a_rad, color(129,0,129), new Point(new Vector(-9,-9,0)), new Point(new Vector(9,9,0))));
+  //agent = new Agent(0.5, color(168, 212, 122));
   
   obstacles = new ArrayList<Obstacle>();
   obstacles.add(new Sphere(new Vector(0,0,0), color(50,100,255), 2));
@@ -27,13 +37,26 @@ void setup() {
   obstacles.add(new Sphere(new Vector(-4,5,0), color(125, 125, 12), 1.25));
   
   points = samplePoints();
-  points.add(start);
-  points.add(end);
+  //points.add(start);
+  //points.add(end);
+  for (Agent a : agents) {
+    points.add(a.origin);
+    points.add(a.goal);
+  }
   buildGraph();
   
-  ucs(start, end);
+  //ucs(start, end);
+  for (Agent a : agents) {
+    println("ucs",ucs(a.origin, a.goal));
+    //a.createPath(ucs(a.origin, a.goal));
+    a.createPath();
+  }
   
-  agent.createPath(end);
+  //for (Agent a : agents) println(a.path);
+  
+  //agent.createPath(end);
+  //for (Agent a : agents) a.createPath(end);
+  //for (Agent a : agents) a.createPath();
   
   size(600,600,P3D);
   background(255);
@@ -44,18 +67,18 @@ void draw() {
   cam.Update( 1.0/frameRate );
   
   drawBoard();
-  
-  agent.update();
-  agent.drawAgent();
-  
-  //drawGraph();
-  
+  //agent.update();
+  //agent.drawAgent();
+  for (Agent a : agents) {
+    a.update();
+    a.drawAgent();
+  }
+  drawGraph();
+  println("graph");
   // draw mouse - debugging
   Vector mouse = new Vector(mouseX, mouseY, 0);
-  //if (mouse.x < 20) mouse.x = 20;
   if (mouse.x > 500) mouse.x = 500;
   
-  //if (mouse.y < 20) mouse.y = 20;
   else if (mouse.y > 500) mouse.y = 500;
   
   float boardX = -(board_size/2.0) + board_size * (mouse.x/(500.0));
@@ -83,7 +106,7 @@ void drawBoard() {
   // draw start/goal
   pushStyle();
   noStroke();
-  
+  /*
   //start
   pushMatrix();
   fill(90,220,90);
@@ -97,11 +120,27 @@ void drawBoard() {
   translate(end_pos.x,end_pos.y,end_pos.z);
   sphere(0.3);
   popMatrix();
-  
+  */
+  for (Agent a : agents) {
+    //start
+    pushMatrix();
+    fill(90,220,90);
+    translate(a.origin.pos.x,a.origin.pos.y,a.origin.pos.z);
+    sphere(0.3);
+    popMatrix();
+    
+    // goal
+    pushMatrix();
+    fill(220,90,90);
+    translate(a.goal.pos.x,a.goal.pos.y,a.goal.pos.z);
+    sphere(0.3);
+    popMatrix();
+  }
   popStyle();
   
   //obs.draw_obs();
   for (Obstacle o : obstacles) o.draw_obs();
+  
 }
 
 void drawGraph() {
@@ -118,14 +157,31 @@ void drawGraph() {
     
   }
   
-  // draw path
+  // draw paths
   stroke(58, 166, 63);
   strokeWeight(3);
-  Point mid = end;
+  /*Point mid = end;
   while (mid != start && mid.parent != null) {
     Point par = mid.parent;
     line(mid.pos.x, mid.pos.y, mid.pos.z, par.pos.x, par.pos.y, par.pos.z);
     mid = par;
+  }*/
+  
+  /*
+  for (Agent a : agents) {
+    Point mid = a.goal;
+    while (mid != a.origin && mid.parent != null) {
+      Point par = mid.parent;
+      line(mid.pos.x, mid.pos.y, mid.pos.z, par.pos.x, par.pos.y, par.pos.z);
+      mid = par;
+    }
+  }
+  */
+  
+  for (Agent a : agents) {
+    for (int i = 0; i < a.path.size() - 1; i++) {
+      line(a.path.get(i).x, a.path.get(i).y, a.path.get(i).z, a.path.get(i+1).x, a.path.get(i+1).y, a.path.get(i+1).z);
+    }
   }
 }
 
@@ -133,25 +189,19 @@ ArrayList<Point> samplePoints() {
   ArrayList<Point> points = new ArrayList<Point>();
   
   while(points.size() < num_points) {
-    //Point point = new Point(new Vector(random(-9.5,9.5), random(-9.5,9.5), 0));
     Point point = new Point(new Vector(random(-board_size/2, board_size/2), random(-board_size/2, board_size/2), 0));
     //if (!points.contains(point) && obs.check_point(point)) points.add(point);
     boolean valid = true;
     for (Obstacle o : obstacles) {
       //if (points.contains(point) || !o.check_point(point)) valid = false;
       if (!o.check_point(point)) {
-        //println("here we be");
         Vector v = point.pos.sub(o.pos).mult(2);
         v.normalize().mult(((Sphere)o).c_rad * 1.1);
-        //println(point.pos);
         v = o.pos.add(v);
-        //println(v);
         point.pos = v;
-        //println(point.pos);
         for (Obstacle check : obstacles) {
           if (!check.check_point(point)) valid = false;
         }
-        //println("here we be",valid);
       }
     }
     
@@ -204,6 +254,8 @@ Point bfs(Point root, Point goal) {
 
 // uniform cost search - returns null if no path is found
 Point ucs(Point root, Point goal) {
+  for (Point p : points) p.discovered = false;
+  println(root, goal);
   Point node = null;
   PriorityQueue<Point> frontier = new PriorityQueue<Point>();
   frontier.push(root, 0);
@@ -259,8 +311,8 @@ boolean goodPath(Vector start, Vector end) {
 void clear() {
   points = new ArrayList<Point>();
 }
-
-void changeGoal(Vector point) {
+/*
+void changeGoal(Vector point, Agent agent) {
   start_pos = agent.pos;
   end_pos = point;
   start = new Point(start_pos);
@@ -277,7 +329,12 @@ void changeGoal(Vector point) {
   
   agent.reset(end);
 }
+*/
 
+/*void updateGraph(Vector new_goal, Agent agent) {
+  points = samplePoints();
+  points.add(agent.
+}*/
 
 void keyPressed() {
   cam.HandleKeyPressed();
@@ -308,7 +365,8 @@ void mouseClicked() {
   
   Sphere s = new Sphere(board, color(random(255), random(255), random(255)), 1);
   obstacles.add(s);
-  changeGoal(end.pos);
+  //changeGoal(end.pos);
+ // changeGoal(end.pos, agents.get(0));
 }
 
 void mousePressed() {
@@ -334,5 +392,6 @@ void mouseReleased() {
   
   Sphere s = new Sphere(new_obs_pos, color(random(255), random(255), random(255)), new_obs_pos.sub(rad_pos).mag());
   obstacles.add(s);
-  changeGoal(end.pos);
+  //changeGoal(end.pos);
+ // changeGoal(end.pos, agents.get(0));
 }

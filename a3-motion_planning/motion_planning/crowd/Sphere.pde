@@ -6,7 +6,8 @@ public class Sphere extends Obstacle {
   public Sphere(Vector p, color c, float r) {
     super(p, c);
     rad = r;
-    c_rad = rad + agent.rad;
+    //c_rad = rad + agent.rad;
+    c_rad = rad + a_rad;
   }
   
   public void draw_obs() {

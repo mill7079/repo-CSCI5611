@@ -8,11 +8,19 @@ public class Agent {
   protected int nextPoint = 1;
   protected float pointRad = 0.000000000000001, dt = 0.08;
   protected Vector curPath = new Vector(0,0,0);
+  
+  protected Point goal;
+  protected Point origin;
  
-  public Agent(float r, color c) {
+  public Agent(float r, color c, Point o, Point g) {
     rad = r;
     col = c;
-    pos = start_pos;
+    //pos = start_pos;
+    
+    origin = o;
+    goal = g;
+    
+    pos = origin.pos;
   }
   
   public void drawAgent() {
@@ -26,6 +34,7 @@ public class Agent {
     popMatrix();
   }
   
+  /*
   // create path for agent to follow starting from end of path
   // (backtrace of parent nodes set with BFS)
   public void createPath(Point end) {
@@ -39,6 +48,26 @@ public class Agent {
         endPos = e.pos;
       } catch (Exception x) {
         println(x);
+        return;
+      }
+    }
+    path.add(0,endPos);
+    
+    curPath = path.get(1).sub(path.get(0));
+  }
+  */
+  
+  public void createPath() {
+    if (origin.equals(goal)) return;
+    Point e = goal;
+    Vector endPos = goal.pos;
+    while (endPos != origin.pos) {
+      path.add(0, endPos);
+      e = e.parent;
+      try {
+        endPos = e.pos;
+      } catch (Exception x) {
+        println("error in create path for agent with end",goal.pos,":",x);
         return;
       }
     }
@@ -78,7 +107,8 @@ public class Agent {
     nextPoint = 1;
     path = new ArrayList<Vector>();
     
-    createPath(end);
+    //createPath(end);
+    createPath();
   }
   
 }
