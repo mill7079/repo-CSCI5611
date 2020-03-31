@@ -6,7 +6,8 @@ public class Agent {
   protected ArrayList<Vector> path = new ArrayList<Vector>();
   
   protected int nextPoint = 1;
-  protected float pointRad = 0.000000000000001, dt = 0.08;
+  //protected float pointRad = 0.000000000000001;
+  protected float dt = 0.08;
   protected Vector curPath = new Vector(0,0,0);
   
   protected Point goal;
@@ -79,10 +80,12 @@ public class Agent {
   public void update() {
     if (nextPoint >= path.size()) return;
     
-    Sphere goalPoint = new Sphere(path.get(nextPoint), color(0), pointRad);
+    //Sphere goalPoint = new Sphere(path.get(nextPoint), color(0), pointRad);
     //if (!goalPoint.check_point(new Point(pos))) { // agent ready to switch path parts
-    if (!goalPoint.check_point(new Point(pos)) && goalPoint.pos.sub(pos).mag() < curPath.normalize().mult(dt).mag()) { // agent ready to switch path parts
-      pos = goalPoint.pos;
+    //if (!goalPoint.check_point(new Point(pos)) && goalPoint.pos.sub(pos).mag() < curPath.normalize().mult(dt).mag()) { // agent ready to switch path parts
+    if (path.get(nextPoint).sub(pos).mag() < curPath.normalize().mult(dt).mag()) { // agent ready to switch path parts
+      //pos = goalPoint.pos;
+      pos = path.get(nextPoint);
       nextPoint++;
       if (nextPoint >= path.size()) return;
       curPath = path.get(nextPoint).sub(path.get(nextPoint - 1));
