@@ -106,12 +106,9 @@ public class Agent {
     }
   }
   
-  public void reset(Point end) {
+  public void reset() {
     nextPoint = 1;
     path = new ArrayList<Vector>();
-    
-    //createPath(end);
-    createPath();
   }
   
 }

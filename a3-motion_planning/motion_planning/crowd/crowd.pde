@@ -74,7 +74,7 @@ void draw() {
     a.drawAgent();
   }
   drawGraph();
-  println("graph");
+  
   // draw mouse - debugging
   Vector mouse = new Vector(mouseX, mouseY, 0);
   if (mouse.x > 500) mouse.x = 500;
@@ -106,21 +106,6 @@ void drawBoard() {
   // draw start/goal
   pushStyle();
   noStroke();
-  /*
-  //start
-  pushMatrix();
-  fill(90,220,90);
-  translate(start_pos.x,start_pos.y,start_pos.z);
-  sphere(0.3);
-  popMatrix();
-  
-  // goal
-  pushMatrix();
-  fill(220,90,90);
-  translate(end_pos.x,end_pos.y,end_pos.z);
-  sphere(0.3);
-  popMatrix();
-  */
   for (Agent a : agents) {
     //start
     pushMatrix();
@@ -160,23 +145,6 @@ void drawGraph() {
   // draw paths
   stroke(58, 166, 63);
   strokeWeight(3);
-  /*Point mid = end;
-  while (mid != start && mid.parent != null) {
-    Point par = mid.parent;
-    line(mid.pos.x, mid.pos.y, mid.pos.z, par.pos.x, par.pos.y, par.pos.z);
-    mid = par;
-  }*/
-  
-  /*
-  for (Agent a : agents) {
-    Point mid = a.goal;
-    while (mid != a.origin && mid.parent != null) {
-      Point par = mid.parent;
-      line(mid.pos.x, mid.pos.y, mid.pos.z, par.pos.x, par.pos.y, par.pos.z);
-      mid = par;
-    }
-  }
-  */
   
   for (Agent a : agents) {
     for (int i = 0; i < a.path.size() - 1; i++) {
@@ -331,10 +299,23 @@ void changeGoal(Vector point, Agent agent) {
 }
 */
 
-/*void updateGraph(Vector new_goal, Agent agent) {
+void updateGraph(Vector new_goal, Agent agent) {
   points = samplePoints();
-  points.add(agent.
-}*/
+  agent.goal = new Point(new_goal);
+  for (Agent a : agents) {
+    a.origin = new Point(a.pos);
+    points.add(a.origin);
+    points.add(a.goal);
+  }
+  
+  buildGraph();
+  
+  for (Agent a : agents) {
+    a.reset();
+    ucs(a.origin, a.goal);
+    a.createPath();
+  }
+}
 
 void keyPressed() {
   cam.HandleKeyPressed();
@@ -367,6 +348,7 @@ void mouseClicked() {
   obstacles.add(s);
   //changeGoal(end.pos);
  // changeGoal(end.pos, agents.get(0));
+  updateGraph(end_pos, agents.get(0));
 }
 
 void mousePressed() {
@@ -394,4 +376,5 @@ void mouseReleased() {
   obstacles.add(s);
   //changeGoal(end.pos);
  // changeGoal(end.pos, agents.get(0));
+  updateGraph(end_pos, agents.get(0));
 }
