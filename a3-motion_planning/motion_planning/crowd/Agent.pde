@@ -6,10 +6,9 @@ public class Agent {
   protected ArrayList<Vector> path = new ArrayList<Vector>();
   
   protected int nextPoint = 1;
-  //protected float pointRad = 0.000000000000001;
   protected float dt = 0.058;
   protected Vector curPath = new Vector(0,0,0);
-  protected float sep_force = 3.2, obs_sep_force = 1.1;
+  protected float sep_force = 4, obs_sep_force = 1.1;
   
   protected Point goal;
   protected Point origin;
@@ -160,16 +159,16 @@ public class Agent {
         break;
       }
     }
-    
+    /*
     if (pos.closeTo(old_pos)) {
       stuck++;
       //println("stuck");
     }
     else stuck = 0;
-    if (stuck >= 20) {
+    if (stuck >= 10) {
       stuck = 0;
-      updateGraph(goal.pos, this);
-    }
+      updateGraph(this.goal.pos, this);
+    }*/
     //println(stuck);
   }
   

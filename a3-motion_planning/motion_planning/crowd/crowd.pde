@@ -10,7 +10,7 @@ ArrayList<Agent> agents;
 ArrayList<Point> points;
 ArrayList<Obstacle> obstacles;
 
-int num_points = 100;
+int num_points = 500;
 int board_size = 20;
 float n_rad = board_size/3.0;
 float a_rad = 0.5;
@@ -22,19 +22,31 @@ int new_obs_rad = 0;
 Vector sep, align, coh;
 float b_rad = 1;
 
+boolean draw = false;
+
 void setup() {
+  noLoop();
   cam = new Camera();
   cam.position = new PVector( 0, 0, 30 );
   
   agents = new ArrayList<Agent>();
-  agents.add(new Agent(a_rad, color(168, 212, 122), new Point(start_pos), new Point(end_pos)));
-  agents.add(new Agent(a_rad, color(50,50,229), new Point(new Vector(-9,-9,0)), new Point(new Vector(9,9,0))));
-  //agent = new Agent(0.5, color(168, 212, 122));
+  /*SCENARIO 1 AGENTS*/
+  //agents.add(new Agent(a_rad, color(168, 212, 122), new Point(start_pos), new Point(end_pos)));
+  //agents.add(new Agent(a_rad, color(50,50,229), new Point(new Vector(-9,-9,0)), new Point(new Vector(9,9,0))));
+  /*SCENARIO 2 AGENTS*/
+  agents.add(new Agent(a_rad, color(255,0,0), new Point(new Vector(-1, -9.5, 0)), new Point(new Vector(-1, 9., 0)))); // top of board
+  agents.add(new Agent(a_rad, color(200,75,0), new Point(new Vector(1, -9.5, 0)), new Point(new Vector(1, 9.5, 0))));
+  agents.add(new Agent(a_rad, color(125,125,0), new Point(new Vector(9.5, -1, 0)), new Point(new Vector(-9.5, -1, 0)))); // right of board
+  agents.add(new Agent(a_rad, color(200,75,0), new Point(new Vector(9.5, 1, 0)), new Point(new Vector(-9.5, 1, 0))));
+  agents.add(new Agent(a_rad, color(255,0,0), new Point(new Vector(-1, 9.5, 0)), new Point(new Vector(-1, -9.5, 0)))); // bottom of board
+  agents.add(new Agent(a_rad, color(200,75,0), new Point(new Vector(1, 9.5, 0)), new Point(new Vector(1, -9.5, 0))));
+  agents.add(new Agent(a_rad, color(125,125,0), new Point(new Vector(-9.5, -1, 0)), new Point(new Vector(9.5, -1, 0)))); // left of board
+  agents.add(new Agent(a_rad, color(200,75,0), new Point(new Vector(-9.5, 1, 0)), new Point(new Vector(9.5, 1, 0))));
   
   obstacles = new ArrayList<Obstacle>();
-  obstacles.add(new Sphere(new Vector(0,0,0), color(50,100,255), 2));
-  obstacles.add(new Sphere(new Vector(2,2,0), color(255,100,50), 1));
-  obstacles.add(new Sphere(new Vector(-4,5,0), color(125, 125, 12), 1.25));
+  //obstacles.add(new Sphere(new Vector(0,0,0), color(50,100,255), 2));
+  //obstacles.add(new Sphere(new Vector(2,2,0), color(255,100,50), 1));
+  //obstacles.add(new Sphere(new Vector(-4,5,0), color(125, 125, 12), 1.25));
   
   points = samplePoints();
   //points.add(start);
@@ -73,7 +85,7 @@ void draw() {
     a.update();
     a.drawAgent();
   }
-  drawGraph();
+  //drawGraph();
   
   // draw mouse - debugging
   Vector mouse = new Vector(mouseX, mouseY, 0);
@@ -102,7 +114,7 @@ void drawBoard() {
   box(board_size,board_size,0.00001);
   popStyle();
   popMatrix();
-  
+  /*
   // draw start/goal
   pushStyle();
   noStroke();
@@ -122,7 +134,7 @@ void drawBoard() {
     popMatrix();
   }
   popStyle();
-  
+  */
   //obs.draw_obs();
   for (Obstacle o : obstacles) o.draw_obs();
   
@@ -328,6 +340,11 @@ void keyPressed() {
   } else if (key == 'l' || key == 'L') {
     user.vel = new Vector(1,0,0);
   }*/
+  if (key == ' ') {
+    draw = !draw;
+    if (draw) loop();
+    else noLoop();
+  }
 }
 void keyReleased() {
   cam.HandleKeyReleased();
@@ -348,7 +365,8 @@ void mouseClicked() {
   obstacles.add(s);
   //changeGoal(end.pos);
  // changeGoal(end.pos, agents.get(0));
-  updateGraph(end_pos, agents.get(0));
+  updateGraph(agents.get(0).goal.pos, agents.get(0));
+  redraw();
 }
 
 void mousePressed() {
@@ -376,5 +394,6 @@ void mouseReleased() {
   obstacles.add(s);
   //changeGoal(end.pos);
  // changeGoal(end.pos, agents.get(0));
-  updateGraph(end_pos, agents.get(0));
+  updateGraph(agents.get(0).goal.pos, agents.get(0));
+  redraw();
 }
