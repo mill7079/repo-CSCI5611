@@ -6,6 +6,8 @@ Vector start_pos = new Vector(-9, 9, 0);
 Vector end_pos = new Vector(9, -9, 0);
 //Point end = new Point(end_pos);
 
+User user;
+
 ArrayList<Agent> agents;
 ArrayList<Point> points;
 ArrayList<Obstacle> obstacles;
@@ -29,19 +31,23 @@ void setup() {
   cam = new Camera();
   cam.position = new PVector( 0, 0, 30 );
   
+  user = new User(new Vector(0,0,0), a_rad);
+  
   agents = new ArrayList<Agent>();
   /*SCENARIO 1 AGENTS*/
-  //agents.add(new Agent(a_rad, color(168, 212, 122), new Point(start_pos), new Point(end_pos)));
-  //agents.add(new Agent(a_rad, color(50,50,229), new Point(new Vector(-9,-9,0)), new Point(new Vector(9,9,0))));
+  agents.add(new Agent(a_rad, color(168, 212, 122), new Point(start_pos), new Point(end_pos)));
+  agents.add(new Agent(a_rad, color(50,50,229), new Point(new Vector(-9,-9,0)), new Point(new Vector(9,9,0))));
   /*SCENARIO 2 AGENTS*/
-  agents.add(new Agent(a_rad, color(255,0,0), new Point(new Vector(-1, -9.5, 0)), new Point(new Vector(-1, 9., 0)))); // top of board
-  agents.add(new Agent(a_rad, color(200,75,0), new Point(new Vector(1, -9.5, 0)), new Point(new Vector(1, 9.5, 0))));
-  agents.add(new Agent(a_rad, color(125,125,0), new Point(new Vector(9.5, -1, 0)), new Point(new Vector(-9.5, -1, 0)))); // right of board
-  agents.add(new Agent(a_rad, color(200,75,0), new Point(new Vector(9.5, 1, 0)), new Point(new Vector(-9.5, 1, 0))));
-  agents.add(new Agent(a_rad, color(255,0,0), new Point(new Vector(-1, 9.5, 0)), new Point(new Vector(-1, -9.5, 0)))); // bottom of board
-  agents.add(new Agent(a_rad, color(200,75,0), new Point(new Vector(1, 9.5, 0)), new Point(new Vector(1, -9.5, 0))));
-  agents.add(new Agent(a_rad, color(125,125,0), new Point(new Vector(-9.5, -1, 0)), new Point(new Vector(9.5, -1, 0)))); // left of board
-  agents.add(new Agent(a_rad, color(200,75,0), new Point(new Vector(-9.5, 1, 0)), new Point(new Vector(9.5, 1, 0))));
+  //agents.add(new Agent(a_rad, color(255,0,0), new Point(new Vector(-1, -9.5, 0)), new Point(new Vector(-1, 9., 0)))); // top of board
+  //agents.add(new Agent(a_rad, color(200,75,0), new Point(new Vector(1, -9.5, 0)), new Point(new Vector(1, 9.5, 0))));
+  //agents.add(new Agent(a_rad, color(125,125,0), new Point(new Vector(9.5, -1, 0)), new Point(new Vector(-9.5, -1, 0)))); // right of board
+  //agents.add(new Agent(a_rad, color(200,75,0), new Point(new Vector(9.5, 1, 0)), new Point(new Vector(-9.5, 1, 0))));
+  //agents.add(new Agent(a_rad, color(255,0,0), new Point(new Vector(-1, 9.5, 0)), new Point(new Vector(-1, -9.5, 0)))); // bottom of board
+  //agents.add(new Agent(a_rad, color(200,75,0), new Point(new Vector(1, 9.5, 0)), new Point(new Vector(1, -9.5, 0))));
+  //agents.add(new Agent(a_rad, color(125,125,0), new Point(new Vector(-9.5, -1, 0)), new Point(new Vector(9.5, -1, 0)))); // left of board
+  //agents.add(new Agent(a_rad, color(200,75,0), new Point(new Vector(-9.5, 1, 0)), new Point(new Vector(9.5, 1, 0))));
+  //SCENARIO 3 AGENTS*/
+  agents.add(user);
   
   obstacles = new ArrayList<Obstacle>();
   //obstacles.add(new Sphere(new Vector(0,0,0), color(50,100,255), 2));
@@ -52,6 +58,7 @@ void setup() {
   //points.add(start);
   //points.add(end);
   for (Agent a : agents) {
+    if (a == user) continue;
     points.add(a.origin);
     points.add(a.goal);
   }
@@ -59,6 +66,7 @@ void setup() {
   
   //ucs(start, end);
   for (Agent a : agents) {
+    if (a == user) continue;
     println("ucs",ucs(a.origin, a.goal));
     //a.createPath(ucs(a.origin, a.goal));
     a.createPath();
@@ -331,19 +339,25 @@ void updateGraph(Vector new_goal, Agent agent) {
 
 void keyPressed() {
   cam.HandleKeyPressed();
-  /*if (key == 'i' || key == 'I') {
-    user.vel = new Vector(0,-1,0);
-  } else if (key == 'k' || key == 'K') {
-    user.vel = new Vector(0,1,0);
-  } else if (key == 'j' || key == 'J') {
-    user.vel = new Vector(-1,0,0);
-  } else if (key == 'l' || key == 'L') {
-    user.vel = new Vector(1,0,0);
-  }*/
   if (key == ' ') {
     draw = !draw;
     if (draw) loop();
     else noLoop();
+  }
+  
+  if (user == null);
+  if (key == 'i' || key == 'I') {
+    //user.vel = new Vector(0,-1,0);
+    user.vel = user.vel.add(new Vector(0,-1,0));
+  } else if (key == 'k' || key == 'K') {
+    //user.vel = new Vector(0,1,0);
+    user.vel = user.vel.add(new Vector(0,1,0));
+  } else if (key == 'j' || key == 'J') {
+    //user.vel = new Vector(-1,0,0);
+    user.vel = user.vel.add(new Vector(-1,0,0));
+  } else if (key == 'l' || key == 'L') {
+    //user.vel = new Vector(1,0,0);
+    user.vel = user.vel.add(new Vector(1,0,0));
   }
 }
 void keyReleased() {

@@ -166,9 +166,9 @@ public class Agent {
       
       for (Agent a : agents) {
         if (this == a) continue;
-        if (rad + a.rad + 0.01 >= a.pos.sub(pos).mag()) {
+        if (rad + a.rad + 0.05 >= a.pos.sub(pos).mag()) {
           Vector normal = a.pos.sub(pos).mult(-1).normalize();
-          pos = pos.add(normal.mult(0.01 + (a.rad + rad) - (a.pos.sub(pos).mag())));
+          pos = pos.add(normal.mult(0.05 + (a.rad + rad) - (a.pos.sub(pos).mag())));
         }
       }
       
@@ -179,7 +179,7 @@ public class Agent {
     }
     /*
     if (pos.closeTo(old_pos)) {
-      stuck++;
+      //stuck++;
       //println("stuck");
     }
     else stuck = 0;
