@@ -10,7 +10,7 @@ ArrayList<Agent> agents;
 ArrayList<Point> points;
 ArrayList<Obstacle> obstacles;
 
-int num_points = 50;
+int num_points = 100;
 int board_size = 20;
 float n_rad = board_size/3.0;
 float a_rad = 0.5;
@@ -28,7 +28,7 @@ void setup() {
   
   agents = new ArrayList<Agent>();
   agents.add(new Agent(a_rad, color(168, 212, 122), new Point(start_pos), new Point(end_pos)));
-  agents.add(new Agent(a_rad, color(129,0,129), new Point(new Vector(-9,-9,0)), new Point(new Vector(9,9,0))));
+  agents.add(new Agent(a_rad, color(50,50,229), new Point(new Vector(-9,-9,0)), new Point(new Vector(9,9,0))));
   //agent = new Agent(0.5, color(168, 212, 122));
   
   obstacles = new ArrayList<Obstacle>();

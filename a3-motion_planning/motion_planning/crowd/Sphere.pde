@@ -26,4 +26,9 @@ public class Sphere extends Obstacle {
     else return true;
   }
   
+  public boolean check_point(Vector p) {
+    if (pos.sub(p).mag() <= c_rad) return false;
+    else return true;
+  }
+  
 }

@@ -43,4 +43,8 @@ public class Vector{
   String toString() {
     return "x: " + x + " y: " + y + " z: " + z;
   }
+  
+  boolean closeTo(Vector other) {
+    return (abs(x-other.x) <= 0.04) && (abs(y-other.y) <= 0.04) && (abs(z-other.z) <= 0.04);
+  }
 }
