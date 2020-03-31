@@ -12,7 +12,7 @@ ArrayList<Agent> agents;
 ArrayList<Point> points;
 ArrayList<Obstacle> obstacles;
 
-int num_points = 500;
+int num_points = 600;
 int board_size = 20;
 float n_rad = board_size/3.0;
 float a_rad = 0.5;
@@ -35,8 +35,8 @@ void setup() {
   
   agents = new ArrayList<Agent>();
   /*SCENARIO 1 AGENTS*/
-  agents.add(new Agent(a_rad, color(168, 212, 122), new Point(start_pos), new Point(end_pos)));
-  agents.add(new Agent(a_rad, color(50,50,229), new Point(new Vector(-9,-9,0)), new Point(new Vector(9,9,0))));
+  //agents.add(new Agent(a_rad, color(168, 212, 122), new Point(start_pos), new Point(end_pos)));
+  //agents.add(new Agent(a_rad, color(50,50,229), new Point(new Vector(-9,-9,0)), new Point(new Vector(9,9,0))));
   /*SCENARIO 2 AGENTS*/
   //agents.add(new Agent(a_rad, color(255,0,0), new Point(new Vector(-1, -9.5, 0)), new Point(new Vector(-1, 9., 0)))); // top of board
   //agents.add(new Agent(a_rad, color(200,75,0), new Point(new Vector(1, -9.5, 0)), new Point(new Vector(1, 9.5, 0))));
@@ -47,6 +47,17 @@ void setup() {
   //agents.add(new Agent(a_rad, color(125,125,0), new Point(new Vector(-9.5, -1, 0)), new Point(new Vector(9.5, -1, 0)))); // left of board
   //agents.add(new Agent(a_rad, color(200,75,0), new Point(new Vector(-9.5, 1, 0)), new Point(new Vector(9.5, 1, 0))));
   //SCENARIO 3 AGENTS*/
+  agents.add(new Agent(a_rad, color(random(255),random(255),random(255)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0))));
+  agents.add(new Agent(a_rad, color(random(255),random(255),random(255)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0))));
+  agents.add(new Agent(a_rad, color(random(255),random(255),random(255)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0))));
+  agents.add(new Agent(a_rad, color(random(255),random(255),random(255)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0))));
+  agents.add(new Agent(a_rad, color(random(255),random(255),random(255)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0))));
+  agents.add(new Agent(a_rad, color(random(255),random(255),random(255)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0))));
+  agents.add(new Agent(a_rad, color(random(255),random(255),random(255)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0))));
+  agents.add(new Agent(a_rad, color(random(255),random(255),random(255)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0))));
+  agents.add(new Agent(a_rad, color(random(255),random(255),random(255)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0))));
+  agents.add(new Agent(a_rad, color(random(255),random(255),random(255)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0))));
+
   agents.add(user);
   
   obstacles = new ArrayList<Obstacle>();
