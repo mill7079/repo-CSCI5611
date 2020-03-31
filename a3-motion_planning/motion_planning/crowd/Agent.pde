@@ -147,11 +147,20 @@ public class Agent {
     if (count > 0) pos = pos.add(push.div(count).mult(dt));
     
     for (int i = path.size() - 1; i >= 0; i--) {
+      /*
       for (Obstacle o : obstacles) {
         Sphere s = (Sphere) o;
         if (!s.check_point(pos)) {
           println("yikes case");
           pos = pos.add(s.pos.mult(s.c_rad - (s.pos.sub(pos).mag())));
+        }
+      }
+      */
+      for (Obstacle o : obstacles) {
+        Sphere s = (Sphere) o;
+        if (rad + s.rad + 0.1 >= s.pos.sub(pos).mag()) {
+          Vector normal = s.pos.sub(pos).mult(-1).normalize();
+          pos = pos.add(normal.mult(0.1 + (s.rad + rad) - (s.pos.sub(pos).mag())));
         }
       }
       if (goodPath(pos, path.get(i))) {
