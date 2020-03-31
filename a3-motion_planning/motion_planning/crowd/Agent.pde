@@ -163,6 +163,15 @@ public class Agent {
           pos = pos.add(normal.mult(0.1 + (s.rad + rad) - (s.pos.sub(pos).mag())));
         }
       }
+      
+      for (Agent a : agents) {
+        if (this == a) continue;
+        if (rad + a.rad + 0.01 >= a.pos.sub(pos).mag()) {
+          Vector normal = a.pos.sub(pos).mult(-1).normalize();
+          pos = pos.add(normal.mult(0.01 + (a.rad + rad) - (a.pos.sub(pos).mag())));
+        }
+      }
+      
       if (goodPath(pos, path.get(i))) {
         pos = pos.add(path.get(i).sub(pos).normalize().mult(dt));
         break;
