@@ -1,5 +1,7 @@
 public class Agent {
   
+  private float health;
+  
   protected float rad;
   protected color col;
   protected Vector pos;
@@ -20,6 +22,8 @@ public class Agent {
     goal = g;
     
     pos = origin.pos;
+    
+    health = 100;
   }
   
   public void drawAgent() {
@@ -64,7 +68,7 @@ public class Agent {
       try {
         endPos = e.pos;
       } catch (Exception x) {
-        println("error in create path for agent with end",goal.pos,":",x);
+        //println("error in create path for agent with end",goal.pos,":",x);
         return;
       }
     }
@@ -170,6 +174,15 @@ public class Agent {
     if (rad + sep_rad > s.pos.sub(pos).mag()) {
       return ((rad+sep_rad) - s.pos.sub(pos).mag())/2.0;
     } else return -1;
+  }
+  
+  public void damage() {
+    health -= 10;
+    println("ouch!");
+  }
+  
+  public boolean isDead() {
+    return health <= 0;
   }
   
 }

@@ -1,6 +1,6 @@
 public class User extends Agent {
   
-  private Vector stats; // health, attack, defense
+  Vector stats; // health, attack, defense
   private int level = 1;
   private int exp = 0;
   Vector vel;
@@ -25,6 +25,19 @@ public class User extends Agent {
   public void update() {
     handleCollisions();
     pos = pos.add(vel.mult(dt));
+    
+    for (Ammo s : shots) {
+      s.update();
+      Agent hit = s.checkHit();
+      if (hit != null) {
+        for (Agent a : agents) {
+          if (a == hit) hit.damage();
+        }
+      }
+    }
+    for (int i = shots.size()-1; i >= 0; i--) {
+      if (shots.get(i).isDead()) shots.remove(i);
+    }
   }
   
   public boolean handleCollisions() {
@@ -54,6 +67,12 @@ public class User extends Agent {
     sphere(rad/3.0);
     popStyle();
     popMatrix();
+    
+    for (Ammo s : shots) s.drawAmmo();
+  }
+  
+  public void fire() {
+    shots.add(new Ammo(pos, vel));
   }
   
 }

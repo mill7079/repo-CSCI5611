@@ -12,6 +12,7 @@ Vector end_pos = new Vector(9, -9, 0);
 ArrayList<Point> points;
 ArrayList<Obstacle> obstacles;
 ArrayList<Agent> agents;
+ArrayList<Ammo> shots;
 
 int num_points = 500;
 int board_size = 20;
@@ -56,11 +57,12 @@ void setup() {
   //ucs(start, end);
   for (Agent a : agents) {
     if (a == user) continue;
-    println("ucs",ucs(a.origin, a.goal));
+    ucs(a.origin, a.goal);
     //a.createPath(ucs(a.origin, a.goal));
     a.createPath();
   }
   
+  shots = new ArrayList<Ammo>();
   size(600,600,P3D);
   background(255);
 }
@@ -73,6 +75,9 @@ void draw() {
   
   //agent.update();
   //agent.drawAgent();
+  for (int i = agents.size()-1; i >= 0; i--) {
+    if (agents.get(i).isDead()) agents.remove(i);
+  }
   for (Agent a : agents) {
     a.update();
     a.drawAgent();
@@ -348,6 +353,8 @@ void keyPressed() {
   } else if (key == 'l' || key == 'L') {
     //user.vel = new Vector(1,0,0);
     user.vel = user.vel.add(new Vector(1,0,0));
+  } else if (key == 'f' || key == 'F') {
+    user.fire();
   }
 }
 void keyReleased() {
