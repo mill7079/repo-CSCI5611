@@ -13,6 +13,7 @@ ArrayList<Point> points;
 ArrayList<Obstacle> obstacles;
 ArrayList<Agent> agents;
 ArrayList<Ammo> shots;
+//ArrayList<Ammo> enemyShots;
 
 int num_points = 500;
 int board_size = 20;
@@ -63,6 +64,7 @@ void setup() {
   }
   
   shots = new ArrayList<Ammo>();
+  //enemyShots = new ArrayList<Ammo>();
   size(600,600,P3D);
   background(255);
 }

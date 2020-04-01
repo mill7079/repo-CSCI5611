@@ -155,6 +155,8 @@ public class Agent {
         break;
       }
     }
+    
+    if (frameCount % 60 == 0) fire();
   }
   
   public void reset() {
@@ -185,6 +187,10 @@ public class Agent {
   
   public boolean isDead() {
     return health <= 0;
+  }
+  
+  public void fire() {
+    shots.add(new Ammo(pos, goal.pos.sub(pos)));
   }
   
 }

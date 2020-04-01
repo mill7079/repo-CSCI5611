@@ -31,7 +31,7 @@ public class Ammo {
     Vector v = pos.sub(prev_pos).normalize();
     
     for (Agent ag : agents) {
-      if (ag == user) continue;
+      //if (ag == user) continue;
       Vector w = ag.pos.sub(pos);
       
       float a = 1;
