@@ -15,7 +15,7 @@ ArrayList<Agent> agents;
 ArrayList<Ammo> shots;
 //ArrayList<Ammo> enemyShots;
 
-int num_points = 500;
+int num_points = 100;
 int board_size = 20;
 float n_rad = board_size/3.0;
 float a_rad = 0.5;//, crowd_a_rad = 0.3;
@@ -81,7 +81,7 @@ void draw() {
   //agent.drawAgent();
   for (int i = agents.size()-1; i >= 0; i--) {
     if (agents.get(i).isDead()) {
-      if (agents.get(i) == user) println("You reached level", game_level);
+      if (agents.get(i) == user) println("You reached game level", game_level, "at user level", user.level);
       else num_enemies--;
       
       agents.remove(i);

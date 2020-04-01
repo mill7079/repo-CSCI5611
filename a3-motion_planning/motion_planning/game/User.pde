@@ -13,12 +13,15 @@ public class User extends Agent {
   }
   
   public int levelUp() {
-    level++;
-    
-    stats.x += 10;
-    stats.y += 5;
-    stats.z += 3;
-    
+    if (exp >= level*10) {
+      level++;
+      
+      stats.x += 10;
+      stats.y += 5;
+      stats.z += 3;
+      
+      exp = 0;
+    }
     return level;
   }
   
@@ -36,7 +39,7 @@ public class User extends Agent {
       }
     }
     for (int i = shots.size()-1; i >= 0; i--) {
-      if (shots.get(i).isDead()) shots.remove(i);
+      if (shots.get(i).isDead() || !goodPath(shots.get(i).prev_pos, shots.get(i).pos)) shots.remove(i);
     }
   }
   
@@ -73,6 +76,10 @@ public class User extends Agent {
   
   public void fire() {
     shots.add(new Ammo(pos, vel));
+  }
+  
+  public void gainExp() {
+    exp += 10;
   }
   
 }

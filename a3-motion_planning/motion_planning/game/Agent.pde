@@ -180,13 +180,21 @@ public class Agent {
   }
   
   public void damage() {
-    health -= 10;
+    if (this == user) health -= 10;
+    else health -= 10 * (1+user.stats.y/10);
     col = color(200-(health*2), health*2, 0);
-    println("ouch!");
+    //println("ouch!");
   }
   
   public boolean isDead() {
-    return health <= 0;
+    if (health <= 0) {
+      if (this != user) {
+        user.gainExp();
+        user.levelUp();
+      }
+      return true;
+    }
+    return false;
   }
   
   public void fire() {

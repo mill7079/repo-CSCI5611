@@ -1,5 +1,6 @@
 public class Ammo {
   
+  Vector prev_pos;
   Vector pos;
   Vector dir;
   float dt = 0.08;
@@ -7,10 +8,12 @@ public class Ammo {
   public Ammo(Vector pos, Vector dir) {
     this.dir = dir;
     this.pos = pos;
+    prev_pos = pos;
     frame = frameCount;
   }
   
   void update() {
+    prev_pos = pos;
     pos = pos.add(dir.normalize().mult(10*dt));
   }
   
@@ -27,7 +30,7 @@ public class Ammo {
   }
   
   Agent checkHit() {
-    Vector prev_pos = pos.sub(dir.normalize().mult(10*dt));
+    //Vector prev_pos = pos.sub(dir.normalize().mult(10*dt));
     Vector v = pos.sub(prev_pos).normalize();
     
     for (Agent ag : agents) {
