@@ -17,6 +17,7 @@ public class Agent {
   public Agent(float r, color c, Point o, Point g) {
     rad = r;
     col = c;
+    col = color(0,200,0);
     
     origin = o;
     goal = g;
@@ -178,6 +179,7 @@ public class Agent {
   
   public void damage() {
     health -= 10;
+    col = color(200-(health*2), health*2, 0);
     println("ouch!");
   }
   
