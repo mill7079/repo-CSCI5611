@@ -146,16 +146,8 @@ public class Agent {
     
     if (count > 0) pos = pos.add(push.div(count).mult(dt));
     
+    // avoid overlapping obstacles and other agents
     for (int i = path.size() - 1; i >= 0; i--) {
-      /*
-      for (Obstacle o : obstacles) {
-        Sphere s = (Sphere) o;
-        if (!s.check_point(pos)) {
-          println("yikes case");
-          pos = pos.add(s.pos.mult(s.c_rad - (s.pos.sub(pos).mag())));
-        }
-      }
-      */
       for (Obstacle o : obstacles) {
         Sphere s = (Sphere) o;
         if (rad + s.rad + 0.1 >= s.pos.sub(pos).mag()) {
@@ -187,7 +179,6 @@ public class Agent {
       stuck = 0;
       updateGraph(this.goal.pos, this);
     }*/
-    //println(stuck);
   }
   
   public void reset() {
