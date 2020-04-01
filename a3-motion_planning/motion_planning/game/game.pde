@@ -24,6 +24,8 @@ Vector new_obs_pos;
 int new_obs_rad = 0;
 
 boolean draw = false;
+float num_enemies = 1;
+int game_level = 1;
 
 void setup() {
   noLoop();
@@ -78,7 +80,12 @@ void draw() {
   //agent.update();
   //agent.drawAgent();
   for (int i = agents.size()-1; i >= 0; i--) {
-    if (agents.get(i).isDead()) agents.remove(i);
+    if (agents.get(i).isDead()) {
+      if (agents.get(i) == user) println("You reached level", game_level);
+      else num_enemies--;
+      
+      agents.remove(i);
+    }
   }
   for (Agent a : agents) {
     a.update();
@@ -105,6 +112,28 @@ void draw() {
   //user.drawUser();
   
   if (frameCount % 10 == 0) changeGoal(user.pos);
+  
+  if (num_enemies == 0) {
+    game_level++;
+    num_enemies = game_level;
+    for (int i = 0; i < num_enemies; i++) {
+      boolean valid = false;
+      Vector start = new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0);
+      while(!valid) {
+        valid = true;
+        for (Obstacle o : obstacles) {
+          if (!o.check_point(start)) valid = false;
+        }
+        if (!valid) start = new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0);
+      }
+      
+      //Vector end = new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0);
+
+      agents.add(new Agent(0.5, color(168, 212, 122), new Point(start), new Point(user.pos)));
+    }
+    
+    changeGoal(user.pos);
+  }
 }
 
 void drawBoard() {
