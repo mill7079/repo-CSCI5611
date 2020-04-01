@@ -12,17 +12,13 @@ ArrayList<Agent> agents;
 ArrayList<Point> points;
 ArrayList<Obstacle> obstacles;
 
-int num_points = 600;
+int num_points = 500;
 int board_size = 20;
 float n_rad = board_size/3.0;
 float a_rad = 0.5, crowd_a_rad = 0.3;
 
 Vector new_obs_pos;
 int new_obs_rad = 0;
-
-// separation, alignment, cohesion
-Vector sep, align, coh;
-float b_rad = 1;
 
 boolean draw = false;
 

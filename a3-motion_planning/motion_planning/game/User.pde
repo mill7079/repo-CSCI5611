@@ -6,7 +6,7 @@ public class User extends Agent {
   Vector vel;
   
   public User(Vector pos, float r) {
-    super(r,color(0,start_health,0));
+    super(r,color(0,start_health,0), new Point(pos), new Point(new Vector(0,0,0)));
     this.pos = pos;
     stats = new Vector(start_health, start_atk, start_def);
     vel = new Vector(0,0,0);
@@ -40,7 +40,7 @@ public class User extends Agent {
     
   }
   
-  public void drawUser() {
+  public void drawAgent() {
     pushMatrix();
     pushStyle();
     translate(pos.x, pos.y, pos.z);

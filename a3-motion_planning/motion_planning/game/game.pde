@@ -1,46 +1,65 @@
 Camera cam;
-Agent agent;
-//Obstacle obs;
+//Agent agent;
 
 User user;
 int start_health = 100, start_atk = 10, start_def = 5;
 
 Vector start_pos = new Vector(-9, 9, 0);
-Point start = new Point(start_pos);
+//Point start = new Point(start_pos);
 Vector end_pos = new Vector(9, -9, 0);
-Point end = new Point(end_pos);
+//Point end = new Point(end_pos);
 
 ArrayList<Point> points;
 ArrayList<Obstacle> obstacles;
+ArrayList<Agent> agents;
 
 int num_points = 500;
 int board_size = 20;
 float n_rad = board_size/3.0;
+float a_rad = 0.5;//, crowd_a_rad = 0.3;
 
 Vector new_obs_pos;
 int new_obs_rad = 0;
 
+boolean draw = false;
+
 void setup() {
+  noLoop();
   cam = new Camera();
   cam.position = new PVector( 0, 0, 30 );
-  agent = new Agent(0.5, color(168, 212, 122));
-  user = new User(new Vector(-8,-8,0),0.5);
+  
+  //agent = new Agent(0.5, color(168, 212, 122));
+  //user = new User(new Vector(-8,-8,0), a_rad);
+  user = new User(new Vector(0,0,0), a_rad);
+  
+  agents = new ArrayList<Agent>();
+  agents.add(user);
+  agents.add(new Agent(0.5, color(168, 212, 122), new Point(start_pos), new Point(end_pos)));
   
   //obs = new Sphere(new Vector(0,0,0), color(50,100,255), 2);
   obstacles = new ArrayList<Obstacle>();
-  obstacles.add(new Sphere(new Vector(0,0,0), color(50,100,255), 2));
-  obstacles.add(new Sphere(new Vector(2,2,0), color(255,100,50), 1));
-  obstacles.add(new Sphere(new Vector(-4,5,0), color(125, 125, 12), 1.25));
+  //obstacles.add(new Sphere(new Vector(0,0,0), color(50,100,255), 2));
+  //obstacles.add(new Sphere(new Vector(2,2,0), color(255,100,50), 1));
+  //obstacles.add(new Sphere(new Vector(-4,5,0), color(125, 125, 12), 1.25));
   
   points = samplePoints();
-  points.add(start);
-  points.add(end);
+  //points.add(start);
+  //points.add(end);
+  for (Agent a : agents) {
+    if (a == user) continue;
+    points.add(a.origin);
+    points.add(a.goal);
+  }
   buildGraph();
   
   //bfs(start, end);
-  ucs(start, end);
-  
-  agent.createPath(end);
+  //ucs(start, end);
+  for (Agent a : agents) {
+    if (a == user) continue;
+    println("ucs",ucs(a.origin, a.goal));
+    //a.createPath(ucs(a.origin, a.goal));
+    a.createPath();
+  }
   
   size(600,600,P3D);
   background(255);
@@ -52,17 +71,19 @@ void draw() {
   
   drawBoard();
   
-  agent.update();
-  agent.drawAgent();
+  //agent.update();
+  //agent.drawAgent();
+  for (Agent a : agents) {
+    a.update();
+    a.drawAgent();
+  }
   
   //drawGraph();
   
   // draw mouse - debugging
   Vector mouse = new Vector(mouseX, mouseY, 0);
-  //if (mouse.x < 20) mouse.x = 20;
   if (mouse.x > 500) mouse.x = 500;
   
-  //if (mouse.y < 20) mouse.y = 20;
   else if (mouse.y > 500) mouse.y = 500;
   
   float boardX = -(board_size/2.0) + board_size * (mouse.x/(500.0));
@@ -70,11 +91,11 @@ void draw() {
   
   pushMatrix();
   translate(boardX, boardY, mouse.z);
-  sphere(1);
+  sphere(0.2);
   popMatrix();
   
-  user.update();
-  user.drawUser();
+  //user.update();
+  //user.drawUser();
   
   if (frameCount % 10 == 0) changeGoal(user.pos);
 }
@@ -128,14 +149,14 @@ void drawGraph() {
     
   }
   
-  // draw path
+  // draw paths
   stroke(58, 166, 63);
   strokeWeight(3);
-  Point mid = end;
-  while (mid != start && mid.parent != null) {
-    Point par = mid.parent;
-    line(mid.pos.x, mid.pos.y, mid.pos.z, par.pos.x, par.pos.y, par.pos.z);
-    mid = par;
+
+  for (Agent a : agents) {
+    for (int i = 0; i < a.path.size() - 1; i++) {
+      line(a.path.get(i).x, a.path.get(i).y, a.path.get(i).z, a.path.get(i+1).x, a.path.get(i+1).y, a.path.get(i+1).z);
+    }
   }
 }
 
@@ -143,25 +164,19 @@ ArrayList<Point> samplePoints() {
   ArrayList<Point> points = new ArrayList<Point>();
   
   while(points.size() < num_points) {
-    //Point point = new Point(new Vector(random(-9.5,9.5), random(-9.5,9.5), 0));
     Point point = new Point(new Vector(random(-board_size/2, board_size/2), random(-board_size/2, board_size/2), 0));
     //if (!points.contains(point) && obs.check_point(point)) points.add(point);
     boolean valid = true;
     for (Obstacle o : obstacles) {
       //if (points.contains(point) || !o.check_point(point)) valid = false;
       if (!o.check_point(point)) {
-        //println("here we be");
         Vector v = point.pos.sub(o.pos).mult(2);
         v.normalize().mult(((Sphere)o).c_rad * 1.1);
-        //println(point.pos);
         v = o.pos.add(v);
-        //println(v);
         point.pos = v;
-        //println(point.pos);
         for (Obstacle check : obstacles) {
           if (!check.check_point(point)) valid = false;
         }
-        //println("here we be",valid);
       }
     }
     
@@ -214,6 +229,7 @@ Point bfs(Point root, Point goal) {
 
 // uniform cost search - returns null if no path is found
 Point ucs(Point root, Point goal) {
+  for (Point p : points) p.discovered = false;
   Point node = null;
   PriorityQueue<Point> frontier = new PriorityQueue<Point>();
   frontier.push(root, 0);
@@ -269,7 +285,7 @@ boolean goodPath(Vector start, Vector end) {
 void clear() {
   points = new ArrayList<Point>();
 }
-
+/*
 void changeGoal(Vector point) {
   start_pos = agent.pos;
   end_pos = point;
@@ -287,18 +303,51 @@ void changeGoal(Vector point) {
   
   agent.reset(end);
 }
-
+*/
+void changeGoal(Vector goal) {
+  Point new_goal = new Point(goal);
+  for (Agent a : agents) {
+    if (a == user) continue;
+    a.goal = new_goal;
+  }
+  
+  points = samplePoints();
+  points.add(new_goal);
+  for (Agent a : agents) {
+    a.origin = new Point(a.pos);
+    points.add(a.origin);
+  }
+  
+  buildGraph();
+  
+  for (Agent a : agents) {
+    a.reset();
+    ucs(a.origin, a.goal);
+    a.createPath();
+  }
+}
 
 void keyPressed() {
   cam.HandleKeyPressed();
+  if (key == ' ') {
+    draw = !draw;
+    if (draw) loop();
+    else noLoop();
+  }
+  
+  if (user == null) return;
   if (key == 'i' || key == 'I') {
-    user.vel = new Vector(0,-1,0);
+    //user.vel = new Vector(0,-1,0);
+    user.vel = user.vel.add(new Vector(0,-1,0));
   } else if (key == 'k' || key == 'K') {
-    user.vel = new Vector(0,1,0);
+    //user.vel = new Vector(0,1,0);
+    user.vel = user.vel.add(new Vector(0,1,0));
   } else if (key == 'j' || key == 'J') {
-    user.vel = new Vector(-1,0,0);
+    //user.vel = new Vector(-1,0,0);
+    user.vel = user.vel.add(new Vector(-1,0,0));
   } else if (key == 'l' || key == 'L') {
-    user.vel = new Vector(1,0,0);
+    //user.vel = new Vector(1,0,0);
+    user.vel = user.vel.add(new Vector(1,0,0));
   }
 }
 void keyReleased() {
@@ -308,27 +357,24 @@ void keyReleased() {
 
 void mouseClicked() {
   Vector mouse = new Vector(mouseX, mouseY, 0);
-  //for (Obstacle obs : obstacles) if (!obs.check_point(new Point(mouse))) return;
-  //clear();
   
   if (mouse.x > 500) mouse.x = 500;
   if (mouse.y > 500) mouse.y = 500;
   
-  //float boardX = -(board_size/2.0) + board_size * (mouse.x/((float)(width-1)));
-  //float boardY = -(board_size/2.0) + board_size * (mouse.y/((float)(height-1)));
   float boardX = -(board_size/2.0) + board_size * (mouse.x/(500.0));
   float boardY = -(board_size/2.0) + board_size * (mouse.y/(500.0));
   Vector board = new Vector(boardX, boardY, 0);
-  //println("mouse:",mouse,"board:",board);
   
   Sphere s = new Sphere(board, color(random(255), random(255), random(255)), 1);
   obstacles.add(s);
+  
+  //updateGraph(agents.get(0).goal.pos, agents.get(0));
+  changeGoal(user.pos);
+  redraw();
 }
 
 void mousePressed() {
   Vector mouse = new Vector(mouseX, mouseY, 0);
-  //for (Obstacle obs : obstacles) if (!obs.check_point(new Point(mouse))) return;
-  //clear();
   
   if (mouse.x > 500) mouse.x = 500;
   if (mouse.y > 500) mouse.y = 500;
@@ -340,8 +386,6 @@ void mousePressed() {
 
 void mouseReleased() {
   Vector mouse = new Vector(mouseX, mouseY, 0);
-  //for (Obstacle obs : obstacles) if (!obs.check_point(new Point(mouse))) return;
-  //clear();
   
   if (mouse.x > 500) mouse.x = 500;
   if (mouse.y > 500) mouse.y = 500;
@@ -352,6 +396,8 @@ void mouseReleased() {
   
   Sphere s = new Sphere(new_obs_pos, color(random(255), random(255), random(255)), new_obs_pos.sub(rad_pos).mag());
   obstacles.add(s);
+  changeGoal(user.pos);
+  redraw();
 }
 
   

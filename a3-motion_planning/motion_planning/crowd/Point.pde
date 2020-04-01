@@ -12,7 +12,6 @@ public class Point {
   }
   
   public void addNeighbor(Point p) {
-    //p.parent = this;
     neighbors.add(p);
   }
   

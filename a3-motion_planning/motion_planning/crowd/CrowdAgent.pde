@@ -1,7 +1,7 @@
 public class CrowdAgent extends Agent {
   
-  float stick_rad = 3;
-  float align_rad = 2;
+  float stick_rad = 3.5;
+  float align_rad = 3.5;
   Vector vel;
   
   public CrowdAgent(float r, color c, Point o, Point g) {
@@ -16,29 +16,34 @@ public class CrowdAgent extends Agent {
     vel = new Vector(0,0,0);
     
     // boids cohesion
+    int stick_count = 0;
+    Vector pull = new Vector(0,0,0);
     for (Agent a : agents) {
       if (this == a) continue;
-      
+      if (a.pos.sub(pos).mag() <= a.rad + stick_rad) {
+        stick_count++;
+        pull = pull.add(a.pos.sub(pos).mult(dt));
+      }
     }
+    if (stick_count > 0) vel = vel.add(pull.div(stick_count));
     
     // boids alignment
     int align_count = 0;
     Vector vel_sum = new Vector(0,0,0);
     for (Agent a : agents) {
       if (a == user) {
-        if (user.pos.sub(pos).mag() <= rad + align_rad) {
+        if (user.pos.sub(pos).mag() <= user.rad + align_rad) {
           align_count++;
-          vel_sum = vel_sum.add(user.vel);
+          vel_sum = vel_sum.add(user.vel).mult(dt);
         }
       } else {
         CrowdAgent b = (CrowdAgent) a;
-        if (b.pos.sub(pos).mag() <= rad + align_rad) {
+        if (b.pos.sub(pos).mag() <= b.rad + align_rad) {
           align_count++;
-          vel_sum = vel_sum.add(b.vel);
+          vel_sum = vel_sum.add(b.vel).mult(dt);
         }
       }
     }
-    println(align_count);
     if (align_count > 0) vel = vel.add(vel_sum.div(align_count));
     
     // boids separation
@@ -61,7 +66,8 @@ public class CrowdAgent extends Agent {
       }
     }
     
-    if (count > 0) vel = vel.add(push.div(count).mult(dt));
+    //if (count > 0) vel = vel.add(push.div(count).mult(dt));
+    if (count > 0) vel = vel.add(push.div(count));
     
     // avoid overlapping obstacles and other agents
     for (int i = path.size() - 1; i >= 0; i--) {

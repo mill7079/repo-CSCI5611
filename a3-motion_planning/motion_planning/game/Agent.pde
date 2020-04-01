@@ -8,11 +8,18 @@ public class Agent {
   protected int nextPoint = 1;
   protected float pointRad = 0.000000000000001, dt = 0.08;
   protected Vector curPath = new Vector(0,0,0);
+  protected float sep_force = 4, obs_sep_force = 1.1;
+  
+  protected Point goal, origin;
  
-  public Agent(float r, color c) {
+  public Agent(float r, color c, Point o, Point g) {
     rad = r;
     col = c;
-    pos = start_pos;
+    
+    origin = o;
+    goal = g;
+    
+    pos = origin.pos;
   }
   
   public void drawAgent() {
@@ -28,7 +35,7 @@ public class Agent {
   
   // create path for agent to follow starting from end of path
   // (backtrace of parent nodes set with BFS)
-  public void createPath(Point end) {
+  /*public void createPath(Point end) {
     if (start.equals(end)) return;
     Point e = end;
     Vector endPos = end.pos;
@@ -45,9 +52,28 @@ public class Agent {
     path.add(0,endPos);
     
     curPath = path.get(1).sub(path.get(0));
+  }*/
+  
+  public void createPath() {
+    if (origin.equals(goal)) return;
+    Point e = goal;
+    Vector endPos = goal.pos;
+    while (endPos != origin.pos) {
+      path.add(0, endPos);
+      e = e.parent;
+      try {
+        endPos = e.pos;
+      } catch (Exception x) {
+        println("error in create path for agent with end",goal.pos,":",x);
+        return;
+      }
+    }
+    path.add(0,endPos);
+    
+    curPath = path.get(1).sub(path.get(0));
   }
   
-  public void update() {
+  /*public void update() {
     if (nextPoint >= path.size()) return;
     
     Sphere goalPoint = new Sphere(path.get(nextPoint), color(0), pointRad);
@@ -72,13 +98,78 @@ public class Agent {
       nextPoint = path.size() - 1;
       curPath = path.get(nextPoint).sub(pos);
     }
+  }*/
+  
+  public void update() {
+    //old_pos = pos;
+    // check for forces from other things
+    // find the furthest point on path to walk to from current position
+    
+    // apply boids separation force
+    Vector push = new Vector(0,0,0);
+    int count = 0;
+    for (Agent a : agents) {
+      if (this == a) continue;
+      float overlap = near(a);
+      if (overlap > 0) {
+        push = push.add(pos.sub(a.pos).normalize().mult(overlap*(sep_force/2)));
+        count++;
+      }
+    }
+    
+    for (Obstacle o : obstacles) {
+      float overlap = near(o);
+      if (overlap > 0) {
+        push = push.add(pos.sub(o.pos).normalize().mult(overlap*(obs_sep_force/2)));
+        count++;
+      }
+    }
+    
+    if (count > 0) pos = pos.add(push.div(count).mult(dt));
+    
+    // avoid overlapping obstacles and other agents
+    for (int i = path.size() - 1; i >= 0; i--) {
+      for (Obstacle o : obstacles) {
+        Sphere s = (Sphere) o;
+        if (rad + s.rad + 0.1 >= s.pos.sub(pos).mag()) {
+          Vector normal = s.pos.sub(pos).mult(-1).normalize();
+          pos = pos.add(normal.mult(0.1 + (s.rad + rad) - (s.pos.sub(pos).mag())));
+        }
+      }
+      
+      for (Agent a : agents) {
+        if (this == a) continue;
+        if (rad + a.rad + 0.05 >= a.pos.sub(pos).mag()) {
+          Vector normal = a.pos.sub(pos).mult(-1).normalize();
+          pos = pos.add(normal.mult(0.05 + (a.rad + rad) - (a.pos.sub(pos).mag())));
+        }
+      }
+      
+      if (goodPath(pos, path.get(i))) {
+        pos = pos.add(path.get(i).sub(pos).normalize().mult(dt));
+        break;
+      }
+    }
   }
   
-  public void reset(Point end) {
+  public void reset() {
     nextPoint = 1;
     path = new ArrayList<Vector>();
-    
-    createPath(end);
+  }
+  
+  public float near(Agent agent) {
+    float sep_rad = sep_force*agent.rad;
+    if (rad + sep_rad > agent.pos.sub(pos).mag()) {
+      return ((rad+sep_rad) - agent.pos.sub(pos).mag())/2.0;
+    } else return -1;
+  }
+  
+  public float near(Obstacle obs) {
+    Sphere s = (Sphere) obs;
+    float sep_rad = obs_sep_force*s.rad;
+    if (rad + sep_rad > s.pos.sub(pos).mag()) {
+      return ((rad+sep_rad) - s.pos.sub(pos).mag())/2.0;
+    } else return -1;
   }
   
 }
