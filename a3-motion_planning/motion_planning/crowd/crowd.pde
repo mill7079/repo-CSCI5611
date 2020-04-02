@@ -61,7 +61,7 @@ void setup() {
   /*SCENARIO 5 AGENTS*/
   //for (int i = 0; i < 60; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(0,0,random(255)), new Point(new Vector(random(-20,-8), random(20), 0)), new Point(crowd_goal)));
   /*SCENARIO 6 AGENTS*/
-  //for (int i = 0; i < 60; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(0,random(255),0), new Point(new Vector(random(-20,-10), random(10,20), 0)), new Point(crowd_goal)));
+  for (int i = 0; i < 60; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(0,random(255),0), new Point(new Vector(random(-20,-10), random(10,20), 0)), new Point(crowd_goal)));
   
   obstacles = new ArrayList<Obstacle>();
   /*SCENARIO 4 OBSTACLES*/
