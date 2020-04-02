@@ -16,7 +16,7 @@ ArrayList<Ammo> shots;
 //ArrayList<Ammo> enemyShots;
 
 int num_points = 100;
-int board_size = 20;
+int board_size = 40;//20;
 float n_rad = board_size/3.0;
 float a_rad = 0.5;//, crowd_a_rad = 0.3;
 
@@ -30,7 +30,7 @@ int game_level = 1;
 void setup() {
   noLoop();
   cam = new Camera();
-  cam.position = new PVector( 0, 0, 30 );
+  cam.position = new PVector( 0, 0, 50 );
   
   //agent = new Agent(0.5, color(168, 212, 122));
   //user = new User(new Vector(-8,-8,0), a_rad);

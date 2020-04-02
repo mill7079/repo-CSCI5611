@@ -57,22 +57,24 @@ void setup() {
   //agents.add(new Agent(a_rad, color(random(255),random(255),random(255)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0))));
   //agents.add(user);
   /*SCENARIO 4 AGENTS*/
-  //agents.add(user);
-  //for (int i = 0; i < 60; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(random(255),0,0), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(user.pos)));
+  //for (int i = 0; i < 60; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(random(255),0,0), new Point(new Vector(random(-20,-8), random(20), 0)), new Point(crowd_goal)));
   /*SCENARIO 5 AGENTS*/
-  for (int i = 0; i < 40; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(0,0,random(255)), new Point(new Vector(random(-20,-8), random(20), 0)), new Point(crowd_goal)));
+  //for (int i = 0; i < 60; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(0,0,random(255)), new Point(new Vector(random(-20,-8), random(20), 0)), new Point(crowd_goal)));
   /*SCENARIO 6 AGENTS*/
-  //for (int i = 0; i < 20; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(0,0,random(255)), new Point(new Vector(random(-20,-10), random(10,20), 0)), new Point(crowd_goal)));
+  //for (int i = 0; i < 60; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(0,random(255),0), new Point(new Vector(random(-20,-10), random(10,20), 0)), new Point(crowd_goal)));
   
   obstacles = new ArrayList<Obstacle>();
   /*SCENARIO 4 OBSTACLES*/
+  //for (int i = 0; i < 30; i++) {
+  //  obstacles.add(new Sphere(new Vector(random(-10,20), random(-20,10), 0), color(random(255), random(255), random(255)), 1));
+  //}
   /*SCENARIO 5 OBSTACLES*/
-  for (int i = 0; i < 30; i++) {
-    obstacles.add(new Sphere(new Vector(-7, 20-i, 0), color(0), 1));
-    obstacles.add(new Sphere(new Vector(7, -20+i, 0), color(0), 1));
-  }
+  //for (int i = 0; i < 30; i++) {
+  //  obstacles.add(new Sphere(new Vector(-7, 20-i, 0), color(0), 1));
+  //  obstacles.add(new Sphere(new Vector(7, -20+i, 0), color(0), 1));
+  //}
   /*SCENARIO 6 OBSTACLES*/
-  //obstacles.add(new Sphere(new Vector(-5,5,0), color(50,100,255), 5));
+  obstacles.add(new Sphere(new Vector(-5,5,0), color(50,100,255), 5));
   
   /*old stuff*/
   //obstacles.add(new Sphere(new Vector(2,2,0), color(255,100,50), 1));

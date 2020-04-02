@@ -1,8 +1,9 @@
 public class CrowdAgent extends Agent {
   
-  float stick_force = 3; // lower is more powerful
+  float stick_force = 4; // lower is more powerful
   float align_force = 20; // lower is more powerful, lower values tend to leave things behind the obstacle
   float sep_rad = 0.5; // higher is more powerful
+  float goal_force = 2; //higher is more powerful
   Vector vel;
   float target_speed = 3;
   
@@ -17,14 +18,16 @@ public class CrowdAgent extends Agent {
 
   public Vector cohesion() {
     Vector pull = new Vector(0,0,0);
+    float stick_count = 0;
     for (Agent a : agents) {
-      if (a != this) {
-        pull = pull.add(a.pos);
-      }
+      if (a == this) continue;
+      pull = pull.add(a.pos);
+      stick_count++;
     }
     
-    if (agents.size() != 1) pull = pull.div(agents.size()-1);
-    return (pull.sub(pos)).div(stick_force);
+    //if (agents.size() != 1) pull = pull.div(agents.size()-1);
+    if (stick_count > 0) pull = pull.div(stick_count);
+    return (pull.sub(pos)).mult(1/stick_force);
   }
   //public Vector cohesion() {
   //  Vector pull = new Vector(0,0,0);
@@ -50,16 +53,17 @@ public class CrowdAgent extends Agent {
   
   public Vector align() {
     Vector vel_sum = new Vector(0,0,0);
-    
+    float align_count = 0;
     for (Agent a : agents) {
-      if (a != this) {
-        if (a == user) vel_sum = vel_sum.add(user.vel); 
-        else vel_sum = vel_sum.add(((CrowdAgent)a).vel); 
-      }
+      if (a == this) continue;
+      if (a == user) vel_sum = vel_sum.add(user.vel); 
+      else vel_sum = vel_sum.add(((CrowdAgent)a).vel);
+      align_count++;
     }
     
-    if (agents.size() != 1) vel_sum = vel_sum.div(agents.size() - 1);
-    return (vel_sum.sub(vel)).div(align_force);
+    if (align_count > 0) vel_sum = vel_sum.div(agents.size() - 1);
+    //if (agents.size() != 1) vel_sum = vel_sum.div(agents.size() - 1);
+    return (vel_sum.sub(vel)).mult(1/align_force);
   }
   //public Vector align() {
   //  Vector vel_sum = new Vector(0,0,0);
@@ -133,7 +137,7 @@ public class CrowdAgent extends Agent {
         break;
       }
     }
-    return t_vel.sub(vel).mult(2);
+    return t_vel.sub(vel).mult(goal_force);
     
   }
   
