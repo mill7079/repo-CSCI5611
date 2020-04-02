@@ -1,6 +1,6 @@
 public class Agent {
   
-  private float health;
+  protected float health;
   
   protected float rad;
   protected color col;
@@ -10,7 +10,7 @@ public class Agent {
   protected int nextPoint = 1;
   protected float pointRad = 0.000000000000001, dt = 0.08;
   protected Vector curPath = new Vector(0,0,0);
-  protected float sep_force = 4, obs_sep_force = 1.1;
+  protected float sep_force = 8, obs_sep_force = 1.1;
   
   protected Point goal, origin;
  

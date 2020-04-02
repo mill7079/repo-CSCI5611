@@ -6,6 +6,8 @@ Vector start_pos = new Vector(-9, 9, 0);
 Vector end_pos = new Vector(9, -9, 0);
 //Point end = new Point(end_pos);
 
+Vector crowd_goal = new Vector(10, -10, 0);
+
 User user;
 
 ArrayList<Agent> agents;
@@ -56,7 +58,8 @@ void setup() {
   //agents.add(user);
   /*SCENARIO 4 AGENTS*/
   agents.add(user);
-  for (int i = 0; i < 10; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(255,0,0), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(end_pos)));
+  for (int i = 0; i < 40; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(255,0,0), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(crowd_goal)));
+  //for (int i = 0; i < 5; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(255,0,0), new Point(new Vector(random(-board_size/2,0), random(0,board_size/2), 0)), new Point(new Vector(10,0,0))));
   
   obstacles = new ArrayList<Obstacle>();
   //obstacles.add(new Sphere(new Vector(0,0,0), color(50,100,255), 2));
@@ -76,7 +79,7 @@ void setup() {
   //ucs(start, end);
   for (Agent a : agents) {
     if (a == user) continue;
-    println("ucs",ucs(a.origin, a.goal));
+    //println("ucs",ucs(a.origin, a.goal));
     //a.createPath(ucs(a.origin, a.goal));
     a.createPath();
   }
@@ -252,7 +255,6 @@ Point bfs(Point root, Point goal) {
 // uniform cost search - returns null if no path is found
 Point ucs(Point root, Point goal) {
   for (Point p : points) p.discovered = false;
-  println(root, goal);
   Point node = null;
   PriorityQueue<Point> frontier = new PriorityQueue<Point>();
   frontier.push(root, 0);

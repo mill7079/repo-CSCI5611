@@ -8,7 +8,7 @@ public class Agent {
   protected int nextPoint = 1;
   protected float dt = 0.058;
   protected Vector curPath = new Vector(0,0,0);
-  protected float sep_force = 4, obs_sep_force = 1.1;
+  protected float sep_force = 4, obs_sep_force = 1.0;
   
   protected Point goal;
   protected Point origin;

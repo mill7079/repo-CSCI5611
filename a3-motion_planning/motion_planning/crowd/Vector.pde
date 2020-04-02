@@ -37,7 +37,8 @@ public class Vector{
   
   Vector normalize() {
     float m = this.mag();
-    return new Vector(x/m, y/m, z/m);
+    if (m > 0) return new Vector(x/m, y/m, z/m);
+    return this;
   }
   
   String toString() {

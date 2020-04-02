@@ -31,6 +31,7 @@ public class Ammo {
   
   Agent checkHit() {
     //Vector prev_pos = pos.sub(dir.normalize().mult(10*dt));
+    // doesn't check if collision started inside agent which is good to avoid murdering yourself
     Vector v = pos.sub(prev_pos).normalize();
     
     for (Agent ag : agents) {

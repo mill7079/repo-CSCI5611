@@ -20,6 +20,7 @@ public class User extends Agent {
       stats.y += 5;
       stats.z += 3;
       
+      health += 10;
       exp = 0;
     }
     return level;
