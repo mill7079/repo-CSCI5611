@@ -6,7 +6,6 @@ Vector start_pos = new Vector(-9, 9, 0);
 Vector end_pos = new Vector(9, -9, 0);
 //Point end = new Point(end_pos);
 
-Vector crowd_goal = new Vector(10, -10, 0);
 
 User user;
 
@@ -15,7 +14,7 @@ ArrayList<Point> points;
 ArrayList<Obstacle> obstacles;
 
 int num_points = 500;
-int board_size = 20;
+int board_size = 40;//20;
 float n_rad = board_size/3.0;
 float a_rad = 0.5, crowd_a_rad = 0.3;
 
@@ -23,13 +22,14 @@ Vector new_obs_pos;
 int new_obs_rad = 0;
 
 boolean draw = false;
+Vector crowd_goal = new Vector(board_size/2-5, -(board_size/2-5), 0);
 
 void setup() {
   noLoop();
   cam = new Camera();
-  cam.position = new PVector( 0, 0, 30 );
+  cam.position = new PVector( 0, 0, 50 );
   
-  user = new User(new Vector(0,0,0), a_rad);
+  user = new User(new Vector(0,0,0), a_rad+0.2);
   
   agents = new ArrayList<Agent>();
   /*SCENARIO 1 AGENTS*/
@@ -57,12 +57,24 @@ void setup() {
   //agents.add(new Agent(a_rad, color(random(255),random(255),random(255)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0))));
   //agents.add(user);
   /*SCENARIO 4 AGENTS*/
-  agents.add(user);
-  for (int i = 0; i < 40; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(255,0,0), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(crowd_goal)));
-  //for (int i = 0; i < 5; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(255,0,0), new Point(new Vector(random(-board_size/2,0), random(0,board_size/2), 0)), new Point(new Vector(10,0,0))));
+  //agents.add(user);
+  //for (int i = 0; i < 60; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(random(255),0,0), new Point(new Vector(random(-board_size/2,board_size/2), random(-board_size/2,board_size/2), 0)), new Point(user.pos)));
+  /*SCENARIO 5 AGENTS*/
+  for (int i = 0; i < 40; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(0,0,random(255)), new Point(new Vector(random(-20,-8), random(20), 0)), new Point(crowd_goal)));
+  /*SCENARIO 6 AGENTS*/
+  //for (int i = 0; i < 20; i++)  agents.add(new CrowdAgent(crowd_a_rad, color(0,0,random(255)), new Point(new Vector(random(-20,-10), random(10,20), 0)), new Point(crowd_goal)));
   
   obstacles = new ArrayList<Obstacle>();
-  //obstacles.add(new Sphere(new Vector(0,0,0), color(50,100,255), 2));
+  /*SCENARIO 4 OBSTACLES*/
+  /*SCENARIO 5 OBSTACLES*/
+  for (int i = 0; i < 30; i++) {
+    obstacles.add(new Sphere(new Vector(-7, 20-i, 0), color(0), 1));
+    obstacles.add(new Sphere(new Vector(7, -20+i, 0), color(0), 1));
+  }
+  /*SCENARIO 6 OBSTACLES*/
+  //obstacles.add(new Sphere(new Vector(-5,5,0), color(50,100,255), 5));
+  
+  /*old stuff*/
   //obstacles.add(new Sphere(new Vector(2,2,0), color(255,100,50), 1));
   //obstacles.add(new Sphere(new Vector(-4,5,0), color(125, 125, 12), 1.25));
   
@@ -81,6 +93,7 @@ void setup() {
     if (a == user) continue;
     //println("ucs",ucs(a.origin, a.goal));
     //a.createPath(ucs(a.origin, a.goal));
+    ucs(a.origin, a.goal);
     a.createPath();
   }
   
@@ -105,6 +118,7 @@ void draw() {
     a.update();
     a.drawAgent();
   }
+  
   //drawGraph();
   
   // draw mouse - debugging

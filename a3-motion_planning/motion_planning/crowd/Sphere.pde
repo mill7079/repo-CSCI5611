@@ -14,8 +14,8 @@ public class Sphere extends Obstacle {
     pushMatrix();
     pushStyle();
     noStroke();
-    translate(pos.x, pos.y, pos.z);
     fill(col);
+    translate(pos.x, pos.y, pos.z);
     sphere(rad);
     popStyle();
     popMatrix();

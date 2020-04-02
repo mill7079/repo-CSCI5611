@@ -48,4 +48,9 @@ public class Vector{
   boolean closeTo(Vector other) {
     return (abs(x-other.x) <= 0.04) && (abs(y-other.y) <= 0.04) && (abs(z-other.z) <= 0.04);
   }
+  
+  Vector limit(float max) {
+    if (this.mag() >= max) return this;
+    return this.normalize().mult(max);
+  }
 }
