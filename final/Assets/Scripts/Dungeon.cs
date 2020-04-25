@@ -27,10 +27,12 @@ public class Dungeon : MonoBehaviour
     public void MoveRoom(Room room) 
     {
         GameObject[,] floor = room.GetTiles();
-        if (floor == null) Debug.Log("floor null");
+        //if (floor == null) Debug.Log("floor null");
         room.ClearDoors();
 
         if (roomHolder != null) roomHolder.DetachChildren();
+        //else { Debug.Log("room holder null"); }
+
         roomHolder = new GameObject("Dungeon").transform;
         for (int i = 0; i < floor.GetLength(0); i++)
         {
@@ -38,14 +40,16 @@ public class Dungeon : MonoBehaviour
             {
                 GameObject tile = floor[i, j];
                 if (tile == null) continue;
-                GameObject instance = Instantiate(tile, new Vector3(i, j, 0f), Quaternion.identity) as GameObject;
+                //GameObject instance = Instantiate(tile, new Vector3(i, j, 0f), Quaternion.identity) as GameObject;
+                //GameObject instance = Instantiate(tile, new Vector3(floor.GetLength(1) - j - 1, floor.GetLength(0) - i - 1, 0f), Quaternion.identity) as GameObject;
+                GameObject instance = Instantiate(tile, new Vector3(j-1, floor.GetLength(0) - i - 1, 0f), Quaternion.identity) as GameObject;
 
                 // add door to map in room
                 if (tile.CompareTag("Door"))
                 {
-                    Debug.Log(i + " " + j + " door");
+                    //Debug.Log(i + " " + j + " door");
                     BoxCollider2D door = instance.GetComponent<BoxCollider2D>();
-                    Debug.Log("floor length/2: " + floor.GetLength(1) / 2);
+                    //Debug.Log("floor length/2: " + floor.GetLength(1) / 2);
                     if (j == (floor.GetLength(1) - 1) / 2)
                     {
                         if (i == 0)
@@ -73,6 +77,6 @@ public class Dungeon : MonoBehaviour
                 instance.transform.SetParent(roomHolder);
             }
         }
-        Debug.Log("doors: "+room.GetDoors());
+        //Debug.Log("doors: "+room.GetDoors());
     }
 }

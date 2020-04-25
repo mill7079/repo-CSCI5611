@@ -43,7 +43,9 @@ public class PlayerController : MonoBehaviour
 
     public void SetLocation(Vector2 pos)
     {
-        body.MovePosition(pos);
+        //body.MovePosition(pos);
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        player.transform.position = pos;
     }
 
     // handle triggers, mostly for doors
@@ -51,7 +53,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Door"))
         {
-
+            Debug.Log("DOOR");
         }
     }
 }
