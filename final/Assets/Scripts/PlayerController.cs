@@ -7,7 +7,6 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D body;
     public float moveSpeed = 3.0f;
 
-    //Node currentRoom;
     Room currentRoom;
 
     // Start is called before the first frame update
@@ -29,21 +28,11 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    //public Node getCurrentRoom()
-    //{
-    //    return currentRoom;
-    //}
     public Room GetCurrentRoom()
     {
         return currentRoom;
     }
 
-    //public bool moveTo(Node destination)
-    //{
-    //    if (destination == null) return false;
-    //    currentRoom = destination;
-    //    return true;
-    //}
     public bool MoveTo(Room destination)
     {
         // TODO move to location of door
@@ -55,5 +44,14 @@ public class PlayerController : MonoBehaviour
     public void SetLocation(Vector2 pos)
     {
         body.MovePosition(pos);
+    }
+
+    // handle triggers, mostly for doors
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Door"))
+        {
+
+        }
     }
 }
