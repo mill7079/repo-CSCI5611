@@ -13,7 +13,7 @@ public class Dungeon : MonoBehaviour
 
     public void StartDungeon()
     {
-        Debug.Log("start dungeon");
+        //Debug.Log("start dungeon");
         start = new Room(0, 0);
         //GameManager.instance.GetPlayer().GetComponent<PlayerController>().MoveTo(start);
         //Debug.Log("plauer room: " + GameManager.instance.GetPlayer().GetComponent<PlayerController>().GetCurrentRoom());
@@ -26,6 +26,7 @@ public class Dungeon : MonoBehaviour
     //public void MoveRoom(GameObject[,] floor
     public void MoveRoom(Room room) 
     {
+        Debug.Log("move to room at coords " + room.loc);
         GameObject[,] floor = room.GetTiles();
         //if (floor == null) Debug.Log("floor null");
         //room.ClearDoors();

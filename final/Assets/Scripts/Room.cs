@@ -18,15 +18,34 @@ public class Room
             col = c;
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            if (!(obj is Coord c)) return false;
+
+            return c.row == row && c.col == col;
+        }
+
+        // unity whyyyyyyyyyy
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            hash = (hash * 13) + (row.GetHashCode());
+            hash = (hash * 13) + (col.GetHashCode());
+            return hash;
+        }
+
         // equality override for map
         public bool Equals(Coord other)
         {
+            if (other == null) return false;
             return other.row == row && other.col == col;
         }
 
         // directional checkers to clean up other code
         // return true if this coord is <name> other coord
-            // i.e. for Above, return true if this coord is above other coord
+        // i.e. for Above, return true if this coord is above other coord
         public bool Above(Coord other)
         {
             return other.row == (row + 1) && other.col == col;
@@ -69,31 +88,45 @@ public class Room
     // used for creating first room in dungeon - just has initial coords
     public Room(int r, int c)
     {
-        Debug.Log("new room");
+        Debug.Log("short cons*|*|*|*|*|*|*|*|*");
+        //Debug.Log("new room");
         loc = new Coord(r, c);
         Dungeon.locations.Add(loc, this);
         Create();
     }
 
     // used for creating all other rooms - pass in coords for this room and other room
-    public Room(Coord l, Coord other)
+    public Room(Coord current, Coord source)
     {
-        loc = l;
-        if (loc.Above(other))
+        Debug.Log("long cons*|*|*|*|*|*|*|*|*");
+        Debug.Log("cur: " + current + " source: " + source);
+        Debug.Log("locations length: " + Dungeon.locations.Count);
+        foreach (KeyValuePair<Coord, Room> pair in Dungeon.locations) Debug.Log("location " + pair.Key);
+
+        loc = current;
+        if (loc.Above(source))
         {
-            Dungeon.locations.TryGetValue(other, out down);
+            Debug.Log("above cons");
+            Debug.Log(Dungeon.locations.TryGetValue(source, out down));
+            Debug.Log("down: " + down);
         }
-        else if (loc.Below(other))
+        else if (loc.Below(source))
         {
-            Dungeon.locations.TryGetValue(other, out up);
+            Debug.Log("below cons");
+            Debug.Log(Dungeon.locations.TryGetValue(source, out up));
+            Debug.Log("up: " + up);
         }
-        else if (loc.Left(other))
+        else if (loc.Left(source))
         {
-            Dungeon.locations.TryGetValue(other, out right);
+            Debug.Log("left cons");
+            Debug.Log(Dungeon.locations.TryGetValue(source, out right));
+            Debug.Log("right: " + right);
         }
-        else if (loc.Right(other))
+        else if (loc.Right(source))
         {
-            Dungeon.locations.TryGetValue(other, out left);
+            Debug.Log("right cons");
+            Debug.Log(Dungeon.locations.TryGetValue(source, out left));
+            Debug.Log("left: " + left);
         }
 
     }
@@ -307,16 +340,20 @@ public class Room
 
     public override string ToString()
     {
-        string ret = "";
-        for (int i = 0; i < tiles.GetLength(0); i++)
-        {
-            for (int j = 0; j < tiles.GetLength(1); j++)
-            {
-                ret += tiles[i, j] + " ";
-            }
-            ret += "\n";
-        }
-        return ret;
-    }
+        // print tiles
+        //string ret = "";
+        //for (int i = 0; i < tiles.GetLength(0); i++)
+        //{
+        //    for (int j = 0; j < tiles.GetLength(1); j++)
+        //    {
+        //        ret += tiles[i, j] + " ";
+        //    }
+        //    ret += "\n";
+        //}
+        //return ret;
 
+        // print doors
+        return "up " + (up?.loc) + " down " + (down?.loc) + " left " + (left?.loc) + " right " + (right?.loc);
+
+    }
 }
