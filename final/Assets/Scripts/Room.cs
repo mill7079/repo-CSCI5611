@@ -6,77 +6,78 @@ public class Room
 {
 
     // class to handle coordinates of rooms
-    public class Coord
-    {
+    //public class Coord
+    //{
 
-        public int row { get; set; }
-        public int col { get; set; }
+    //    public int row { get; set; }
+    //    public int col { get; set; }
 
-        public Coord(int r, int c)
-        {
-            row = r;
-            col = c;
-        }
+    //    public Coord(int r, int c)
+    //    {
+    //        row = r;
+    //        col = c;
+    //    }
 
-        public override bool Equals(object obj)
-        {
-            if (obj == null) return false;
+    //    public override bool Equals(object obj)
+    //    {
+    //        if (obj == null) return false;
 
-            if (!(obj is Coord c)) return false;
+    //        if (!(obj is Coord c)) return false;
 
-            return c.row == row && c.col == col;
-        }
+    //        return c.row == row && c.col == col;
+    //    }
 
-        // unity whyyyyyyyyyy
-        public override int GetHashCode()
-        {
-            int hash = 17;
-            hash = (hash * 13) + (row.GetHashCode());
-            hash = (hash * 13) + (col.GetHashCode());
-            return hash;
-        }
+    //    // unity whyyyyyyyyyy
+    //    public override int GetHashCode()
+    //    {
+    //        int hash = 17;
+    //        hash = (hash * 13) + (row.GetHashCode());
+    //        hash = (hash * 13) + (col.GetHashCode());
+    //        return hash;
+    //    }
 
-        // equality override for map
-        public bool Equals(Coord other)
-        {
-            if (other == null) return false;
-            return other.row == row && other.col == col;
-        }
+    //    // equality override for map
+    //    public bool Equals(Coord other)
+    //    {
+    //        if (other == null) return false;
+    //        return other.row == row && other.col == col;
+    //    }
 
-        // directional checkers to clean up other code
-        // return true if this coord is <name> other coord
-        // i.e. for Above, return true if this coord is above other coord
-        public bool Above(Coord other)
-        {
-            return other.row == (row + 1) && other.col == col;
-        }
+    //    // directional checkers to clean up other code
+    //    // return true if this coord is <name> other coord
+    //    // i.e. for Above, return true if this coord is above other coord
+    //    public bool Above(Coord other)
+    //    {
+    //        return other.row == (row + 1) && other.col == col;
+    //    }
 
-        public bool Below(Coord other)
-        {
-            return other.row == (row - 1) && other.col == col;
-        }
+    //    public bool Below(Coord other)
+    //    {
+    //        return other.row == (row - 1) && other.col == col;
+    //    }
 
-        public bool Left(Coord other)
-        {
-            return other.row == row && other.col == (col + 1);
-        }
+    //    public bool Left(Coord other)
+    //    {
+    //        return other.row == row && other.col == (col + 1);
+    //    }
 
-        public bool Right(Coord other)
-        {
-            return other.row == row && other.col == (col - 1);
-        }
+    //    public bool Right(Coord other)
+    //    {
+    //        return other.row == row && other.col == (col - 1);
+    //    }
 
-        public override string ToString()
-        {
-            return "row: " + row + " col: " + col;
-        }
+    //    public override string ToString()
+    //    {
+    //        return "row: " + row + " col: " + col;
+    //    }
 
-    }
+    //}
 
 
     // pointers to link to neighboring rooms
     private Room up, down, left, right;
-    public Coord loc; // coordinates of current room (row,col)
+    //public Coord loc; // coordinates of current room (row,col)
+    public Vector2Int loc;
     private GameObject[,] tiles; // array of tiles to be instantiated when player moves
 
     // length and width of room; might become random later? idk
@@ -90,39 +91,46 @@ public class Room
     {
         Debug.Log("short cons*|*|*|*|*|*|*|*|*");
         //Debug.Log("new room");
-        loc = new Coord(r, c);
+        //loc = new Coord(r, c);
+        loc = new Vector2Int(r, c);
         Dungeon.locations.Add(loc, this);
         Create();
     }
 
     // used for creating all other rooms - pass in coords for this room and other room
-    public Room(Coord current, Coord source)
+    //public Room(Coord current, Coord source)
+    public Room(Vector2Int current, Vector2Int source)
     {
         Debug.Log("long cons*|*|*|*|*|*|*|*|*");
         Debug.Log("cur: " + current + " source: " + source);
         Debug.Log("locations length: " + Dungeon.locations.Count);
-        foreach (KeyValuePair<Coord, Room> pair in Dungeon.locations) Debug.Log("location " + pair.Key);
+        foreach (Vector2Int l in Dungeon.locations.Keys) Debug.Log("Dict " + l + " looking for: " + source);
+        foreach (KeyValuePair<Vector2Int, Room> pair in Dungeon.locations) Debug.Log("location " + pair.Key);
 
         loc = current;
-        if (loc.Above(source))
+        //if (loc.Above(source))
+        if (Above(loc, source)) 
         {
             Debug.Log("above cons");
             Debug.Log(Dungeon.locations.TryGetValue(source, out down));
             Debug.Log("down: " + down);
         }
-        else if (loc.Below(source))
+        //else if (loc.Below(source))
+        else if (Below(loc, source))
         {
             Debug.Log("below cons");
             Debug.Log(Dungeon.locations.TryGetValue(source, out up));
             Debug.Log("up: " + up);
         }
-        else if (loc.Left(source))
+        //else if (loc.Left(source))
+        else if (Left(loc, source))
         {
             Debug.Log("left cons");
             Debug.Log(Dungeon.locations.TryGetValue(source, out right));
             Debug.Log("right: " + right);
         }
-        else if (loc.Right(source))
+        //else if (loc.Right(source))
+        else if (Right(loc, source))
         {
             Debug.Log("right cons");
             Debug.Log(Dungeon.locations.TryGetValue(source, out left));
@@ -145,6 +153,26 @@ public class Room
     public GameObject[,] GetTiles() { return tiles; }
     public int GetDoors() { return doors.Count; }
 
+    // check if current Vector2 is <name> the source Vector2
+    public bool Above(Vector2Int cur, Vector2Int source)
+    {
+        return source.x > cur.x && source.y == cur.y;
+    }
+
+    public bool Below(Vector2Int cur, Vector2Int source)
+    {
+        return source.x < cur.x && source.y == cur.y;
+    }
+
+    public bool Left(Vector2Int cur, Vector2Int source)
+    {
+        return source.x == cur.x && source.y > cur.y;
+    }
+
+    public bool Right(Vector2Int cur, Vector2Int source)
+    {
+        return source.x == cur.x && source.y < cur.y;
+    }
 
 
     // associates a door collider with a room and stores in the dictionary
@@ -171,13 +199,15 @@ public class Room
     public void AddUp()
     {
         // find coordinates for new room
-        Coord other = new Coord(loc.row - 1, loc.col);
+        //Coord other = new Coord(loc.row - 1, loc.col);
+        Vector2Int other = new Vector2Int(loc.x - 1, loc.y);
 
         // if the room at those coordinates exists, update this room's up pointer
         if (!Dungeon.locations.TryGetValue(other, out up))
         {
             // ...otherwise create the room and add it to the locations list
-            up = new Room(loc, other);
+            //up = new Room(loc, other);
+            up = new Room(other, loc);
             Dungeon.locations.Add(other, up);
         }
         else // update the preexisting room's pointer to this room
@@ -189,10 +219,12 @@ public class Room
     // add empty room in down direction
     public void AddDown()
     {
-        Coord other = new Coord(loc.row + 1, loc.col);
+        //Coord other = new Coord(loc.row + 1, loc.col);
+        Vector2Int other = new Vector2Int(loc.x + 1, loc.y);
         if (!Dungeon.locations.TryGetValue(other, out down))
         {
-            down = new Room(loc, other);
+            //down = new Room(loc, other);
+            down = new Room(other, loc);
             Dungeon.locations.Add(other, down);
         }
         else
@@ -204,10 +236,12 @@ public class Room
     // add empty room in left direction
     public void AddLeft()
     {
-        Coord other = new Coord(loc.row, loc.col - 1);
+        //Coord other = new Coord(loc.row, loc.col - 1);
+        Vector2Int other = new Vector2Int(loc.x, loc.y - 1);
         if (!Dungeon.locations.TryGetValue(other, out left))
         {
-            left = new Room(loc, other);
+            // left = new Room(loc, other);
+            left = new Room(other, loc);
             Dungeon.locations.Add(other, left);
         }
         else
@@ -219,10 +253,12 @@ public class Room
     // add empty room in right direction
     public void AddRight()
     {
-        Coord other = new Coord(loc.row, loc.col + 1);
+        //Coord other = new Coord(loc.row, loc.col + 1);
+        Vector2Int other = new Vector2Int(loc.x, loc.y + 1);
         if (!Dungeon.locations.TryGetValue(other, out right))
         {
-            right = new Room(loc, other);
+            //right = new Room(loc, other);
+            right = new Room(other, loc);
             Dungeon.locations.Add(other, right);
         }
         else

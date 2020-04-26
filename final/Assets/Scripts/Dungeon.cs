@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Dungeon : MonoBehaviour
 {
-    public static Dictionary<Room.Coord, Room> locations = new Dictionary<Room.Coord, Room>();
+    //public static Dictionary<Room.Coord, Room> locations = new Dictionary<Room.Coord, Room>();
+    public static Dictionary<Vector2Int, Room> locations = new Dictionary<Vector2Int, Room>();
     public static int boardRows = 8, boardCols = 8;
     public static double doorChance = 2; // door should generate ~50% of time with no preexisting door
     public Room start;
