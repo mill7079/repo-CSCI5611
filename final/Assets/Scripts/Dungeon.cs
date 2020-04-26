@@ -19,7 +19,7 @@ public class Dungeon : MonoBehaviour
         //Debug.Log("plauer room: " + GameManager.instance.GetPlayer().GetComponent<PlayerController>().GetCurrentRoom());
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         player.GetComponent<PlayerController>().MoveTo(start);
-        Debug.Log("find tag player room: " + player.GetComponent<PlayerController>().GetCurrentRoom() + " " + player.GetComponent<PlayerController>().GetCurrentRoom().loc);
+        //Debug.Log("find tag player room: " + player.GetComponent<PlayerController>().GetCurrentRoom() + " " + player.GetComponent<PlayerController>().GetCurrentRoom().loc);
         MoveRoom(start);
     }
 
@@ -28,12 +28,21 @@ public class Dungeon : MonoBehaviour
     {
         GameObject[,] floor = room.GetTiles();
         //if (floor == null) Debug.Log("floor null");
-        room.ClearDoors();
+        //room.ClearDoors();
 
-        if (roomHolder != null) roomHolder.DetachChildren();
+        if (roomHolder != null)
+        {
+            foreach (Transform child in roomHolder.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+        }
+
+        //if (roomHolder != null) Debug.Log("room holder child count: "+roomHolder.childCount);
         //else { Debug.Log("room holder null"); }
 
-        roomHolder = new GameObject("Dungeon").transform;
+        //roomHolder = new GameObject("Dungeon").transform;
+        roomHolder = this.transform;
         for (int i = 0; i < floor.GetLength(0); i++)
         {
             for (int j = 0; j < floor.GetLength(1); j++)
@@ -54,10 +63,12 @@ public class Dungeon : MonoBehaviour
                     {
                         if (i == 0)
                         {
+                            Debug.Log("add up");
                             room.AddDoor(door, room.GetUp());
                         }
                         else if (i == floor.GetLength(0) - 1)
                         {
+                            Debug.Log("add down");
                             room.AddDoor(door, room.GetDown());
                         }
                     }
@@ -65,10 +76,12 @@ public class Dungeon : MonoBehaviour
                     {
                         if (j == 0)
                         {
+                            Debug.Log("add left");
                             room.AddDoor(door, room.GetLeft());
                         }
                         else if (j == floor.GetLength(1) - 1)
                         {
+                            Debug.Log("add right");
                             room.AddDoor(door, room.GetRight());
                         }
                     }
@@ -78,5 +91,8 @@ public class Dungeon : MonoBehaviour
             }
         }
         //Debug.Log("doors: "+room.GetDoors());
+        Debug.Log("");
+        Debug.Log(room);
+        Debug.Log("");
     }
 }

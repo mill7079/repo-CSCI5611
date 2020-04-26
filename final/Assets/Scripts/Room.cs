@@ -117,7 +117,7 @@ public class Room
     // associates a door collider with a room and stores in the dictionary
     public void AddDoor(BoxCollider2D door, Room room)
     {
-        doors.Add(door, room);
+        if (!doors.ContainsKey(door)) doors.Add(door, room);
     }
 
     // gets the room associated with a door collider
@@ -239,7 +239,7 @@ public class Room
                         BoxCollider2D door = tile.GetComponent<BoxCollider2D>();
 
                         // if no room exists in that direction, add one
-                        // ...alright i'm not really sure what this is doing TODO
+                        // door was randomly generated in that direction
                         if (up == null)
                         {
                             AddUp();
@@ -304,4 +304,19 @@ public class Room
             }
         }
     }
+
+    public override string ToString()
+    {
+        string ret = "";
+        for (int i = 0; i < tiles.GetLength(0); i++)
+        {
+            for (int j = 0; j < tiles.GetLength(1); j++)
+            {
+                ret += tiles[i, j] + " ";
+            }
+            ret += "\n";
+        }
+        return ret;
+    }
+
 }

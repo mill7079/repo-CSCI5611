@@ -35,6 +35,7 @@ public class GameManager : MonoBehaviour
 
         dungeon = GetComponent<Dungeon>();
         dungeon.StartDungeon();
+        //DontDestroyOnLoad(dungeon.gameObject);
 
         //GameObject dude = Instantiate(player, new Vector3(3,3,0f), Quaternion.identity) as GameObject;
         //dude.transform.SetParent(dungeon.transform);

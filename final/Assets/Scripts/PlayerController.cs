@@ -8,11 +8,17 @@ public class PlayerController : MonoBehaviour
     public float moveSpeed = 3.0f;
 
     Room currentRoom;
+    Vector2 lookDirection = new Vector2(1, 0);
+
+    Animator animator;
 
     // Start is called before the first frame update
     void Start()
     {
+        DontDestroyOnLoad(gameObject);
         body = GetComponent<Rigidbody2D>();
+
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -21,6 +27,14 @@ public class PlayerController : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
         Vector2 move = new Vector2(horizontal, vertical);
+        if (!Mathf.Approximately(move.x, 0.0f) || !Mathf.Approximately(move.y, 0.0f))
+        {
+            lookDirection.Set(move.x, move.y);
+            lookDirection.Normalize();
+        }
+
+        animator.SetFloat("Look X", lookDirection.x);
+        animator.SetFloat("Look Y", lookDirection.y);
 
         Vector2 position = body.position;
         position = position + move * moveSpeed * Time.deltaTime;
@@ -49,11 +63,11 @@ public class PlayerController : MonoBehaviour
     }
 
     // handle triggers, mostly for doors
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Door"))
-        {
-            Debug.Log("DOOR");
-        }
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Door"))
+    //    {
+    //        Debug.Log("DOOR");
+    //    }
+    //}
 }
