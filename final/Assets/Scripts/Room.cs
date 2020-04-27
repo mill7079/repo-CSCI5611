@@ -4,76 +4,6 @@ using UnityEngine;
 
 public class Room
 {
-
-    // class to handle coordinates of rooms
-    //public class Coord
-    //{
-
-    //    public int row { get; set; }
-    //    public int col { get; set; }
-
-    //    public Coord(int r, int c)
-    //    {
-    //        row = r;
-    //        col = c;
-    //    }
-
-    //    public override bool Equals(object obj)
-    //    {
-    //        if (obj == null) return false;
-
-    //        if (!(obj is Coord c)) return false;
-
-    //        return c.row == row && c.col == col;
-    //    }
-
-    //    // unity whyyyyyyyyyy
-    //    public override int GetHashCode()
-    //    {
-    //        int hash = 17;
-    //        hash = (hash * 13) + (row.GetHashCode());
-    //        hash = (hash * 13) + (col.GetHashCode());
-    //        return hash;
-    //    }
-
-    //    // equality override for map
-    //    public bool Equals(Coord other)
-    //    {
-    //        if (other == null) return false;
-    //        return other.row == row && other.col == col;
-    //    }
-
-    //    // directional checkers to clean up other code
-    //    // return true if this coord is <name> other coord
-    //    // i.e. for Above, return true if this coord is above other coord
-    //    public bool Above(Coord other)
-    //    {
-    //        return other.row == (row + 1) && other.col == col;
-    //    }
-
-    //    public bool Below(Coord other)
-    //    {
-    //        return other.row == (row - 1) && other.col == col;
-    //    }
-
-    //    public bool Left(Coord other)
-    //    {
-    //        return other.row == row && other.col == (col + 1);
-    //    }
-
-    //    public bool Right(Coord other)
-    //    {
-    //        return other.row == row && other.col == (col - 1);
-    //    }
-
-    //    public override string ToString()
-    //    {
-    //        return "row: " + row + " col: " + col;
-    //    }
-
-    //}
-
-
     // pointers to link to neighboring rooms
     private Room up, down, left, right;
     //public Coord loc; // coordinates of current room (row,col)
@@ -86,10 +16,18 @@ public class Room
     // store which colliders go to which rooms for ease of movement
     private Dictionary<BoxCollider2D, Room> doors = new Dictionary<BoxCollider2D, Room>();
 
+    // list of enemies in the current room
+    private List<Enemy> enemies;
+
+    private List<Vector2Int> spots;
+
+
+    /*Constructors*/
     // used for creating first room in dungeon - just has initial coords
     public Room(int r, int c)
     {
-        Debug.Log("short cons*|*|*|*|*|*|*|*|*");
+        enemies = new List<Enemy>();
+        //Debug.Log("short cons*|*|*|*|*|*|*|*|*");
         //Debug.Log("new room");
         //loc = new Coord(r, c);
         loc = new Vector2Int(r, c);
@@ -101,45 +39,51 @@ public class Room
     //public Room(Coord current, Coord source)
     public Room(Vector2Int current, Vector2Int source)
     {
-        Debug.Log("long cons*|*|*|*|*|*|*|*|*");
-        Debug.Log("cur: " + current + " source: " + source);
-        Debug.Log("locations length: " + Dungeon.locations.Count);
-        foreach (Vector2Int l in Dungeon.locations.Keys) Debug.Log("Dict " + l + " looking for: " + source);
-        foreach (KeyValuePair<Vector2Int, Room> pair in Dungeon.locations) Debug.Log("location " + pair.Key);
+        //Debug.Log("long cons*|*|*|*|*|*|*|*|*");
+        //Debug.Log("cur: " + current + " source: " + source);
+        //Debug.Log("locations length: " + Dungeon.locations.Count);
+        //foreach (Vector2Int l in Dungeon.locations.Keys) Debug.Log("Dict " + l + " looking for: " + source);
+        //foreach (KeyValuePair<Vector2Int, Room> pair in Dungeon.locations) Debug.Log("location " + pair.Key);
 
+        enemies = new List<Enemy>();
         loc = current;
         //if (loc.Above(source))
         if (Above(loc, source)) 
         {
-            Debug.Log("above cons");
-            Debug.Log(Dungeon.locations.TryGetValue(source, out down));
-            Debug.Log("down: " + down);
+            //Debug.Log("above cons");
+            //Debug.Log(Dungeon.locations.TryGetValue(source, out down));
+            Dungeon.locations.TryGetValue(source, out down);
+            //Debug.Log("down: " + down);
         }
         //else if (loc.Below(source))
         else if (Below(loc, source))
         {
-            Debug.Log("below cons");
-            Debug.Log(Dungeon.locations.TryGetValue(source, out up));
-            Debug.Log("up: " + up);
+            //Debug.Log("below cons");
+            //Debug.Log(Dungeon.locations.TryGetValue(source, out up));
+            //Debug.Log("up: " + up);
+            Dungeon.locations.TryGetValue(source, out up);
         }
         //else if (loc.Left(source))
         else if (Left(loc, source))
         {
-            Debug.Log("left cons");
-            Debug.Log(Dungeon.locations.TryGetValue(source, out right));
-            Debug.Log("right: " + right);
+            //Debug.Log("left cons");
+            //Debug.Log(Dungeon.locations.TryGetValue(source, out right));
+            //Debug.Log("right: " + right);
+            Dungeon.locations.TryGetValue(source, out right);
         }
         //else if (loc.Right(source))
         else if (Right(loc, source))
         {
-            Debug.Log("right cons");
-            Debug.Log(Dungeon.locations.TryGetValue(source, out left));
-            Debug.Log("left: " + left);
+            //Debug.Log("right cons");
+            //Debug.Log(Dungeon.locations.TryGetValue(source, out left));
+            //Debug.Log("left: " + left);
+            Dungeon.locations.TryGetValue(source, out left);
         }
 
     }
 
 
+    /*Methods*/
     // getters/setters for room pointers
     public Room GetUp() { return up; }
     public Room GetDown() { return down; }
@@ -152,6 +96,8 @@ public class Room
 
     public GameObject[,] GetTiles() { return tiles; }
     public int GetDoors() { return doors.Count; }
+    public List<Enemy> GetEnemies() { return enemies; }
+    public List<Vector2Int> GetOpenSpots() { return spots; }
 
     // check if current Vector2 is <name> the source Vector2
     public bool Above(Vector2Int cur, Vector2Int source)
@@ -179,6 +125,12 @@ public class Room
     public void AddDoor(BoxCollider2D door, Room room)
     {
         if (!doors.ContainsKey(door)) doors.Add(door, room);
+    }
+
+    // adds an enemy to the enemies list
+    public void AddEnemy(Enemy enemy)
+    {
+        enemies.Add(enemy);
     }
 
     // gets the room associated with a door collider
@@ -267,6 +219,14 @@ public class Room
         }
     }
 
+    // turns enemies in room on or off depending on active
+    public void EnemiesActive(bool active)
+    {
+        foreach (Enemy e in enemies)
+        {
+            e.gameObject.SetActive(active);
+        }
+    }
 
     // sets up 2D array of room tiles to be instantiated when player enters the room
     // modified from board_old.cs
@@ -372,6 +332,28 @@ public class Room
                 tiles[i, j] = tile;
             }
         }
+        PlaceRandom();
+    }
+
+    public void PlaceRandom()
+    {
+        // set up list of open spots
+        spots = new List<Vector2Int>();
+        for (int i = 1; i <= rows; i++)
+        {
+            for (int j = 1; j <= cols; j++)
+            {
+                spots.Add(new Vector2Int(i, j));
+            }
+        }
+
+        int obs = Random.Range(GameManager.instance.numObstacles / 2, GameManager.instance.numObstacles);
+        for (int i = 0; i < obs; i++)
+        {
+            Vector2Int location = spots[Random.Range(0, spots.Count)];
+            tiles[location.x, location.y] = GameManager.instance.walls[0];
+            spots.Remove(location);
+        }
     }
 
     public override string ToString()
@@ -389,7 +371,10 @@ public class Room
         //return ret;
 
         // print doors
-        return "up " + (up?.loc) + " down " + (down?.loc) + " left " + (left?.loc) + " right " + (right?.loc);
+        //return "up " + (up?.loc) + " down " + (down?.loc) + " left " + (left?.loc) + " right " + (right?.loc);
+
+        // print location
+        return "" + loc;
 
     }
 }

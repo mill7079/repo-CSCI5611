@@ -15,7 +15,9 @@ public class GameManager : MonoBehaviour
     public GameObject[] doors;
 
     public GameObject[] testEnemies;
-    public GameObject player;
+    //public GameObject player;
+
+    public int numObstacles = 5;
 
     // Start is called before the first frame update
     void Awake()
@@ -35,6 +37,7 @@ public class GameManager : MonoBehaviour
 
         dungeon = GetComponent<Dungeon>();
         dungeon.StartDungeon();
+
         //DontDestroyOnLoad(dungeon.gameObject);
 
         //GameObject dude = Instantiate(player, new Vector3(3,3,0f), Quaternion.identity) as GameObject;
@@ -52,7 +55,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] GetDoors() { return doors; }
     public GameObject[] GetFloors() { return floors; }
     public GameObject[] GetTestEnemies() { return testEnemies; }
-    public GameObject GetPlayer() { return player; }
+    //public GameObject GetPlayer() { return player; }
 
     // Update is called once per frame
     void Update()

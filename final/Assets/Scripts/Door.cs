@@ -15,6 +15,16 @@ public class Door : MonoBehaviour
 
             Room cur = player.GetCurrentRoom();
             //Debug.Log("cur: " + cur + " num doors: "+cur.GetDoors());
+            for (int i = Dungeon.newEnemies.Count - 1; i >= 0; i--)
+            {
+                cur.AddEnemy(Dungeon.newEnemies[i]);
+                //Dungeon.newEnemies[i].gameObject.SetActive(false);
+                Dungeon.newEnemies.Remove(Dungeon.newEnemies[i]);
+            }
+
+            cur.EnemiesActive(false);
+
+            Debug.Log("old room enemy count " + cur.GetEnemies().Count + " new enemies count " + Dungeon.newEnemies.Count);
 
             Room next = cur.GetNextRoom(door);
             if (next.GetTiles() == null) next.Create();
@@ -48,7 +58,7 @@ public class Door : MonoBehaviour
                 }
                 else if (next == cur.GetLeft())
                 {
-                    player.SetLocation(new Vector2(Dungeon.boardCols - 1, door.transform.position.y));
+                    player.SetLocation(new Vector2(Dungeon.boardCols-1, door.transform.position.y));
                     //Debug.Log("DOOR LEFT");
                 }
                 else if (next == cur.GetRight())

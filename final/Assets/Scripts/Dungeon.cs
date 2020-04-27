@@ -12,6 +12,8 @@ public class Dungeon : MonoBehaviour
 
     private Transform roomHolder;
 
+    public static List<Enemy> newEnemies;
+
     public void StartDungeon()
     {
         //Debug.Log("start dungeon");
@@ -20,6 +22,8 @@ public class Dungeon : MonoBehaviour
         //Debug.Log("plauer room: " + GameManager.instance.GetPlayer().GetComponent<PlayerController>().GetCurrentRoom());
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         player.GetComponent<PlayerController>().MoveTo(start);
+
+        newEnemies = new List<Enemy>();
         //Debug.Log("find tag player room: " + player.GetComponent<PlayerController>().GetCurrentRoom() + " " + player.GetComponent<PlayerController>().GetCurrentRoom().loc);
         MoveRoom(start);
     }
@@ -27,7 +31,8 @@ public class Dungeon : MonoBehaviour
     //public void MoveRoom(GameObject[,] floor
     public void MoveRoom(Room room) 
     {
-        Debug.Log("move to room at coords " + room.loc);
+        newEnemies.Clear();
+        //Debug.Log("move to room at coords " + room.loc);
         GameObject[,] floor = room.GetTiles();
         //if (floor == null) Debug.Log("floor null");
         //room.ClearDoors();
@@ -36,7 +41,11 @@ public class Dungeon : MonoBehaviour
         {
             foreach (Transform child in roomHolder.transform)
             {
-                GameObject.Destroy(child.gameObject);
+                if (!child.CompareTag("Enemy")) GameObject.Destroy(child.gameObject);
+                else
+                {
+                    child.SetParent(null); // deparent enemies so they aren't destroyed
+                }
             }
         }
 
@@ -65,12 +74,12 @@ public class Dungeon : MonoBehaviour
                     {
                         if (i == 0)
                         {
-                            Debug.Log("add up");
+                            //Debug.Log("add up");
                             room.AddDoor(door, room.GetUp());
                         }
                         else if (i == floor.GetLength(0) - 1)
                         {
-                            Debug.Log("add down");
+                            //Debug.Log("add down");
                             room.AddDoor(door, room.GetDown());
                         }
                     }
@@ -78,12 +87,12 @@ public class Dungeon : MonoBehaviour
                     {
                         if (j == 0)
                         {
-                            Debug.Log("add left");
+                            //Debug.Log("add left");
                             room.AddDoor(door, room.GetLeft());
                         }
                         else if (j == floor.GetLength(1) - 1)
                         {
-                            Debug.Log("add right");
+                            //Debug.Log("add right");
                             room.AddDoor(door, room.GetRight());
                         }
                     }
@@ -91,10 +100,44 @@ public class Dungeon : MonoBehaviour
 
                 instance.transform.SetParent(roomHolder);
             }
+
         }
         //Debug.Log("doors: "+room.GetDoors());
-        Debug.Log("");
-        Debug.Log(room);
-        Debug.Log("");
+        //Debug.Log("");
+        //Debug.Log(room);
+        //Debug.Log("");
+        PlaceEnemies(room);
+    }
+
+    public static void AddNewEnemy(Enemy enemy)
+    {
+        //Debug.Log("add enemy");
+        newEnemies.Add(enemy);
+        Debug.Log("new enemies length after adding: " + newEnemies.Count);
+    }
+
+    // i don't think this will work when it comes to dealing with health but we'll see TODO
+    public void PlaceEnemies(Room room)
+    {
+        List<Enemy> enemies = room.GetEnemies();
+        Debug.Log("enemies count entering place enemies " + enemies.Count + " room " + room);
+        //foreach (Enemy e in enemies)
+        //{
+        //    //Instantiate(e, new Vector2(e.transform.position.x, e.transform.position.y), Quaternion.identity);
+        //    //e.enabled = true;
+        //    e.gameObject.SetActive(true);
+        //}
+        room.EnemiesActive(true);
+
+        int x = 0;
+        while (enemies.Count + newEnemies.Count < (boardRows / 2))
+        {
+            Vector2Int spot = room.GetOpenSpots()[Random.Range(0,room.GetOpenSpots().Count)];
+            GameObject[] listEnemies = GameManager.instance.GetTestEnemies();
+            GameObject newEnemy = Instantiate(listEnemies[Random.Range(0, listEnemies.Length)], new Vector2(spot.x, spot.y), Quaternion.identity);
+            newEnemy.transform.SetParent(this.transform);
+            Debug.Log("enemies loop: enemies count " + enemies.Count + " new enemies count " + newEnemies.Count);
+            x += 1;
+        }
     }
 }
