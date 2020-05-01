@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     Animator animator;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         DontDestroyOnLoad(gameObject);
         body = GetComponent<Rigidbody2D>();
@@ -46,6 +46,8 @@ public class PlayerController : MonoBehaviour
     {
         return currentRoom;
     }
+
+    public Point GetPos() { return new Point(body.position); }
 
     public bool MoveTo(Room destination)
     {

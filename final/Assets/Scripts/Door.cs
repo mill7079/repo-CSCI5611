@@ -24,7 +24,7 @@ public class Door : MonoBehaviour
 
             cur.EnemiesActive(false);
 
-            Debug.Log("old room enemy count " + cur.GetEnemies().Count + " new enemies count " + Dungeon.newEnemies.Count);
+            //Debug.Log("old room enemy count " + cur.GetEnemies().Count + " new enemies count " + Dungeon.newEnemies.Count);
 
             Room next = cur.GetNextRoom(door);
             if (next.GetTiles() == null) next.Create();
@@ -37,11 +37,6 @@ public class Door : MonoBehaviour
             {
                 // move player to next room and set location at door they just came through
                 player.MoveTo(next);
-                //if (next == cur.GetUp()) player.SetLocation(new Vector2(Dungeon.boardRows, Dungeon.boardCols / 2));
-                //else if (next == cur.GetDown()) player.SetLocation(new Vector2(0, Dungeon.boardCols / 2));
-                //else if (next == cur.GetLeft()) player.SetLocation(new Vector2(Dungeon.boardRows / 2, Dungeon.boardCols));
-                //else if (next == cur.GetRight()) player.SetLocation(new Vector2(Dungeon.boardRows / 2, 0));
-                //else Debug.Log("Pointer failure");
 
                 //player.SetLocation(new Vector2(5, 5));
                 if (next == cur.GetUp())
@@ -58,7 +53,7 @@ public class Door : MonoBehaviour
                 }
                 else if (next == cur.GetLeft())
                 {
-                    player.SetLocation(new Vector2(Dungeon.boardCols-1, door.transform.position.y));
+                    player.SetLocation(new Vector2(Dungeon.boardCols, door.transform.position.y));
                     //Debug.Log("DOOR LEFT");
                 }
                 else if (next == cur.GetRight())

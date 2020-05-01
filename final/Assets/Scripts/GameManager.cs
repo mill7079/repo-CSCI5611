@@ -6,7 +6,6 @@ public class GameManager : MonoBehaviour
 {
 
     public static GameManager instance = null;
-    //public Board board;
     public Dungeon dungeon;
 
     // unity whyyyyy
@@ -15,9 +14,8 @@ public class GameManager : MonoBehaviour
     public GameObject[] doors;
 
     public GameObject[] testEnemies;
-    //public GameObject player;
 
-    public int numObstacles = 5;
+    public int numObstacles = 10;
 
     // Start is called before the first frame update
     void Awake()
@@ -31,17 +29,9 @@ public class GameManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
-        
-        //board = GetComponent<Board>();
-        //board.SetupBoard();
 
         dungeon = GetComponent<Dungeon>();
         dungeon.StartDungeon();
-
-        //DontDestroyOnLoad(dungeon.gameObject);
-
-        //GameObject dude = Instantiate(player, new Vector3(3,3,0f), Quaternion.identity) as GameObject;
-        //dude.transform.SetParent(dungeon.transform);
 
     }
 
@@ -61,5 +51,42 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    // uniform cost search for motion planning
+    // didn't know where would be best to put it so it's going in GameManager
+    public static Point UCS(List<Point> points, Point root, Point goal)
+    {
+        foreach (Point p in points) p.Discover(false);
+
+        Point node = null;
+        PriorityQueue<Point> frontier = new PriorityQueue<Point>();
+        frontier.Push(root, 0);
+
+        while(frontier.Size() > 0)
+        {
+            PriorityQueue<Point>.Node temp = frontier.Pop();
+            node = temp.GetKey() as Point;
+            float curr_cost = temp.GetData();
+
+            if (node == goal) return goal;
+
+            node.Discover(true);
+            foreach (Point n in node.GetNeighbors())
+            {
+                float cost = Vector2.Distance(n.GetPos(), node.GetPos());
+                if (!n.IsDiscovered() && !frontier.Contains(n))
+                {
+                    frontier.Push(n, curr_cost + cost);
+                    n.SetParent(node);
+                }
+                else if (frontier.Contains(n) && !n.IsDiscovered())
+                {
+                    frontier.UpdateCost(n, curr_cost + cost, node);
+                }
+            }
+        }
+
+        return null;
     }
 }

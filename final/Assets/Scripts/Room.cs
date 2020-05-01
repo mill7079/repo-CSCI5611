@@ -19,7 +19,11 @@ public class Room
     // list of enemies in the current room
     private List<Enemy> enemies;
 
+    // list of open floor spots
     private List<Vector2Int> spots;
+
+    // list of points for PRM
+    public List<Point> prm;
 
 
     /*Constructors*/
@@ -89,6 +93,8 @@ public class Room
     public Room GetDown() { return down; }
     public Room GetLeft() { return left; }
     public Room GetRight() { return right; }
+    public List<Point> GetPoints() { return prm; }
+    public void SetPoints(List<Point> points) { prm = points; }
     public void SetUp(Room r) { up = r; }
     public void SetDown(Room r) { down = r; }
     public void SetLeft(Room r) { left = r; }
@@ -244,6 +250,7 @@ public class Room
             {
                 // default to floor
                 GameObject tile = floors[0];
+                if (Random.Range(0, 999) % 99 == 0) tile = floors[1];
 
                 // change to wall or door if on edge of board
                 //if (i == -1 || j == -1 || i == rows || j == columns)
@@ -335,24 +342,36 @@ public class Room
         PlaceRandom();
     }
 
+    // places wall tiles in random locations throughout the room
     public void PlaceRandom()
     {
         // set up list of open spots
         spots = new List<Vector2Int>();
-        for (int i = 1; i <= rows; i++)
+        //for (int i = 1; i <= rows; i++)
+        //{
+        //    for (int j = 0; j < cols; j++)
+        //    {
+        //        spots.Add(new Vector2Int(j,i));
+        //    }
+        //}
+
+        // j-1, floor.GetLength(0) - i - 1
+        for (int i = 2; i < tiles.GetLength(0) - 2; i++)
         {
-            for (int j = 1; j <= cols; j++)
+            for (int j = 2; j < tiles.GetLength(1) - 2; j++)
             {
                 spots.Add(new Vector2Int(i, j));
             }
         }
 
-        int obs = Random.Range(GameManager.instance.numObstacles / 2, GameManager.instance.numObstacles);
-        for (int i = 0; i < obs; i++)
+        int numObs = Random.Range(GameManager.instance.numObstacles / 2, GameManager.instance.numObstacles);
+        for (int i = 0; i < numObs && !(spots.Count == 0); i++)
         {
             Vector2Int location = spots[Random.Range(0, spots.Count)];
             tiles[location.x, location.y] = GameManager.instance.walls[0];
+            //tiles[location.y, location.x] = GameManager.instance.walls[0];
             spots.Remove(location);
+            //Debug.Log("wall at " + location + " in room space and (" + (location.y) + ", " + (tiles.GetLength(0) - location.x - 1)+") in unity space");
         }
     }
 
