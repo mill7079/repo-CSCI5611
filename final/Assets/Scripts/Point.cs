@@ -7,7 +7,7 @@ public class Point
     Vector2 pos;
     List<Point> neighbors;
     Point parent;
-    bool discovered = false;
+    public bool discovered = false;
     
 
     public Point(Vector2 p)
@@ -40,6 +40,6 @@ public class Point
     public Vector2 GetPos() { return pos; }
     public Point GetParent() { return parent; }
     public List<Point> GetNeighbors() { return neighbors; }
-    public bool IsDiscovered() { return discovered; }
+    //public bool IsDiscovered() { return discovered; }
 
 }

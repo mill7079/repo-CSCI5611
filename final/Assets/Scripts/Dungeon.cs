@@ -12,6 +12,8 @@ public class Dungeon : MonoBehaviour
 
     public int numPoints = 500;
     public float neighborRadius = boardRows / 3.0f;
+    GameObject player;
+    PlayerController playerController;
 
     private Transform roomHolder;
 
@@ -20,10 +22,15 @@ public class Dungeon : MonoBehaviour
     public void Update()
     {
         // recalculate enemy paths every so often
-        if (Time.frameCount % 20 == 0)
+        if (Time.frameCount % 240 == 0)
         {
-            foreach (Enemy e in current.GetEnemies()) UpdateEnemy(e);
-            foreach (Enemy e in newEnemies) UpdateEnemy(e);
+            //foreach (Enemy e in current.GetEnemies()) UpdateEnemy(e);
+            //foreach (Enemy e in newEnemies) UpdateEnemy(e);
+            for (int i = 0; i < current.GetEnemies().Count + newEnemies.Count; i++)
+            {
+                if (i < current.GetEnemies().Count) UpdateEnemy(current.GetEnemies()[i]);
+                if (i < newEnemies.Count) UpdateEnemy(newEnemies[i]);
+            }
         }
     }
 
@@ -33,9 +40,10 @@ public class Dungeon : MonoBehaviour
         start = new Room(0, 0);
         current = start;
         //GameManager.instance.GetPlayer().GetComponent<PlayerController>().MoveTo(start);
-        //Debug.Log("plauer room: " + GameManager.instance.GetPlayer().GetComponent<PlayerController>().GetCurrentRoom());
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        player.GetComponent<PlayerController>().MoveTo(start);
+        player = GameObject.FindGameObjectWithTag("Player");
+        playerController = player.GetComponent<PlayerController>();
+        //player.GetComponent<PlayerController>().MoveTo(start);
+        playerController.MoveTo(start);
 
         newEnemies = new List<Enemy>();
         //Debug.Log("find tag player room: " + player.GetComponent<PlayerController>().GetCurrentRoom() + " " + player.GetComponent<PlayerController>().GetCurrentRoom().loc);
@@ -129,19 +137,13 @@ public class Dungeon : MonoBehaviour
         //Point playerLoc = ClosestPoint(GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().GetPos(), room.GetPoints());
         foreach (Enemy e in enemies)
         {
-            //Point enemyStart = ClosestPoint(e.GetPos(), room.GetPoints());
-            //e.UpdateEndpoints(enemyStart, playerLoc);
-            //GameManager.UCS(room.GetPoints(), enemyStart, playerLoc);
-            //e.CreatePath();
+
             UpdateEnemy(e);
         }
 
         foreach (Enemy e in newEnemies)
         {
-            //Point enemyStart = ClosestPoint(e.GetPos(), room.GetPoints());
-            //e.UpdateEndpoints(enemyStart, playerLoc);
-            //GameManager.UCS(room.GetPoints(), enemyStart, playerLoc);
-            //e.CreatePath();
+
             UpdateEnemy(e);
         }
     } // end MoveRoom
@@ -226,11 +228,18 @@ public class Dungeon : MonoBehaviour
     public static Point ClosestPoint(Point point, List<Point> points)
     {
         Point closest = points[0];
-        foreach (Point p in points)
+        //foreach (Point p in points)
+        //{
+        //    if (Vector2.Distance(point.GetPos(), p.GetPos()) < Vector2.Distance(point.GetPos(), closest.GetPos()))
+        //    {
+        //        closest = p;
+        //    }
+        //}
+        for (int i = 0; i < points.Count; i++)
         {
-            if (Vector2.Distance(point.GetPos(), p.GetPos()) < Vector2.Distance(point.GetPos(), closest.GetPos()))
+            if (Vector2.Distance(point.GetPos(), points[i].GetPos()) < Vector2.Distance(point.GetPos(), closest.GetPos()))
             {
-                closest = p;
+                closest = points[i];
             }
         }
 
@@ -240,7 +249,9 @@ public class Dungeon : MonoBehaviour
     public void UpdateEnemy(Enemy e)
     {
         Point enemyStart = ClosestPoint(e.GetPos(), current.GetPoints());
-        Point playerLoc = ClosestPoint(GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().GetPos(), current.GetPoints());
+        //Point playerLoc = ClosestPoint(GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().GetPos(), current.GetPoints());
+        //Point playerLoc = ClosestPoint(player.GetComponent<PlayerController>().GetPos(), current.GetPoints());
+        Point playerLoc = ClosestPoint(playerController.GetPos(), current.GetPoints());
 
         e.UpdateEndpoints(enemyStart, playerLoc);
         GameManager.UCS(current.GetPoints(), enemyStart, playerLoc);

@@ -57,34 +57,74 @@ public class GameManager : MonoBehaviour
     // didn't know where would be best to put it so it's going in GameManager
     public static Point UCS(List<Point> points, Point root, Point goal)
     {
-        foreach (Point p in points) p.Discover(false);
+        //foreach (Point p in points) p.Discover(false);
+        for (int i = 0; i < points.Count; i++)
+        {
+            points[i].Discover(false);
+        }
 
         Point node = null;
-        PriorityQueue<Point> frontier = new PriorityQueue<Point>();
+        //PriorityQueue<Point> frontier = new PriorityQueue<Point>();
+        PQ<Point> frontier = new PQ<Point>();
         frontier.Push(root, 0);
 
         while(frontier.Size() > 0)
         {
-            PriorityQueue<Point>.Node temp = frontier.Pop();
-            node = temp.GetKey() as Point;
+            //PriorityQueue<Point>.Node temp = frontier.Pop();
+            PQ<Point>.Node temp = frontier.Pop();
+            //node = temp.GetKey() as Point;
+            node = temp.k as Point;
             float curr_cost = temp.GetData();
 
-            if (node == goal) return goal;
+            if (node == goal)
+            {
+                //Debug.Log("found goal");
+                return goal;
+            }
 
             node.Discover(true);
-            foreach (Point n in node.GetNeighbors())
+            //foreach (Point n in node.GetNeighbors())
+            //{
+            //    float cost = Vector2.Distance(n.GetPos(), node.GetPos());
+            //    if (!n.IsDiscovered() && !frontier.Contains(n))
+            //    {
+            //        frontier.Push(n, curr_cost + cost);
+            //        n.SetParent(node);
+            //    }
+            //    else if (frontier.Contains(n) && !n.IsDiscovered())
+            //    {
+            //        frontier.UpdateCost(n, curr_cost + cost, node);
+            //    }
+            //}
+            List<Point> neighbors = node.GetNeighbors();
+            for (int i = 0; i < neighbors.Count; i++)
             {
-                float cost = Vector2.Distance(n.GetPos(), node.GetPos());
-                if (!n.IsDiscovered() && !frontier.Contains(n))
+                float cost = Vector2.Distance(neighbors[i].GetPos(), node.GetPos());
+                //if (!neighbors[i].IsDiscovered() && !frontier.Contains(neighbors[i]))
+
+                //if (!neighbors[i].discovered && !frontier.Contains(neighbors[i]))
+                //{
+                //    frontier.Push(neighbors[i], curr_cost + cost);
+                //    neighbors[i].SetParent(node);
+                //}
+                //else if (frontier.Contains(neighbors[i]) && !neighbors[i].discovered)
+                ////else if (frontier.Contains(neighbors[i]) && !neighbors[i].IsDiscovered())
+                //{
+                //    frontier.UpdateCost(neighbors[i], curr_cost + cost, node);
+                //}
+                if (!neighbors[i].discovered)
                 {
-                    frontier.Push(n, curr_cost + cost);
-                    n.SetParent(node);
-                }
-                else if (frontier.Contains(n) && !n.IsDiscovered())
-                {
-                    frontier.UpdateCost(n, curr_cost + cost, node);
+                    if (!frontier.Contains(neighbors[i]))
+                    {
+                        frontier.Push(neighbors[i], curr_cost + cost);
+                        neighbors[i].SetParent(node);
+                    } else
+                    {
+                        frontier.UpdateCost(neighbors[i], curr_cost + cost, node);
+                    }
                 }
             }
+
         }
 
         return null;

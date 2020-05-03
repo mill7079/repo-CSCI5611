@@ -59,17 +59,17 @@ public class Enemy : MonoBehaviour
             }
         }
 
-        if (animator != null)
-        {
-            float changeX = pos.x - body.position.x;
-            float changeY = pos.y - body.position.y;
+        //if (animator != null)
+        //{
+        //    float changeX = pos.x - body.position.x;
+        //    float changeY = pos.y - body.position.y;
 
-            if (changeX < 0) animator.SetFloat("LookX", -1);
-            else animator.SetFloat("LookX", 1);
+        //    if (changeX < 0) animator.SetFloat("LookX", -1);
+        //    else animator.SetFloat("LookX", 1);
 
-            if (changeY < 0) animator.SetFloat("LookY", -1);
-            else animator.SetFloat("LookY", 1);
-        }
+        //    if (changeY < 0) animator.SetFloat("LookY", -1);
+        //    else animator.SetFloat("LookY", 1);
+        //}
     }
 
     public Point GetPos() { return new Point(body.position); }
@@ -90,14 +90,18 @@ public class Enemy : MonoBehaviour
     // backtrace from goal to create path
     public void CreatePath()
     {
+        path = new List<Vector2>();
+        //Debug.Log("start: " + start.GetPos() + " end: " + goal.GetPos());
         if (start == goal) return;
 
         Point g = goal;
         Vector2 endPos = goal.GetPos();
-        while (endPos != start.GetPos())
+        int x = 0;
+        while (endPos != start.GetPos() && x < 100)
         {
+            //Debug.Log("endpos: "+endPos + " start: " + start.GetPos());
             path.Insert(0, endPos);
-            g = goal.GetParent();
+            g = g.GetParent();
             try
             {
                 endPos = g.GetPos();
@@ -107,6 +111,7 @@ public class Enemy : MonoBehaviour
                 Debug.Log("fuck me i guess, never did figure out why this happens");
                 return;
             }
+            x++;
         }
         //curPath = path.get(1).sub(path.get(0));
         path.Insert(0, endPos);
