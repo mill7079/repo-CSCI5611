@@ -5,12 +5,13 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public float move = 3.0f;
+    //public float move = 3.0f;
     public int radius = 5;
     private int direction = 1;
     Rigidbody2D body;
     Animator animator;
     Vector2 origin;
+    public bool pathCreated = false;
 
     // motion planning
     Point start, goal;
@@ -90,6 +91,7 @@ public class Enemy : MonoBehaviour
     // backtrace from goal to create path
     public void CreatePath()
     {
+        pathCreated = true;
         path = new List<Vector2>();
         //Debug.Log("start: " + start.GetPos() + " end: " + goal.GetPos());
         if (start == goal) return;
@@ -116,5 +118,12 @@ public class Enemy : MonoBehaviour
         //curPath = path.get(1).sub(path.get(0));
         path.Insert(0, endPos);
         //curPath = path[1] - body.position;
+    }
+
+    // creates simple path from a to b
+    public void InitPath(Point a, Point b)
+    {
+        path.Add(a.GetPos());
+        path.Add(b.GetPos());
     }
 }

@@ -22,10 +22,8 @@ public class Dungeon : MonoBehaviour
     public void Update()
     {
         // recalculate enemy paths every so often
-        if (Time.frameCount % 240 == 0)
+        if (Time.frameCount % 60 == 0)
         {
-            //foreach (Enemy e in current.GetEnemies()) UpdateEnemy(e);
-            //foreach (Enemy e in newEnemies) UpdateEnemy(e);
             for (int i = 0; i < current.GetEnemies().Count + newEnemies.Count; i++)
             {
                 if (i < current.GetEnemies().Count) UpdateEnemy(current.GetEnemies()[i]);
@@ -228,13 +226,6 @@ public class Dungeon : MonoBehaviour
     public static Point ClosestPoint(Point point, List<Point> points)
     {
         Point closest = points[0];
-        //foreach (Point p in points)
-        //{
-        //    if (Vector2.Distance(point.GetPos(), p.GetPos()) < Vector2.Distance(point.GetPos(), closest.GetPos()))
-        //    {
-        //        closest = p;
-        //    }
-        //}
         for (int i = 0; i < points.Count; i++)
         {
             if (Vector2.Distance(point.GetPos(), points[i].GetPos()) < Vector2.Distance(point.GetPos(), closest.GetPos()))
@@ -248,6 +239,11 @@ public class Dungeon : MonoBehaviour
 
     public void UpdateEnemy(Enemy e)
     {
+        if(e.pathCreated && GoodPath(e.GetPos().GetPos(), playerController.GetPos().GetPos())) {
+            e.InitPath(e.GetPos(), playerController.GetPos());
+            return;
+        }
+
         Point enemyStart = ClosestPoint(e.GetPos(), current.GetPoints());
         //Point playerLoc = ClosestPoint(GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().GetPos(), current.GetPoints());
         //Point playerLoc = ClosestPoint(player.GetComponent<PlayerController>().GetPos(), current.GetPoints());
@@ -257,5 +253,4 @@ public class Dungeon : MonoBehaviour
         GameManager.UCS(current.GetPoints(), enemyStart, playerLoc);
         e.CreatePath();
     }
-
 }
