@@ -30,8 +30,8 @@ public class Dungeon : MonoBehaviour
             {
                 //Debug.Log("8888****KILLED ENEMY****8888");
                 current.GetEnemies().Remove(enemies[i]);
-                enemies[i].gameObject.SetActive(false);
-                GameObject.Destroy(enemies[i]);
+                //enemies[i].gameObject.SetActive(false);
+                GameObject.Destroy(enemies[i].gameObject);
             }
         }
 
@@ -41,8 +41,8 @@ public class Dungeon : MonoBehaviour
             {
                 Enemy e = newEnemies[i];
                 newEnemies.Remove(e);
-                e.gameObject.SetActive(false);
-                GameObject.Destroy(e);
+                //e.gameObject.SetActive(false);
+                GameObject.Destroy(e.gameObject);
             }
         }
 
