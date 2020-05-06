@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     public float attackRadius;
     public float attackAngle;
     private Vector2 attackDir;
+    private bool isDead = false;
 
 
     void Awake()
@@ -35,6 +36,11 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isDead)
+        {
+            Debug.Log("you be dead");
+            return;
+        }
         /** moving/animating **/
 
         float horizontal = Input.GetAxis("Horizontal");
@@ -71,7 +77,7 @@ public class PlayerController : MonoBehaviour
 
             // find enemies in range (layer 8 is units)
             Collider2D[] enemiesInRange = Physics2D.OverlapCircleAll(body.position, attackRadius, (1 << 8));
-            Debug.Log("found " + enemiesInRange.Length + " enemies in circular range");
+            //Debug.Log("found " + enemiesInRange.Length + " enemies in circular range");
             for (int i = 0; i < enemiesInRange.Length; i++)
             {
                 if (!enemiesInRange[i].CompareTag("Enemy")) continue;
@@ -80,12 +86,12 @@ public class PlayerController : MonoBehaviour
                 Rigidbody2D eBody = e.GetComponent<Rigidbody2D>();
                 Vector2 toEnemy = eBody.position - body.position;
 
-                Debug.Log("Angle: " + Vector2.Angle(look, toEnemy));
+                //Debug.Log("Angle: " + Vector2.Angle(look, toEnemy));
                 if (Vector2.Angle(look, toEnemy) < attackAngle)
                 {
                     // enemy is in range
                     e.Damage(attack);
-                    Debug.Log("attacked enemy");
+                    //Debug.Log("attacked enemy");
                 }
             }
         }
@@ -112,6 +118,15 @@ public class PlayerController : MonoBehaviour
         //body.MovePosition(pos);
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         player.transform.position = pos;
+    }
+
+    public void Damage(int att)
+    {
+        Debug.Log("ouch");
+        if (att - defense < 1) health -= 1;
+        else health -= (att - defense);
+
+        if (health <= 0) isDead = true;
     }
 
     // handle triggers, mostly for doors

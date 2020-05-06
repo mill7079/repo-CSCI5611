@@ -22,13 +22,13 @@ public class Dungeon : MonoBehaviour
     public void Update()
     {
         List<Enemy> enemies = current.GetEnemies();
-        Debug.Log("enemies count " + enemies.Count);
+        //Debug.Log("enemies count " + enemies.Count);
         for (int i = enemies.Count - 1; i >= 0; i--)
         {
-            Debug.Log("enemy health: " + enemies[i].health);
+            //Debug.Log("enemy health: " + enemies[i].health);
             if (enemies[i].IsDead())
             {
-                Debug.Log("8888****KILLED ENEMY****8888");
+                //Debug.Log("8888****KILLED ENEMY****8888");
                 current.GetEnemies().Remove(enemies[i]);
                 enemies[i].gameObject.SetActive(false);
                 GameObject.Destroy(enemies[i]);

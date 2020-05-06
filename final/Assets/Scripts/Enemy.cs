@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    GameObject player;
+    PlayerController playerController;
+
     //public float move = 3.0f;
     private int direction = 1;
     Rigidbody2D body;
@@ -35,27 +38,14 @@ public class Enemy : MonoBehaviour
         Physics2D.IgnoreLayerCollision(8, 10);
 
         Dungeon.AddNewEnemy(this);
+
+        player = GameObject.FindGameObjectWithTag("Player");
+        playerController = player.GetComponent<PlayerController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        // motion planning but for now just random
-        //Vector2 pos = body.position;
-
-        ////pos.y = pos.y + move * Time.deltaTime * direction;
-        //pos.y += move * Time.deltaTime * direction;
-        //if (animator != null)
-        //{
-        //    animator.SetFloat("LookX", 0);
-        //    animator.SetFloat("LookY", direction);
-        //}
-
-        //if (Mathf.Abs(origin.y - pos.y) >= radius) direction *= -1;
-
-        //body.MovePosition(pos);
-
-
         // motion planning with path smoothing
         Vector2 pos = body.position;
         for (int i = path.Count - 1; i >= 0; i--)
@@ -68,6 +58,7 @@ public class Enemy : MonoBehaviour
             }
         }
 
+        // animation
         if (animator != null)
         {
             float changeX = pos.x - body.position.x;
@@ -78,6 +69,12 @@ public class Enemy : MonoBehaviour
 
             if (changeY < 0) animator.SetFloat("LookY", -1);
             else animator.SetFloat("LookY", 1);
+        }
+
+        // attack player
+        if (Time.frameCount % 60 == 0 && (player.gameObject.transform.position - this.gameObject.transform.position).magnitude <= attackRadius)
+        {
+            playerController.Damage(attack);
         }
     }
 
@@ -149,7 +146,6 @@ public class Enemy : MonoBehaviour
     public void Damage(int att)
     {
         health -= (att - defense);
-        Debug.Log("health: " + health);
         if (health <= 0) isDead = true;
     }
 
