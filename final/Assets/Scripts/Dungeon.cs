@@ -10,7 +10,7 @@ public class Dungeon : MonoBehaviour
     public static double doorChance = 2; // door should generate ~50% of time with no preexisting door
     public Room start, current;
 
-    public int numPoints = 500;
+    public int numPoints = 1000;
     public float neighborRadius = boardRows / 3.0f;
     GameObject player;
     PlayerController playerController;
@@ -186,7 +186,7 @@ public class Dungeon : MonoBehaviour
         {
             // should be exclusive of upper bound because ints but who knows
             Vector2 curPoint = new Vector2(Random.Range(0.5f, boardRows + 0.5f), Random.Range(0.5f, boardCols + 0.5f));
-            if (Physics2D.OverlapPoint(curPoint) == null)
+            if (Physics2D.OverlapPoint(curPoint, 10) == null)
             {
                 points.Add(new Point(curPoint));
             }
@@ -219,7 +219,7 @@ public class Dungeon : MonoBehaviour
     public static bool GoodPath(Vector2 a, Vector2 b)
     {
         Vector2 dir = b - a;
-        return Physics2D.Raycast(a, dir, dir.magnitude, LayerMask.GetMask("Obstacles")).collider == null;
+        return Physics2D.Raycast(a, dir, dir.magnitude, LayerMask.GetMask("Configuration")).collider == null;
     }
 
     // finds the closest point to a given point from a list of points

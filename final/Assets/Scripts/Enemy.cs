@@ -16,8 +16,12 @@ public class Enemy : MonoBehaviour
     // motion planning
     Point start, goal;
     List<Vector2> path;
-    //Vector2 curPath;
-    //float dt = 0.058f;
+    float dt = 0.009f;
+
+    // rpg mechanics
+    public int health;
+    public int attack;
+    public int defense;
 
     void Awake()
     {
@@ -25,6 +29,7 @@ public class Enemy : MonoBehaviour
         origin = body.position;
         animator = GetComponent<Animator>();
         path = new List<Vector2>();
+        Physics2D.IgnoreLayerCollision(8, 10);
 
         Dungeon.AddNewEnemy(this);
     }
@@ -54,23 +59,23 @@ public class Enemy : MonoBehaviour
         {
             if (Dungeon.GoodPath(pos, path[i]))
             {
-                Vector2 move = (path[i] - pos).normalized * Time.deltaTime;
+                Vector2 move = (path[i] - pos).normalized * dt;
                 body.MovePosition(body.position + move);
                 break;
             }
         }
 
-        //if (animator != null)
-        //{
-        //    float changeX = pos.x - body.position.x;
-        //    float changeY = pos.y - body.position.y;
+        if (animator != null)
+        {
+            float changeX = pos.x - body.position.x;
+            float changeY = pos.y - body.position.y;
 
-        //    if (changeX < 0) animator.SetFloat("LookX", -1);
-        //    else animator.SetFloat("LookX", 1);
+            if (changeX < 0) animator.SetFloat("LookX", -1);
+            else animator.SetFloat("LookX", 1);
 
-        //    if (changeY < 0) animator.SetFloat("LookY", -1);
-        //    else animator.SetFloat("LookY", 1);
-        //}
+            if (changeY < 0) animator.SetFloat("LookY", -1);
+            else animator.SetFloat("LookY", 1);
+        }
     }
 
     public Point GetPos() { return new Point(body.position); }
@@ -92,17 +97,20 @@ public class Enemy : MonoBehaviour
     public void CreatePath()
     {
         pathCreated = true;
-        path = new List<Vector2>();
+        //path = new List<Vector2>();
+        List<Vector2> newPath = new List<Vector2>();
+        bool okPath = true;
         //Debug.Log("start: " + start.GetPos() + " end: " + goal.GetPos());
         if (start == goal) return;
 
         Point g = goal;
         Vector2 endPos = goal.GetPos();
         int x = 0;
-        while (endPos != start.GetPos() && x < 100)
+        while (endPos != start.GetPos() && x < 1000)
         {
             //Debug.Log("endpos: "+endPos + " start: " + start.GetPos());
-            path.Insert(0, endPos);
+            //path.Insert(0, endPos);
+            newPath.Insert(0, endPos);
             g = g.GetParent();
             try
             {
@@ -111,12 +119,19 @@ public class Enemy : MonoBehaviour
             catch (Exception)
             {
                 Debug.Log("fuck me i guess, never did figure out why this happens");
-                return;
+                okPath = false;
+                break;
+                //return;
             }
             x++;
         }
         //curPath = path.get(1).sub(path.get(0));
-        path.Insert(0, endPos);
+
+        //path.Insert(0, endPos);
+        newPath.Insert(0, endPos);
+
+        // only update path if there is a path
+        if (okPath) path = newPath;
         //curPath = path[1] - body.position;
     }
 

@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
+        Physics2D.IgnoreLayerCollision(8, 10);
 
         dungeon = GetComponent<Dungeon>();
         dungeon.StartDungeon();
@@ -65,13 +66,15 @@ public class GameManager : MonoBehaviour
 
         Point node = null;
         //PriorityQueue<Point> frontier = new PriorityQueue<Point>();
-        PQ<Point> frontier = new PQ<Point>();
+        //PQ<Point> frontier = new PQ<Point>();
+        PQHeap<Point> frontier = new PQHeap<Point>(null);
         frontier.Push(root, 0);
 
         while(frontier.Size() > 0)
         {
             //PriorityQueue<Point>.Node temp = frontier.Pop();
-            PQ<Point>.Node temp = frontier.Pop();
+            //PQ<Point>.Node temp = frontier.Pop();
+            PQHeap<Point>.Node temp = frontier.Pop();
             //node = temp.GetKey() as Point;
             node = temp.k as Point;
             float curr_cost = temp.GetData();

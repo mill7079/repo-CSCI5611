@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
 
         animator = GetComponent<Animator>();
+        Physics2D.IgnoreLayerCollision(8, 10);
     }
 
     // Update is called once per frame
