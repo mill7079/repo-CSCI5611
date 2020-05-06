@@ -6,7 +6,6 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     //public float move = 3.0f;
-    public int radius = 5;
     private int direction = 1;
     Rigidbody2D body;
     Animator animator;
@@ -22,6 +21,10 @@ public class Enemy : MonoBehaviour
     public int health;
     public int attack;
     public int defense;
+    public float attackRadius;
+    public int speed; // affects movement speed
+    public GameObject rangedAttack; // if null, unit has no ranged attack; otherwise holds projectile
+    private bool isDead = false;
 
     void Awake()
     {
@@ -59,7 +62,7 @@ public class Enemy : MonoBehaviour
         {
             if (Dungeon.GoodPath(pos, path[i]))
             {
-                Vector2 move = (path[i] - pos).normalized * dt;
+                Vector2 move = (path[i] - pos).normalized * dt * speed;
                 body.MovePosition(body.position + move);
                 break;
             }
@@ -118,7 +121,7 @@ public class Enemy : MonoBehaviour
             }
             catch (Exception)
             {
-                Debug.Log("fuck me i guess, never did figure out why this happens");
+                // path to user does not exist - keep on original path
                 okPath = false;
                 break;
                 //return;
@@ -140,5 +143,18 @@ public class Enemy : MonoBehaviour
     {
         path.Add(a.GetPos());
         path.Add(b.GetPos());
+    }
+
+    // handles attack from player
+    public void Damage(int att)
+    {
+        health -= (att - defense);
+        Debug.Log("health: " + health);
+        if (health <= 0) isDead = true;
+    }
+
+    public bool IsDead()
+    {
+        return isDead;
     }
 }

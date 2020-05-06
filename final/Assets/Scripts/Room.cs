@@ -272,7 +272,7 @@ public class Room
 
                         // otherwise, there'll be a door
                         tile = doors[0];
-                        BoxCollider2D door = tile.GetComponent<BoxCollider2D>();
+                        //BoxCollider2D door = tile.GetComponent<BoxCollider2D>();
 
                         // if no room exists in that direction, add one
                         // door was randomly generated in that direction
@@ -291,7 +291,7 @@ public class Room
                         }
 
                         tile = doors[0];
-                        BoxCollider2D door = tile.GetComponent<BoxCollider2D>();
+                        //BoxCollider2D door = tile.GetComponent<BoxCollider2D>();
 
                         if (down == null)
                         {
@@ -308,7 +308,7 @@ public class Room
                         }
 
                         tile = doors[0];
-                        BoxCollider2D door = tile.GetComponent<BoxCollider2D>();
+                        //BoxCollider2D door = tile.GetComponent<BoxCollider2D>();
 
                         if (left == null)
                         {
@@ -325,7 +325,7 @@ public class Room
                         }
 
                         tile = doors[0];
-                        BoxCollider2D door = tile.GetComponent<BoxCollider2D>();
+                        //BoxCollider2D door = tile.GetComponent<BoxCollider2D>();
 
                         if (right == null)
                         {

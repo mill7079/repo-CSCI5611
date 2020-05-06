@@ -12,7 +12,15 @@ public class PlayerController : MonoBehaviour
 
     Animator animator;
 
-    // Start is called before the first frame update
+    // rpg mechanics
+    public int health;
+    public int attack;
+    public int defense;
+    public float attackRadius;
+    public float attackAngle;
+    private Vector2 attackDir;
+
+
     void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -20,11 +28,15 @@ public class PlayerController : MonoBehaviour
 
         animator = GetComponent<Animator>();
         Physics2D.IgnoreLayerCollision(8, 10);
+
+        attackDir = lookDirection;
     }
 
     // Update is called once per frame
     void Update()
     {
+        /** moving/animating **/
+
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
         Vector2 move = new Vector2(horizontal, vertical);
@@ -40,6 +52,43 @@ public class PlayerController : MonoBehaviour
         Vector2 position = body.position;
         position = position + move * moveSpeed * Time.deltaTime;
         body.MovePosition(position);
+
+
+        /** attacking **/
+
+        // ensure player is always able to attack even if not moving
+        if (!Mathf.Approximately(move.magnitude, 0.0f))
+        {
+            attackDir = move;
+            attackDir.Normalize();
+        }
+
+        // fires selected physical attack
+        if (Input.GetButtonDown("Fire1"))
+        {
+            // attack in direction player is facing
+            Vector3 look = new Vector3(attackDir.x, attackDir.y, 0);
+
+            // find enemies in range (layer 8 is units)
+            Collider2D[] enemiesInRange = Physics2D.OverlapCircleAll(body.position, attackRadius, (1 << 8));
+            Debug.Log("found " + enemiesInRange.Length + " enemies in circular range");
+            for (int i = 0; i < enemiesInRange.Length; i++)
+            {
+                if (!enemiesInRange[i].CompareTag("Enemy")) continue;
+
+                Enemy e = enemiesInRange[i].GetComponent<Enemy>();
+                Rigidbody2D eBody = e.GetComponent<Rigidbody2D>();
+                Vector2 toEnemy = eBody.position - body.position;
+
+                Debug.Log("Angle: " + Vector2.Angle(look, toEnemy));
+                if (Vector2.Angle(look, toEnemy) < attackAngle)
+                {
+                    // enemy is in range
+                    e.Damage(attack);
+                    Debug.Log("attacked enemy");
+                }
+            }
+        }
 
     }
 

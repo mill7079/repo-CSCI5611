@@ -21,12 +21,38 @@ public class Dungeon : MonoBehaviour
 
     public void Update()
     {
+        List<Enemy> enemies = current.GetEnemies();
+        Debug.Log("enemies count " + enemies.Count);
+        for (int i = enemies.Count - 1; i >= 0; i--)
+        {
+            Debug.Log("enemy health: " + enemies[i].health);
+            if (enemies[i].IsDead())
+            {
+                Debug.Log("8888****KILLED ENEMY****8888");
+                current.GetEnemies().Remove(enemies[i]);
+                enemies[i].gameObject.SetActive(false);
+                GameObject.Destroy(enemies[i]);
+            }
+        }
+
+        for (int i = newEnemies.Count - 1; i >= 0; i--)
+        {
+            if (newEnemies[i].IsDead())
+            {
+                Enemy e = newEnemies[i];
+                newEnemies.Remove(e);
+                e.gameObject.SetActive(false);
+                GameObject.Destroy(e);
+            }
+        }
+
+
         // recalculate enemy paths every so often
         if (Time.frameCount % 60 == 0)
         {
-            for (int i = 0; i < current.GetEnemies().Count + newEnemies.Count; i++)
+            for (int i = 0; i < enemies.Count + newEnemies.Count; i++)
             {
-                if (i < current.GetEnemies().Count) UpdateEnemy(current.GetEnemies()[i]);
+                if (i < enemies.Count) UpdateEnemy(enemies[i]);
                 if (i < newEnemies.Count) UpdateEnemy(newEnemies[i]);
             }
         }
