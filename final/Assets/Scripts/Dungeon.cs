@@ -1,17 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Dungeon : MonoBehaviour
 {
-    //public static Dictionary<Room.Coord, Room> locations = new Dictionary<Room.Coord, Room>();
     public static Dictionary<Vector2Int, Room> locations = new Dictionary<Vector2Int, Room>();
     public static int boardRows = 8, boardCols = 8;
     public static double doorChance = 2; // door should generate ~50% of time with no preexisting door
     public Room start, current;
 
-    public int numPoints = 1000;
-    public float neighborRadius = boardRows / 3.0f;
+    public int numPoints = 1000;  // number of points in PRM 
+    public float neighborRadius = boardRows / 3.0f;  // used for generating PRM
+
     GameObject player;
     PlayerController playerController;
 
@@ -19,8 +20,12 @@ public class Dungeon : MonoBehaviour
 
     public static List<Enemy> newEnemies;
 
+    // GUI
+    public GUIStyle style = new GUIStyle();
+
     public void Update()
     {
+        // remove enemies that are dead
         List<Enemy> enemies = current.GetEnemies();
         //Debug.Log("enemies count " + enemies.Count);
         for (int i = enemies.Count - 1; i >= 0; i--)
@@ -35,6 +40,7 @@ public class Dungeon : MonoBehaviour
             }
         }
 
+        // really not sure when newEnemies get added to the room's enemies
         for (int i = newEnemies.Count - 1; i >= 0; i--)
         {
             if (newEnemies[i].IsDead())
@@ -66,7 +72,6 @@ public class Dungeon : MonoBehaviour
         //GameManager.instance.GetPlayer().GetComponent<PlayerController>().MoveTo(start);
         player = GameObject.FindGameObjectWithTag("Player");
         playerController = player.GetComponent<PlayerController>();
-        //player.GetComponent<PlayerController>().MoveTo(start);
         playerController.MoveTo(start);
 
         newEnemies = new List<Enemy>();
@@ -96,7 +101,6 @@ public class Dungeon : MonoBehaviour
             }
         }
 
-        //roomHolder = new GameObject("Dungeon").transform;
         roomHolder = this.transform;
         for (int i = 0; i < floor.GetLength(0); i++)
         {
@@ -263,6 +267,7 @@ public class Dungeon : MonoBehaviour
         return closest;
     }
 
+    // update positions of enemies, re-finding path if required
     public void UpdateEnemy(Enemy e)
     {
         if(e.pathCreated && GoodPath(e.GetPos().GetPos(), playerController.GetPos().GetPos())) {
@@ -278,5 +283,23 @@ public class Dungeon : MonoBehaviour
         e.UpdateEndpoints(enemyStart, playerLoc);
         GameManager.UCS(current.GetPoints(), enemyStart, playerLoc);
         e.CreatePath();
+    }
+
+    // GUI
+    void GameOver(int windowID)
+    {
+        GUI.Label(new Rect(350, 500, 300, 100), "You have died.", style);
+        if (GUI.Button(new Rect(350, 600, 400, 100), "Restart", style))
+        {
+            Debug.Log("pressed restart");
+            //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            //StartDungeon();
+        }
+    }
+    private void OnGUI()
+    {
+        if (!playerController.IsDead()) return;
+
+        GUI.Window(0, new Rect(500, 0, 1000, 1000), GameOver, "Game Over");
     }
 }

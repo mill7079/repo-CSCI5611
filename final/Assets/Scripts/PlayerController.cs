@@ -21,16 +21,19 @@ public class PlayerController : MonoBehaviour
     private Vector2 attackDir;
     private bool isDead = false;
 
+    Particles magic;
 
     void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
         body = GetComponent<Rigidbody2D>();
 
         animator = GetComponent<Animator>();
         Physics2D.IgnoreLayerCollision(8, 10);
 
         attackDir = lookDirection;
+
+        magic = GetComponentInChildren<Particles>();
     }
 
     // Update is called once per frame
@@ -38,7 +41,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isDead)
         {
-            Debug.Log("you be dead");
+            //Debug.Log("you be dead");
             return;
         }
         /** moving/animating **/
@@ -96,6 +99,13 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        // fires selected magical attack
+        if (Input.GetButtonDown("Fire2"))
+        {
+            Debug.Log("fire magic");
+            magic.Fire(attackDir);
+        }
+
     }
 
     public Room GetCurrentRoom()
@@ -122,11 +132,16 @@ public class PlayerController : MonoBehaviour
 
     public void Damage(int att)
     {
-        Debug.Log("ouch");
+        //Debug.Log("ouch");
         if (att - defense < 1) health -= 1;
         else health -= (att - defense);
 
         if (health <= 0) isDead = true;
+    }
+
+    public bool IsDead()
+    {
+        return isDead;
     }
 
     // handle triggers, mostly for doors

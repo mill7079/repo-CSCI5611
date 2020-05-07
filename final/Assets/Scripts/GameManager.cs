@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-
     public static GameManager instance = null;
     public Dungeon dungeon;
 
@@ -28,7 +27,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
         Physics2D.IgnoreLayerCollision(8, 10);
 
         dungeon = GetComponent<Dungeon>();
