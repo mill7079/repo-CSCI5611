@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Particles : MonoBehaviour
 {
-    //private List<Particle> particles;
+    private List<Particle> particles;
     // maps GameObject for sprite/rigidbody to Vector3 containing x,y location and life in z position
-    private Dictionary<GameObject, Vector3> particles;
+    //private Dictionary<GameObject, Vector3> particles;
     float numParticles;
     public float genRate;
     public float maxLife;
@@ -21,8 +21,8 @@ public class Particles : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //particles = new List<Particle>();
-        particles = new Dictionary<GameObject, Vector3>();
+        particles = new List<Particle>();
+        //particles = new Dictionary<GameObject, Vector3>();
         numParticles = genRate * dt;
 
         origin = this.GetComponentInParent<Rigidbody2D>();
@@ -37,25 +37,31 @@ public class Particles : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (fire <= 0) return;
         
-        foreach (GameObject p in particles.Keys)
+        //foreach (GameObject p in particles.Keys)
+        //{
+        //    Rigidbody2D body = p.GetComponent<Rigidbody2D>();
+        //    if (body == null )
+        //    {
+        //        Debug.Log("no rigidbody");
+        //        continue;
+        //    }
+        //    Vector2 vel = particles[p];
+        //    Vector2 move = body.position + vel;
+        //    body.MovePosition(move);
+        //    particles[p] = particles[p] - new Vector3(0, 0, 1); // subtract one from life
+        //    //particles[p] = particles[p] + (Vector3)(move * dt); // add position
+        //}
+        for (int i = 0; i < particles.Count; i++)
         {
-            Rigidbody2D body = p.GetComponent<Rigidbody2D>();
-            if (body == null )
-            {
-                Debug.Log("no rigidbody");
-                continue;
-            }
-            Vector2 vel = particles[p];
-            Vector2 move = body.position + vel;
-            body.MovePosition(move);
-            particles[p] = particles[p] - new Vector3(0, 0, 1); // subtract one from life
-            //particles[p] = particles[p] + (Vector3)(move * dt); // add position
+            particles[i].Move();
         }
+        Clean();
+
+        if (fire <= 0) return;
 
         GenerateParticles(fireDir);
-        Clean();
+        fire--;
     }
 
     // generate particles around a single point
@@ -67,7 +73,8 @@ public class Particles : MonoBehaviour
         {
             //particles.Add(new Particle(origin.position.x, origin.position.y));
             GameObject p = Instantiate(particle, origin.position + new Vector2(Random.Range(-0.01f, 0.01f), Random.Range(-0.01f, 0.01f)), Quaternion.identity);
-            particles[p] = new Vector3(vel.x, vel.y, maxLife);
+            //particles[p] = new Vector3(vel.x, vel.y, maxLife);
+            particles.Add(new Particle(p, new Vector2(vel.x, vel.y)));
         }
 
         Debug.Log("length after generating particles: " + particles.Count);
@@ -84,20 +91,35 @@ public class Particles : MonoBehaviour
         //    }
 
         //}
-        List<GameObject> toRemove = new List<GameObject>();
-        foreach (GameObject p in particles.Keys)
+        //List<GameObject> toRemove = new List<GameObject>();
+        //foreach (GameObject p in particles.Keys)
+        //{
+        //    if (particles[p].z <= 0)
+        //    {
+        //        toRemove.Add(p);
+        //    }
+        //}
+
+        //for (int i = toRemove.Count - 1; i >= 0; i--)
+        //{
+        //    particles.Remove(toRemove[i]);
+        //    Destroy(toRemove[i]);
+        //}
+
+        Debug.Log("length before clean: " + particles.Count);
+        List<Particle> toRemove = new List<Particle>();
+        for (int i = 0; i < particles.Count; i++)
         {
-            if (particles[p].z <= 0)
-            {
-                toRemove.Add(p);
-            }
+            if (particles[i].IsDead()) toRemove.Add(particles[i]);
         }
 
-        for (int i = toRemove.Count - 1; i >= 0; i--)
+        Debug.Log("number to remove: " + toRemove.Count);
+        for (int i = 0; i < toRemove.Count; i++)
         {
             particles.Remove(toRemove[i]);
-            Destroy(toRemove[i]);
+            toRemove[i].Destroy();
         }
+        Debug.Log("length after clean: " + particles.Count);
     }
     
 }

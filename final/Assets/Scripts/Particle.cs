@@ -17,24 +17,33 @@ public class Particle// : MonoBehaviour
     //}
 
 
-    private Vector2 pos;
+    //private Vector2 pos;
     private Vector2 vel;
-    private float dt = 0.009f;
+    private float dt = 0.18f;
     private GameObject sprite;
+    private Rigidbody2D body;
 
     private int life = 100;
 
-    public Particle(Vector2 p, Vector2 v, GameObject s)
+    public Particle(GameObject s, Vector2 v)
     {
-        pos = p;
         vel = v;
         sprite = s;
+
+        body = s.GetComponent<Rigidbody2D>();
     }
 
     public void Move()
     {
-        pos += (vel * dt);
-        vel += (vel * dt);
+        if (body == null)
+        {
+            Debug.Log("no rigidbody");
+            return;
+        }
+
+        //pos += (vel * dt);
+        body.MovePosition(body.position + (vel * dt));
+        //vel += (vel * dt) ;
 
         life--;
     }
@@ -42,5 +51,10 @@ public class Particle// : MonoBehaviour
     public bool IsDead()
     {
         return life <= 0;
+    }
+
+    public void Destroy()
+    {
+        GameObject.Destroy(sprite);
     }
 }
