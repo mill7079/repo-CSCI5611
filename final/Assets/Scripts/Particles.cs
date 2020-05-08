@@ -7,15 +7,18 @@ public class Particles : MonoBehaviour
     private List<Particle> particles;
     // maps GameObject for sprite/rigidbody to Vector3 containing x,y location and life in z position
     //private Dictionary<GameObject, Vector3> particles;
-    float numParticles;
+    private float numParticles;
     public float genRate;
     public float maxLife;
+    public float particleDamage;
     private float dt = 0.009f;
 
     Rigidbody2D origin;
     public GameObject particle;
 
+    // holds duration of spell
     int fire = -1;
+    public bool constant;  // if constant particle system (i.e. on bomb) or not constant (magic spell)
     Vector2 fireDir;
 
     // Start is called before the first frame update
@@ -37,7 +40,6 @@ public class Particles : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
         //foreach (GameObject p in particles.Keys)
         //{
         //    Rigidbody2D body = p.GetComponent<Rigidbody2D>();
@@ -69,15 +71,24 @@ public class Particles : MonoBehaviour
     {
         if (vel == null) return;
 
+        //Debug.Log("no return. vel = " + vel);
+        Vector2 startVel = new Vector2(vel.x, vel.y);
         for (int i = 0; i < numParticles; i++)
         {
             //particles.Add(new Particle(origin.position.x, origin.position.y));
             GameObject p = Instantiate(particle, origin.position + new Vector2(Random.Range(-0.01f, 0.01f), Random.Range(-0.01f, 0.01f)), Quaternion.identity);
             //particles[p] = new Vector3(vel.x, vel.y, maxLife);
-            particles.Add(new Particle(p, new Vector2(vel.x, vel.y)));
+
+            //particles.Add(new Particle(p, new Vector2(vel.x, vel.y), particleDamage));
+            Particle part = p.GetComponent<Particle>();
+            //Debug.Log("part null? " + part == null);
+            //part.SetUp(new Vector2(vel.x, vel.y), particleDamage);
+            part.SetUp(startVel, particleDamage, origin.tag);
+            particles.Add(part);
+
         }
 
-        Debug.Log("length after generating particles: " + particles.Count);
+        //Debug.Log("length after generating particles: " + particles.Count);
     }
 
     public void Clean()
@@ -106,20 +117,21 @@ public class Particles : MonoBehaviour
         //    Destroy(toRemove[i]);
         //}
 
-        Debug.Log("length before clean: " + particles.Count);
+        //Debug.Log("length before clean: " + particles.Count);
         List<Particle> toRemove = new List<Particle>();
         for (int i = 0; i < particles.Count; i++)
         {
             if (particles[i].IsDead()) toRemove.Add(particles[i]);
         }
 
-        Debug.Log("number to remove: " + toRemove.Count);
+        //Debug.Log("number to remove: " + toRemove.Count);
         for (int i = 0; i < toRemove.Count; i++)
         {
             particles.Remove(toRemove[i]);
-            toRemove[i].Destroy();
+            //toRemove[i].Destroy();
+            GameObject.Destroy(toRemove[i].gameObject);
         }
-        Debug.Log("length after clean: " + particles.Count);
+        //Debug.Log("length after clean: " + particles.Count);
     }
     
 }

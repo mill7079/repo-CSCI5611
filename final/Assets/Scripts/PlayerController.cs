@@ -13,11 +13,8 @@ public class PlayerController : MonoBehaviour
     Animator animator;
 
     // rpg mechanics
-    public int health;
-    public int attack;
-    public int defense;
-    public float attackRadius;
-    public float attackAngle;
+    public float health, attack, defense;
+    public float attackRadius, attackAngle;
     private Vector2 attackDir;
     private bool isDead = false;
 
@@ -93,7 +90,7 @@ public class PlayerController : MonoBehaviour
                 if (Vector2.Angle(look, toEnemy) < attackAngle)
                 {
                     // enemy is in range
-                    e.Damage(attack);
+                    e.Damage(attack, false);
                     //Debug.Log("attacked enemy");
                 }
             }
@@ -130,7 +127,8 @@ public class PlayerController : MonoBehaviour
         player.transform.position = pos;
     }
 
-    public void Damage(int att)
+    //public void Damage(int att)
+    public void Damage(float att)
     {
         //Debug.Log("ouch");
         if (att - defense < 1) health -= 1;

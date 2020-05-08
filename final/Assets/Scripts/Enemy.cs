@@ -9,7 +9,7 @@ public class Enemy : MonoBehaviour
     PlayerController playerController;
 
     //public float move = 3.0f;
-    private int direction = 1;
+    //private int direction = 1;
     Rigidbody2D body;
     Animator animator;
     Vector2 origin;
@@ -21,9 +21,7 @@ public class Enemy : MonoBehaviour
     float dt = 0.009f;
 
     // rpg mechanics
-    public int health;
-    public int attack;
-    public int defense;
+    public float health, attack, defense;
     public float attackRadius;
     public int speed; // affects movement speed
     public GameObject rangedAttack; // if null, unit has no ranged attack; otherwise holds projectile
@@ -46,6 +44,13 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // attack player - don't move if close enough to attack
+        if (Time.frameCount % 60 == 0 && (player.gameObject.transform.position - this.gameObject.transform.position).magnitude <= attackRadius)
+        {
+            playerController.Damage(attack);
+            return;
+        }
+
         // motion planning with path smoothing
         Vector2 pos = body.position;
         for (int i = path.Count - 1; i >= 0; i--)
@@ -71,19 +76,22 @@ public class Enemy : MonoBehaviour
             else animator.SetFloat("LookY", 1);
         }
 
-        // attack player
-        if (Time.frameCount % 60 == 0 && (player.gameObject.transform.position - this.gameObject.transform.position).magnitude <= attackRadius)
-        {
-            playerController.Damage(attack);
-        }
+        
     }
 
     public Point GetPos() { return new Point(body.position); }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        direction *= -1;
-    }
+    //private void OnTriggerEnter2D(Collision2D collision)
+    //{
+    //    //direction *= -1;
+    //    //if (collision.gameObject.CompareTag("Particle"))
+    //    Particle p = collision.gameObject.GetComponent<Particle>();
+    //    if (p != null)
+    //    {
+    //        Debug.Log("collision with enemy");
+    //        health -= p.Hit();
+    //    }
+    //}
 
 
     // motion planning code
@@ -143,9 +151,12 @@ public class Enemy : MonoBehaviour
     }
 
     // handles attack from player
-    public void Damage(int att)
+    //public void Damage(int att)
+    public void Damage(float att, bool particle)
     {
-        health -= (att - defense);
+        if (particle) health -= att;
+        else health -= (att - defense);
+
         if (health <= 0) isDead = true;
     }
 
