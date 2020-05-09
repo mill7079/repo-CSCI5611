@@ -8,12 +8,6 @@ public class Enemy : Unit
     private GameObject player;
     private PlayerController playerController;
 
-    //public float move = 3.0f;
-    //private int direction = 1;
-    //Rigidbody2D body;
-    //Animator animator;
-    //Vector2 lookDirection = new Vector2(1, 0);
-    //Vector2 origin;
     [HideInInspector] public bool pathCreated = false;
 
     // motion planning
@@ -21,28 +15,15 @@ public class Enemy : Unit
     private List<Vector2> path;
     private float dt = 0.009f;
 
-    // rpg mechanics
-    //public float health, attack, defense;
-    //private float maxHealth;
-    //public float attackRadius;
-    //public int speed; // affects movement speed
-    //public GameObject rangedAttack; // if null, unit has no ranged attack; otherwise holds projectile
-    //private bool isDead = false;
-
     protected override void Awake()
     {
-        //body = GetComponent<Rigidbody2D>();
-        //origin = body.position;
-        //animator = GetComponent<Animator>();
         path = new List<Vector2>();
-        //Physics2D.IgnoreLayerCollision(8, 10);
 
         Dungeon.AddNewEnemy(this);
 
         player = GameObject.FindGameObjectWithTag("Player");
         playerController = player.GetComponent<PlayerController>();
 
-        //maxHealth = health;
         base.Awake();
     }
 
@@ -95,8 +76,6 @@ public class Enemy : Unit
         }
     }
 
-    //public Point GetPos() { return new Point(body.position); }
-
     // motion planning code
     public void UpdateEndpoints(Point s, Point g)
     {
@@ -147,24 +126,4 @@ public class Enemy : Unit
         path.Add(a.GetPos());
         path.Add(b.GetPos());
     }
-
-    // handles attack from player
-    //public void Damage(int att)
-    //public void Damage(float att, bool particle)
-    //{
-    //    if (particle) health -= att;
-    //    else health -= (att - defense);
-
-    //    if (health <= 0) isDead = true;
-    //}
-
-    //public bool IsDead()
-    //{
-    //    return isDead;
-    //}
-
-    //public float GetCurrentHealth()
-    //{
-    //    return health / maxHealth;
-    //}
 }

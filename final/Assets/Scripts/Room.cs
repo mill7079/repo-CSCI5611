@@ -238,6 +238,7 @@ public class Room
     // modified from board_old.cs
     public void Create()
     {
+        Debug.Log("number of doors in Create: " + GetDoors());
         // add 2 extra rows/cols to array so open space is rows x cols
         tiles = new GameObject[rows + 2, cols + 2];
         GameObject[] floors = GameManager.instance.GetFloors();
@@ -253,7 +254,6 @@ public class Room
                 if (Random.Range(0, 999) % 99 == 0) tile = floors[1];
 
                 // change to wall or door if on edge of board
-                //if (i == -1 || j == -1 || i == rows || j == columns)
                 if (i == 0 || j == 0 || i == rows + 1 || j == cols + 1)
                 {
                     // tile will usually be a wall in this case

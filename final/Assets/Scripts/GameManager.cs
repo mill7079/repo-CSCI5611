@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        Debug.Log("Awake GM");
         if (instance == null)
         {
             instance = this;
@@ -48,10 +49,10 @@ public class GameManager : MonoBehaviour
     //public GameObject GetPlayer() { return player; }
 
     // Update is called once per frame
-    void Update()
-    {
+    //void Update()
+    //{
         
-    }
+    //}
 
     // uniform cost search for motion planning
     // didn't know where would be best to put it so it's going in GameManager

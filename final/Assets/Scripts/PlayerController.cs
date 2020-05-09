@@ -4,40 +4,18 @@ using UnityEngine;
 
 public class PlayerController : Unit
 {
-    //Rigidbody2D body;
-    //public float moveSpeed = 3.0f;
 
-    Room currentRoom;
-    //Vector2 lookDirection = new Vector2(1, 0);
-
-    //Animator animator;
+    private Room currentRoom;
 
     // rpg mechanics
-    //public float health, attack, defense;
-    //public float attackRadius;
     public float attackAngle;
     private Vector2 attackDir;
-    //private bool isDead = false;
-
     public float detectRadius;
-    //private float maxHealth;
-
-    //Particles magic;
 
     protected override void Awake()
     {
-        //DontDestroyOnLoad(gameObject);
-        //body = GetComponent<Rigidbody2D>();
-
-        //animator = GetComponent<Animator>();
-        //Physics2D.IgnoreLayerCollision(8, 10);
-
         base.Awake();
         attackDir = lookDirection;
-
-        //magic = GetComponentInChildren<Particles>();
-
-        //maxHealth = health;
     }
 
     // Update is called once per frame

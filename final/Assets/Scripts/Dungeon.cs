@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class Dungeon : MonoBehaviour
 {
-    public static Dictionary<Vector2Int, Room> locations = new Dictionary<Vector2Int, Room>();
+    public static Dictionary<Vector2Int, Room> locations;// = new Dictionary<Vector2Int, Room>();
     public static int boardRows = 17, boardCols = 17;
     public static double doorChance = 2; // door should generate ~50% of time with no preexisting door
     public Room start, current;
@@ -23,6 +23,10 @@ public class Dungeon : MonoBehaviour
     // GUI
     public GUIStyle style = new GUIStyle();
 
+    //private void Awake()
+    //{
+    //}
+
     public void Update()
     {
         // remove enemies that are dead
@@ -33,7 +37,6 @@ public class Dungeon : MonoBehaviour
             //Debug.Log("enemy health: " + enemies[i].health);
             if (enemies[i].IsDead())
             {
-                //Debug.Log("8888****KILLED ENEMY****8888");
                 current.GetEnemies().Remove(enemies[i]);
                 //enemies[i].gameObject.SetActive(false);
                 GameObject.Destroy(enemies[i].gameObject);
@@ -66,15 +69,18 @@ public class Dungeon : MonoBehaviour
 
     public void StartDungeon()
     {
-        //Debug.Log("start dungeon");
+        Debug.Log("start dungeon");
+        locations = new Dictionary<Vector2Int, Room>();
+        newEnemies = new List<Enemy>();
+
         start = new Room(0, 0);
         current = start;
         //GameManager.instance.GetPlayer().GetComponent<PlayerController>().MoveTo(start);
         player = GameObject.FindGameObjectWithTag("Player");
         playerController = player.GetComponent<PlayerController>();
+        Debug.Log("Player controller: " + playerController);
         playerController.MoveTo(start);
 
-        newEnemies = new List<Enemy>();
         //Debug.Log("find tag player room: " + player.GetComponent<PlayerController>().GetCurrentRoom() + " " + player.GetComponent<PlayerController>().GetCurrentRoom().loc);
         MoveRoom(start);
     }
@@ -307,8 +313,8 @@ public class Dungeon : MonoBehaviour
         if (GUI.Button(new Rect(350, 600, 400, 100), "Restart", style))
         {
             Debug.Log("pressed restart");
-            //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            //StartDungeon();
+            SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
+            Debug.Log("finished loading scene");
         }
     }
 
