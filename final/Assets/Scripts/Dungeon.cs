@@ -6,11 +6,11 @@ using UnityEngine.SceneManagement;
 public class Dungeon : MonoBehaviour
 {
     public static Dictionary<Vector2Int, Room> locations = new Dictionary<Vector2Int, Room>();
-    public static int boardRows = 8, boardCols = 8;
+    public static int boardRows = 17, boardCols = 17;
     public static double doorChance = 2; // door should generate ~50% of time with no preexisting door
     public Room start, current;
 
-    public int numPoints = 1000;  // number of points in PRM 
+    public int numPoints = 500;  // number of points in PRM 
     public float neighborRadius = boardRows / 3.0f;  // used for generating PRM
 
     GameObject player;
@@ -196,7 +196,8 @@ public class Dungeon : MonoBehaviour
         //}
         room.EnemiesActive(true);
 
-        while (enemies.Count + newEnemies.Count < (boardRows / 2))
+        //while (enemies.Count + newEnemies.Count < (boardRows / 2))
+        while (enemies.Count + newEnemies.Count < 5)
         {
             Vector2Int spot = room.GetOpenSpots()[Random.Range(0,room.GetOpenSpots().Count)];
             GameObject[] listEnemies = GameManager.instance.GetTestEnemies();
@@ -216,7 +217,7 @@ public class Dungeon : MonoBehaviour
         {
             // should be exclusive of upper bound because ints but who knows
             Vector2 curPoint = new Vector2(Random.Range(0.5f, boardRows + 0.5f), Random.Range(0.5f, boardCols + 0.5f));
-            if (Physics2D.OverlapPoint(curPoint, 10) == null)
+            if (Physics2D.OverlapPoint(curPoint, (1<<10)) == null)
             {
                 points.Add(new Point(curPoint));
             }
@@ -245,12 +246,14 @@ public class Dungeon : MonoBehaviour
     }
 
     // check if path FROM a TO b is clear
-    // returns true if no colliders are hit
+    // returns true if no colliders are hit on the configuration layer
     public static bool GoodPath(Vector2 a, Vector2 b)
     {
         Vector2 dir = b - a;
-        return Physics2D.Raycast(a, dir, dir.magnitude, LayerMask.GetMask("Configuration")).collider == null;
+        //return Physics2D.Raycast(a, dir, dir.magnitude, LayerMask.GetMask("Configuration")).collider == null;
+        return Physics2D.Raycast(a, dir, dir.magnitude, (1<<10)).collider == null;
     }
+
 
     // finds the closest point to a given point from a list of points
     public static Point ClosestPoint(Point point, List<Point> points)
@@ -270,15 +273,27 @@ public class Dungeon : MonoBehaviour
     // update positions of enemies, re-finding path if required
     public void UpdateEnemy(Enemy e)
     {
-        if(e.pathCreated && GoodPath(e.GetPos().GetPos(), playerController.GetPos().GetPos())) {
-            e.InitPath(e.GetPos(), playerController.GetPos());
+        //if(e.pathCreated && GoodPath(e.GetPos().GetPos(), playerController.GetPos().GetPos())) {
+        //    e.InitPath(e.GetPos(), playerController.GetPos());
+        //    return;
+        //}
+        Point ePos = e.GetPos();
+        Point playerPos = playerController.GetPos();
+
+        // only do the pathfinding if the player is close enough to the enemy to be detected
+        if (Vector2.Distance(ePos.GetPos(), playerPos.GetPos()) > playerController.detectRadius){
             return;
         }
 
-        Point enemyStart = ClosestPoint(e.GetPos(), current.GetPoints());
-        //Point playerLoc = ClosestPoint(GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().GetPos(), current.GetPoints());
-        //Point playerLoc = ClosestPoint(player.GetComponent<PlayerController>().GetPos(), current.GetPoints());
-        Point playerLoc = ClosestPoint(playerController.GetPos(), current.GetPoints());
+        // if the player is already visible, no pathfinding required
+        // apparently UCS is really fucking slow so avoid wherever possible
+        if (GoodPath(ePos.GetPos(), playerPos.GetPos())) {
+            e.InitPath(ePos, playerPos);
+            return;
+        }
+
+        Point enemyStart = ClosestPoint(ePos, current.GetPoints());
+        Point playerLoc = ClosestPoint(playerPos, current.GetPoints());
 
         e.UpdateEndpoints(enemyStart, playerLoc);
         GameManager.UCS(current.GetPoints(), enemyStart, playerLoc);
@@ -296,6 +311,7 @@ public class Dungeon : MonoBehaviour
             //StartDungeon();
         }
     }
+
     private void OnGUI()
     {
         if (!playerController.IsDead()) return;

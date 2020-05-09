@@ -133,7 +133,9 @@ public class PQHeap<T>
         nodes[toUpdate] = val;
         (k as Point).SetParent(parent as Point);
 
+        /*
         heap.Remove(toUpdate);
+        
         //heap.Add(toUpdate);
         if (size > heap.Count)
         {
@@ -157,6 +159,17 @@ public class PQHeap<T>
         //Debug.Log(debug);
 
         RestoreOrder(true);
+        */
+
+        int x = heap.IndexOf(toUpdate);
+        heap[x].SetData(val);
+        Node temp;
+        while (x > 0 && heap[x-1].GetData() > val)
+        {
+            temp = heap[x - 1];
+            heap[x - 1] = heap[x];
+            heap[x] = temp;
+        }
     }
 
     //public void Push(T k, float val)

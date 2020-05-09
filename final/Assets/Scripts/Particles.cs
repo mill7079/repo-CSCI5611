@@ -76,7 +76,7 @@ public class Particles : MonoBehaviour
         for (int i = 0; i < numParticles; i++)
         {
             //particles.Add(new Particle(origin.position.x, origin.position.y));
-            GameObject p = Instantiate(particle, origin.position + new Vector2(Random.Range(-0.01f, 0.01f), Random.Range(-0.01f, 0.01f)), Quaternion.identity);
+            GameObject p = Instantiate(particle, origin.position + new Vector2(Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f)), Quaternion.identity);
             //particles[p] = new Vector3(vel.x, vel.y, maxLife);
 
             //particles.Add(new Particle(p, new Vector2(vel.x, vel.y), particleDamage));

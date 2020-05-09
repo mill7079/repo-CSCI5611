@@ -105,7 +105,7 @@ public class Room
     public List<Enemy> GetEnemies() { return enemies; }
     public List<Vector2Int> GetOpenSpots() { return spots; }
 
-    // check if current Vector2 is <name> the source Vector2
+    // check if current Vector2 is <name> the source Vector2 - x and y are array indices so row/col
     public bool Above(Vector2Int cur, Vector2Int source)
     {
         return source.x > cur.x && source.y == cur.y;

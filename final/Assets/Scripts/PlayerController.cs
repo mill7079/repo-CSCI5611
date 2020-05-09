@@ -2,35 +2,42 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Unit
 {
-    Rigidbody2D body;
-    public float moveSpeed = 3.0f;
+    //Rigidbody2D body;
+    //public float moveSpeed = 3.0f;
 
     Room currentRoom;
-    Vector2 lookDirection = new Vector2(1, 0);
+    //Vector2 lookDirection = new Vector2(1, 0);
 
-    Animator animator;
+    //Animator animator;
 
     // rpg mechanics
-    public float health, attack, defense;
-    public float attackRadius, attackAngle;
+    //public float health, attack, defense;
+    //public float attackRadius;
+    public float attackAngle;
     private Vector2 attackDir;
-    private bool isDead = false;
+    //private bool isDead = false;
 
-    Particles magic;
+    public float detectRadius;
+    //private float maxHealth;
 
-    void Awake()
+    //Particles magic;
+
+    protected override void Awake()
     {
         //DontDestroyOnLoad(gameObject);
-        body = GetComponent<Rigidbody2D>();
+        //body = GetComponent<Rigidbody2D>();
 
-        animator = GetComponent<Animator>();
-        Physics2D.IgnoreLayerCollision(8, 10);
+        //animator = GetComponent<Animator>();
+        //Physics2D.IgnoreLayerCollision(8, 10);
 
+        base.Awake();
         attackDir = lookDirection;
 
-        magic = GetComponentInChildren<Particles>();
+        //magic = GetComponentInChildren<Particles>();
+
+        //maxHealth = health;
     }
 
     // Update is called once per frame
@@ -41,6 +48,8 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("you be dead");
             return;
         }
+
+
         /** moving/animating **/
 
         float horizontal = Input.GetAxis("Horizontal");
@@ -56,7 +65,7 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("Look Y", lookDirection.y);
 
         Vector2 position = body.position;
-        position = position + move * moveSpeed * Time.deltaTime;
+        position = position + move * speed * Time.deltaTime;
         body.MovePosition(position);
 
 
@@ -110,7 +119,7 @@ public class PlayerController : MonoBehaviour
         return currentRoom;
     }
 
-    public Point GetPos() { return new Point(body.position); }
+    //public Point GetPos() { return new Point(body.position); }
 
     public bool MoveTo(Room destination)
     {
@@ -128,26 +137,17 @@ public class PlayerController : MonoBehaviour
     }
 
     //public void Damage(int att)
-    public void Damage(float att)
-    {
-        //Debug.Log("ouch");
-        if (att - defense < 1) health -= 1;
-        else health -= (att - defense);
-
-        if (health <= 0) isDead = true;
-    }
-
-    public bool IsDead()
-    {
-        return isDead;
-    }
-
-    // handle triggers, mostly for doors
-    //private void OnTriggerEnter2D(Collider2D collision)
+    //public void Damage(float att)
     //{
-    //    if (collision.gameObject.CompareTag("Door"))
-    //    {
-    //        Debug.Log("DOOR");
-    //    }
+    //    //Debug.Log("ouch");
+    //    if (att - defense < 1) health -= 1;
+    //    else health -= (att - defense);
+
+    //    if (health <= 0) isDead = true;
+    //}
+
+    //public bool IsDead()
+    //{
+    //    return isDead;
     //}
 }
