@@ -30,7 +30,7 @@ public class Enemy : Unit
     // Update is called once per frame
     void Update()
     {
-        if (isDead) return;
+        if (isDead || GameManager.isPaused) return;
 
         // attack player - don't move if close enough to attack
         Vector2 pos = body.position;

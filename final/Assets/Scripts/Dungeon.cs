@@ -272,7 +272,7 @@ public class Dungeon : MonoBehaviour
                 if (Vector2.Distance(p.GetPos(), cur.GetPos()) <= neighborRadius && GoodPath(cur.GetPos(), p.GetPos()))
                 {
                     cur.AddNeighbor(p);
-                    Debug.DrawLine(cur.GetPos(), p.GetPos(), new Color(255, 0, 0), 30.0f, false);
+                    //Debug.DrawLine(cur.GetPos(), p.GetPos(), new Color(255, 0, 0), 30.0f, false);
                 }
             }
         }
