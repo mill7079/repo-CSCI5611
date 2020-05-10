@@ -174,13 +174,6 @@ public class Dungeon : MonoBehaviour
 
         } // end instantiating room
 
-        // create PRM for room if not created yet
-        if (room.GetPoints() == null) {
-            List<Point> prm = SamplePoints();
-            CreateGraph(prm);
-            room.SetPoints(prm);
-        }
-
         // instantiate non-enemy obstacles in room
         //foreach (GameObject obs in obstacles.Keys)
         foreach (Vector2Int loc in obstacles.Keys)
@@ -188,6 +181,13 @@ public class Dungeon : MonoBehaviour
             //Vector2Int loc = obstacles[obs];
             GameObject instance = Instantiate(obstacles[loc], new Vector3(loc.x, floor.GetLength(0) - loc.y - 1, 0f), Quaternion.identity) as GameObject;
             instance.transform.SetParent(roomHolder);
+        }
+
+        // create PRM for room if not created yet
+        if (room.GetPoints() == null) {
+            List<Point> prm = SamplePoints();
+            CreateGraph(prm);
+            room.SetPoints(prm);
         }
 
         // place existing enemies/generate and place new ones
