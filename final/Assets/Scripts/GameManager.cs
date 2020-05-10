@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance = null;
+    [HideInInspector] public static bool isPaused = false;
     public Dungeon dungeon;
 
     // unity whyyyyy
@@ -13,6 +14,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] doors;
 
     public GameObject[] testEnemies;
+    public GameObject[] students;
 
     public int numObstacles = 10;
 

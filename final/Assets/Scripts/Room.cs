@@ -25,18 +25,27 @@ public class Room
     // list of points for PRM
     public List<Point> prm;
 
+    // chance of finding the magic cave (100%magicChance)
+    // decrements each time the other conditions are met; set to -1 if cave is found
+    private int magicChance = 3;
+
+    // list of obstacles to be instantiated along with basic floor layout
+    // required for non-square objects to look not dumb
+    private Dictionary<Vector2Int, GameObject> obstacles;
+
 
     /*Constructors*/
     // used for creating first room in dungeon - just has initial coords
     public Room(int r, int c)
     {
         enemies = new List<Enemy>();
+        obstacles = new Dictionary<Vector2Int, GameObject>();
         //Debug.Log("short cons*|*|*|*|*|*|*|*|*");
         //Debug.Log("new room");
         //loc = new Coord(r, c);
         loc = new Vector2Int(r, c);
         Dungeon.locations.Add(loc, this);
-        Create();
+        Create(true);
     }
 
     // used for creating all other rooms - pass in coords for this room and other room
@@ -50,6 +59,7 @@ public class Room
         //foreach (KeyValuePair<Vector2Int, Room> pair in Dungeon.locations) Debug.Log("location " + pair.Key);
 
         enemies = new List<Enemy>();
+        obstacles = new Dictionary<Vector2Int, GameObject>();
         loc = current;
         //if (loc.Above(source))
         if (Above(loc, source)) 
@@ -104,6 +114,7 @@ public class Room
     public int GetDoors() { return doors.Count; }
     public List<Enemy> GetEnemies() { return enemies; }
     public List<Vector2Int> GetOpenSpots() { return spots; }
+    public Dictionary<Vector2Int, GameObject> GetObstacles() { return obstacles; }
 
     // check if current Vector2 is <name> the source Vector2 - x and y are array indices so row/col
     public bool Above(Vector2Int cur, Vector2Int source)
@@ -236,14 +247,21 @@ public class Room
 
     // sets up 2D array of room tiles to be instantiated when player enters the room
     // modified from board_old.cs
-    public void Create()
+    public void Create(bool first = false)
     {
-        Debug.Log("number of doors in Create: " + GetDoors());
         // add 2 extra rows/cols to array so open space is rows x cols
         tiles = new GameObject[rows + 2, cols + 2];
         GameObject[] floors = GameManager.instance.GetFloors();
         GameObject[] doors = GameManager.instance.GetDoors();
         GameObject[] walls = GameManager.instance.GetWalls();
+
+        // count number of doors
+        //int count = 0;
+        //if (up != null) count++;
+        //if (down != null) count++;
+        //if (left != null) count++;
+        //if (right != null) count++;
+        //Debug.Log("door count: " + count);
 
         for (int i = 0; i < tiles.GetLength(0); i++)
         {
@@ -251,7 +269,7 @@ public class Room
             {
                 // default to floor
                 GameObject tile = floors[0];
-                if (Random.Range(0, 999) % 99 == 0) tile = floors[1];
+                if (Random.Range(0, 999) % 99 == 0 && floors.Length > 1) tile = floors[1];
 
                 // change to wall or door if on edge of board
                 if (i == 0 || j == 0 || i == rows + 1 || j == cols + 1)
@@ -339,11 +357,43 @@ public class Room
                 tiles[i, j] = tile;
             }
         }
-        PlaceRandom();
+
+        // count number of doors
+        int count = 0;
+        if (up != null) count++;
+        if (down != null) count++;
+        if (left != null) count++;
+        if (right != null) count++;
+        //Debug.Log("door count 2: " + count);
+
+        // chance of generating cave 1 if the room isn't the first room
+        // and there's only one door (aka a dead end)
+        if (!first && count == 1 && (Random.Range(0, 100)%3) == 0 && magicChance > 0)
+        {
+            //CreateCave(1);
+            PlaceRandom(GameManager.instance.students);
+            magicChance = -1;
+        }
+        else if (!first && count == 1 && magicChance > 0)
+        {
+            // increase chances of finding magic cave
+            magicChance -= 1;
+            PlaceRandom(walls);
+        }
+        else
+        {
+            PlaceRandom(walls);
+        }
+
+        // prevent first room from having no doors because that's no fun
+        if (first && count == 0)
+        {
+            Create(true);
+        }
     }
 
     // places wall tiles in random locations throughout the room
-    public void PlaceRandom()
+    public void PlaceRandom(GameObject[] objects)
     {
         // set up list of open spots
         spots = new List<Vector2Int>();
@@ -365,10 +415,15 @@ public class Room
         }
 
         int numObs = Random.Range(GameManager.instance.numObstacles / 2, GameManager.instance.numObstacles);
-        for (int i = 0; i < numObs && !(spots.Count == 0); i++)
+        for (int i = 0; i < numObs && spots.Count > 0; i++)
         {
             Vector2Int location = spots[Random.Range(0, spots.Count)];
-            tiles[location.x, location.y] = GameManager.instance.walls[0];
+            //tiles[location.x, location.y] = GameManager.instance.walls[0];
+
+            //tiles[location.x, location.y] = objects[Random.Range(0, objects.Length)];
+            //obstacles[objects[Random.Range(0, objects.Length)]] = location;
+            obstacles[location] = objects[Random.Range(0, objects.Length)];
+
             //tiles[location.y, location.x] = GameManager.instance.walls[0];
             spots.Remove(location);
             //Debug.Log("wall at " + location + " in room space and (" + (location.y) + ", " + (tiles.GetLength(0) - location.x - 1)+") in unity space");
@@ -394,6 +449,31 @@ public class Room
 
         // print location
         return "" + loc;
-
     }
+
+    // type 1 = lecture cave
+    //public void CreateCave(int type)
+    //{
+    //    if (type == 1)
+    //    {
+    //        tiles = new GameObject[rows + 2, cols + 2];
+    //        GameObject[] floors = GameManager.instance.GetFloors();
+    //        GameObject[] doors = GameManager.instance.GetDoors();
+    //        GameObject[] walls = GameManager.instance.GetWalls();
+
+    //        for (int i = 0; i < tiles.GetLength(0); i++)
+    //        {
+    //            for (int j = 0; j < tiles.GetLength(1); j++)
+    //            {
+    //                // default to floor
+    //                GameObject tile = floors[0];
+    //                if (i == 0 || j == 0 || i == rows + 1 || j == cols + 1)
+    //                {
+    //                    // tile will usually be a wall in this case
+    //                    tile = walls[0];
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 }

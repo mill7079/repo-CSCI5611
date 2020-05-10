@@ -22,13 +22,25 @@ public class Dungeon : MonoBehaviour
 
     // GUI
     public GUIStyle style = new GUIStyle();
-
-    //private void Awake()
-    //{
-    //}
+    public GUIContent inventoryButton;
+    public GUIContent craftingButton;
 
     public void Update()
     {
+        if (Input.GetButtonDown("Jump")) // pause the game/view menu
+        {
+            if (GameManager.isPaused)
+            {
+                GameManager.isPaused = false;
+                Time.timeScale = 1;
+            } else
+            {
+                GameManager.isPaused = true;
+                Time.timeScale = 0;
+            }
+            //GameManager.isPaused = !GameManager.isPaused;
+        }
+
         // remove enemies that are dead
         List<Enemy> enemies = current.GetEnemies();
         //Debug.Log("enemies count " + enemies.Count);
@@ -37,9 +49,10 @@ public class Dungeon : MonoBehaviour
             //Debug.Log("enemy health: " + enemies[i].health);
             if (enemies[i].IsDead())
             {
+                Enemy x = enemies[i];
                 current.GetEnemies().Remove(enemies[i]);
                 //enemies[i].gameObject.SetActive(false);
-                GameObject.Destroy(enemies[i].gameObject);
+                GameObject.Destroy(x.gameObject);
             }
         }
 
@@ -69,7 +82,9 @@ public class Dungeon : MonoBehaviour
 
     public void StartDungeon()
     {
-        Debug.Log("start dungeon");
+        //Debug.Log("start dungeon");
+        Time.timeScale = 1;
+        GameManager.isPaused = false;
         locations = new Dictionary<Vector2Int, Room>();
         newEnemies = new List<Enemy>();
 
@@ -92,6 +107,7 @@ public class Dungeon : MonoBehaviour
         current = room;
         //Debug.Log("move to room at coords " + room.loc);
         GameObject[,] floor = room.GetTiles();
+        Dictionary<Vector2Int, GameObject> obstacles = room.GetObstacles();
         //if (floor == null) Debug.Log("floor null");
         //room.ClearDoors();
 
@@ -158,12 +174,23 @@ public class Dungeon : MonoBehaviour
 
         } // end instantiating room
 
+        // create PRM for room if not created yet
         if (room.GetPoints() == null) {
             List<Point> prm = SamplePoints();
             CreateGraph(prm);
             room.SetPoints(prm);
         }
 
+        // instantiate non-enemy obstacles in room
+        //foreach (GameObject obs in obstacles.Keys)
+        foreach (Vector2Int loc in obstacles.Keys)
+        {
+            //Vector2Int loc = obstacles[obs];
+            GameObject instance = Instantiate(obstacles[loc], new Vector3(loc.x, floor.GetLength(0) - loc.y - 1, 0f), Quaternion.identity) as GameObject;
+            instance.transform.SetParent(roomHolder);
+        }
+
+        // place existing enemies/generate and place new ones
         PlaceEnemies(room);
 
 
@@ -209,7 +236,7 @@ public class Dungeon : MonoBehaviour
             GameObject[] listEnemies = GameManager.instance.GetTestEnemies();
             //j - 1, floor.GetLength(0) - i - 1
             //GameObject newEnemy = Instantiate(listEnemies[Random.Range(0, listEnemies.Length)], new Vector2(spot.x, spot.y), Quaternion.identity);
-            GameObject newEnemy = Instantiate(listEnemies[Random.Range(0, listEnemies.Length)], new Vector2(spot.x - 1, boardRows - spot.y - 1), Quaternion.identity);
+            GameObject newEnemy = Instantiate(listEnemies[Random.Range(0, listEnemies.Length)], new Vector2(spot.x, boardRows - spot.y - 1), Quaternion.identity);
             newEnemy.transform.SetParent(this.transform);
             //Debug.Log("enemies loop: enemies count " + enemies.Count + " new enemies count " + newEnemies.Count);
         }
@@ -245,7 +272,7 @@ public class Dungeon : MonoBehaviour
                 if (Vector2.Distance(p.GetPos(), cur.GetPos()) <= neighborRadius && GoodPath(cur.GetPos(), p.GetPos()))
                 {
                     cur.AddNeighbor(p);
-                    //Debug.DrawLine(cur.GetPos(), p.GetPos(), new Color(255, 0, 0), 30.0f, false);
+                    Debug.DrawLine(cur.GetPos(), p.GetPos(), new Color(255, 0, 0), 30.0f, false);
                 }
             }
         }
@@ -312,16 +339,40 @@ public class Dungeon : MonoBehaviour
         GUI.Label(new Rect(350, 500, 300, 100), "You have died.", style);
         if (GUI.Button(new Rect(350, 600, 400, 100), "Restart", style))
         {
-            Debug.Log("pressed restart");
-            SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
-            Debug.Log("finished loading scene");
+            //Debug.Log("pressed restart");
+            //SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
+            //Debug.Log("finished loading scene");
+            Restart();
         }
+    }
+    void PauseMenu(int windowID)
+    {
+        if (GUI.Button(new Rect(0, 15, 250, 125), inventoryButton))
+        {
+            Debug.Log("inventory");
+        }
+
+        if (GUI.Button(new Rect(0, 140, 250,125), craftingButton))
+        {
+            Debug.Log("Crafting");
+        }
+    }
+    void Restart()
+    {
+        Debug.Log("pressed restart");
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
+        Debug.Log("finished loading scene");
     }
 
     private void OnGUI()
     {
+        if (GameManager.isPaused)
+        {
+            GUI.Window(0, new Rect(750, 250, 250, 265), PauseMenu, "Menu");
+        }
         if (!playerController.IsDead()) return;
 
+        Time.timeScale = 0;
         GUI.Window(0, new Rect(500, 0, 1000, 1000), GameOver, "Game Over");
     }
 }

@@ -32,7 +32,7 @@ public class Door : MonoBehaviour
 
             //GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
             //playerObject.transform.
-            if (next == null) Debug.Log("fuckity fuck");
+            if (next == null) Debug.Log("this should never happen");
             else
             {
                 // move player to next room and set location at door they just came through
@@ -63,8 +63,6 @@ public class Door : MonoBehaviour
                 }
                 else Debug.Log("Pointer failure");
 
-                //Application.LoadLevel(Application.loadedLevel);
-                //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                 GameManager.instance.MoveRoom(next);
             }
         }

@@ -13,7 +13,7 @@ public class Enemy : Unit
     // motion planning
     private Point start, goal;
     private List<Vector2> path;
-    private float dt = 0.009f;
+    //private float dt = 0.009f;
 
     protected override void Awake()
     {
@@ -46,7 +46,8 @@ public class Enemy : Unit
         // motion planning with path smoothing
         if (goodPath)
         {
-            move = ((Vector2)player.gameObject.transform.position - pos).normalized * dt * speed;
+            //move = ((Vector2)player.gameObject.transform.position - pos).normalized * dt * speed;
+            move = ((Vector2)player.gameObject.transform.position - pos).normalized * Time.deltaTime * speed;
             body.MovePosition(body.position + move);
         }
         else
@@ -55,7 +56,8 @@ public class Enemy : Unit
             {
                 if (Dungeon.GoodPath(pos, path[i]))
                 {
-                    move = (path[i] - pos).normalized * dt * speed;
+                    //move = (path[i] - pos).normalized * dt * speed;
+                    move = (path[i] - pos).normalized * Time.deltaTime * speed;
                     body.MovePosition(body.position + move);
                     break;
                 }
