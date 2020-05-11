@@ -18,10 +18,13 @@ public class PlayerController : Unit
     protected override void Awake()
     {
         GameObject spriteData = GameObject.FindGameObjectWithTag("SpriteData");
-        Animator newAnimator = spriteData.GetComponent<Animator>();
-        //Debug.Log("new animator: " + newAnimator.runtimeAnimatorController + " old animator: " + GetComponent<Animator>().runtimeAnimatorController);
-        gameObject.GetComponent<Animator>().runtimeAnimatorController = newAnimator.runtimeAnimatorController;
-        //Debug.Log("new animator: " + newAnimator.runtimeAnimatorController + " old animator: " + GetComponent<Animator>().runtimeAnimatorController);
+        if (spriteData != null)
+        {
+            Animator newAnimator = spriteData.GetComponent<Animator>();
+            //Debug.Log("new animator: " + newAnimator.runtimeAnimatorController + " old animator: " + GetComponent<Animator>().runtimeAnimatorController);
+            gameObject.GetComponent<Animator>().runtimeAnimatorController = newAnimator.runtimeAnimatorController;
+            //Debug.Log("new animator: " + newAnimator.runtimeAnimatorController + " old animator: " + GetComponent<Animator>().runtimeAnimatorController);
+        }
         base.Awake();
         attackDir = lookDirection;
         //sprite = gameObject.GetComponent<SpriteRenderer>();

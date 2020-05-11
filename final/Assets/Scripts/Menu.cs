@@ -9,7 +9,9 @@ public class Menu : MonoBehaviour
 
     public void Play()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        GameObject spriteData = GameObject.FindGameObjectWithTag("SpriteData");
+        Debug.Log(spriteData.GetComponent<Animator>().runtimeAnimatorController);
+        if (!(spriteData.GetComponent<Animator>().runtimeAnimatorController == null)) SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
     public void Quit()
