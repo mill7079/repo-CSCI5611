@@ -93,7 +93,7 @@ public class Dungeon : MonoBehaviour
         //GameManager.instance.GetPlayer().GetComponent<PlayerController>().MoveTo(start);
         player = GameObject.FindGameObjectWithTag("Player");
         playerController = player.GetComponent<PlayerController>();
-        Debug.Log("Player controller: " + playerController);
+        //Debug.Log("Player controller: " + playerController);
         playerController.MoveTo(start);
 
         //Debug.Log("find tag player room: " + player.GetComponent<PlayerController>().GetCurrentRoom() + " " + player.GetComponent<PlayerController>().GetCurrentRoom().loc);
@@ -236,7 +236,7 @@ public class Dungeon : MonoBehaviour
             GameObject[] listEnemies = GameManager.instance.GetTestEnemies();
             //j - 1, floor.GetLength(0) - i - 1
             //GameObject newEnemy = Instantiate(listEnemies[Random.Range(0, listEnemies.Length)], new Vector2(spot.x, spot.y), Quaternion.identity);
-            GameObject newEnemy = Instantiate(listEnemies[Random.Range(0, listEnemies.Length)], new Vector2(spot.x, boardRows - spot.y - 1), Quaternion.identity);
+            GameObject newEnemy = Instantiate(listEnemies[Random.Range(0, listEnemies.Length)], new Vector2(spot.x, boardRows - spot.y), Quaternion.identity);
             newEnemy.transform.SetParent(this.transform);
             //Debug.Log("enemies loop: enemies count " + enemies.Count + " new enemies count " + newEnemies.Count);
         }

@@ -33,6 +33,9 @@ public class Room
     // required for non-square objects to look not dumb
     private Dictionary<Vector2Int, GameObject> obstacles;
 
+    // set to 1 if cave type 1
+    int cave;
+
 
     /*Constructors*/
     // used for creating first room in dungeon - just has initial coords
@@ -44,6 +47,7 @@ public class Room
         //Debug.Log("new room");
         //loc = new Coord(r, c);
         loc = new Vector2Int(r, c);
+        cave = 0;
         Dungeon.locations.Add(loc, this);
         Create(true);
     }
@@ -61,6 +65,7 @@ public class Room
         enemies = new List<Enemy>();
         obstacles = new Dictionary<Vector2Int, GameObject>();
         loc = current;
+        cave = 0;
         //if (loc.Above(source))
         if (Above(loc, source)) 
         {

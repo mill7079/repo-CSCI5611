@@ -15,13 +15,13 @@ public class GameManager : MonoBehaviour
 
     public GameObject[] testEnemies;
     public GameObject[] students;
+    public Sprite[] playerSprites;
 
     public int numObstacles = 10;
 
     // Start is called before the first frame update
     void Awake()
     {
-        Debug.Log("Awake GM");
         if (instance == null)
         {
             instance = this;

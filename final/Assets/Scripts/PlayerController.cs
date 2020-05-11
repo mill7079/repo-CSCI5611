@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerController : Unit
 {
-
     private Room currentRoom;
 
     // rpg mechanics
@@ -12,10 +11,21 @@ public class PlayerController : Unit
     private Vector2 attackDir;
     public float detectRadius;
 
+    // sprite
+    //private SpriteRenderer sprite;
+    //private bool spriteSelected;
+
     protected override void Awake()
     {
+        GameObject spriteData = GameObject.FindGameObjectWithTag("SpriteData");
+        Animator newAnimator = spriteData.GetComponent<Animator>();
+        //Debug.Log("new animator: " + newAnimator.runtimeAnimatorController + " old animator: " + GetComponent<Animator>().runtimeAnimatorController);
+        gameObject.GetComponent<Animator>().runtimeAnimatorController = newAnimator.runtimeAnimatorController;
+        //Debug.Log("new animator: " + newAnimator.runtimeAnimatorController + " old animator: " + GetComponent<Animator>().runtimeAnimatorController);
         base.Awake();
         attackDir = lookDirection;
+        //sprite = gameObject.GetComponent<SpriteRenderer>();
+        //spriteSelected = false;
     }
 
     // Update is called once per frame
@@ -39,8 +49,14 @@ public class PlayerController : Unit
             lookDirection.Normalize();
         }
 
-        animator.SetFloat("Look X", lookDirection.x);
-        animator.SetFloat("Look Y", lookDirection.y);
+        if (animator != null)
+        {
+            //Debug.Log("animating " + animator.runtimeAnimatorController);
+            animator.SetFloat("LookX", lookDirection.x);
+            animator.SetFloat("LookY", lookDirection.y);
+            //Debug.Log("float x: " + animator.GetFloat("LookX"));
+            //Debug.Log("float y: " + animator.GetFloat("LookY"));
+        }
 
         Vector2 position = body.position;
         position = position + move * speed * Time.deltaTime;
@@ -114,18 +130,19 @@ public class PlayerController : Unit
         player.transform.position = pos;
     }
 
-    //public void Damage(int att)
-    //public void Damage(float att)
+    //void StartMenu(int windowID)
     //{
-    //    //Debug.Log("ouch");
-    //    if (att - defense < 1) health -= 1;
-    //    else health -= (att - defense);
-
-    //    if (health <= 0) isDead = true;
+    //    if (GUI.Button(new Rect(0, 10, 150, 490), "!"))
+    //    {
+    //        sprite.sprite = GameManager.instance.playerSprites[0];
+    //    }
+    //    else if (GUI.Button(new Rect(150, 10, 150, 490), "?"))
+    //    {
+    //        sprite.sprite = GameManager.instance.playerSprites[1];
+    //    }
     //}
-
-    //public bool IsDead()
+    //private void OnGUI()
     //{
-    //    return isDead;
+    //    if (!spriteSelected) GUI.Window(8, new Rect(0, 0, 500, 500), StartMenu, "aujf");
     //}
 }
