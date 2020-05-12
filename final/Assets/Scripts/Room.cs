@@ -109,6 +109,7 @@ public class Room
     public Room GetLeft() { return left; }
     public Room GetRight() { return right; }
     public List<Point> GetPoints() { return prm; }
+    public int GetCave() { return cave; }
     public void SetPoints(List<Point> points) { prm = points; }
     public void SetUp(Room r) { up = r; }
     public void SetDown(Room r) { down = r; }
@@ -373,10 +374,13 @@ public class Room
 
         // chance of generating cave 1 if the room isn't the first room
         // and there's only one door (aka a dead end)
-        if (!first && count == 1 && (Random.Range(0, 100)%3) == 0 && magicChance > 0)
+        //if (!first && count == 1 && magicChance > 0 && (Random.Range(0, 100) % magicChance) == 0 )
+        if (!first)
         {
             //CreateCave(1);
+            cave = 1;
             PlaceRandom(GameManager.instance.students);
+            //GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().useMagic = true;
             magicChance = -1;
         }
         else if (!first && count == 1 && magicChance > 0)
@@ -427,11 +431,18 @@ public class Room
 
             //tiles[location.x, location.y] = objects[Random.Range(0, objects.Length)];
             //obstacles[objects[Random.Range(0, objects.Length)]] = location;
-            obstacles[location] = objects[Random.Range(0, objects.Length)];
+            if (cave == 1) obstacles[location] = objects[Random.Range(1, objects.Length)];
+            else obstacles[location] = objects[Random.Range(0, objects.Length)];
 
             //tiles[location.y, location.x] = GameManager.instance.walls[0];
             spots.Remove(location);
             //Debug.Log("wall at " + location + " in room space and (" + (location.y) + ", " + (tiles.GetLength(0) - location.x - 1)+") in unity space");
+        }
+
+        if (cave == 1)
+        {
+            //Debug.Log("adding dr guy");
+            obstacles[new Vector2Int(tiles.GetLength(1) / 2 - 1, tiles.GetLength(0) - 3)] = objects[0];
         }
     }
 
@@ -455,30 +466,4 @@ public class Room
         // print location
         return "" + loc;
     }
-
-    // type 1 = lecture cave
-    //public void CreateCave(int type)
-    //{
-    //    if (type == 1)
-    //    {
-    //        tiles = new GameObject[rows + 2, cols + 2];
-    //        GameObject[] floors = GameManager.instance.GetFloors();
-    //        GameObject[] doors = GameManager.instance.GetDoors();
-    //        GameObject[] walls = GameManager.instance.GetWalls();
-
-    //        for (int i = 0; i < tiles.GetLength(0); i++)
-    //        {
-    //            for (int j = 0; j < tiles.GetLength(1); j++)
-    //            {
-    //                // default to floor
-    //                GameObject tile = floors[0];
-    //                if (i == 0 || j == 0 || i == rows + 1 || j == cols + 1)
-    //                {
-    //                    // tile will usually be a wall in this case
-    //                    tile = walls[0];
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
 }

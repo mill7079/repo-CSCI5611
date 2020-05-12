@@ -34,12 +34,12 @@ public class PlayerController : Unit
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log("use magic: " + useMagic);
         if (isDead)
         {
             //Debug.Log("you be dead");
             return;
         }
-
 
         /** moving/animating **/
 
@@ -54,11 +54,12 @@ public class PlayerController : Unit
 
         if (animator != null)
         {
-            //Debug.Log("animating " + animator.runtimeAnimatorController);
+            // change animation direction (i.e. left vs right animations)
             animator.SetFloat("LookX", lookDirection.x);
             animator.SetFloat("LookY", lookDirection.y);
-            //Debug.Log("float x: " + animator.GetFloat("LookX"));
-            //Debug.Log("float y: " + animator.GetFloat("LookY"));
+
+            // change to/from idle/moving
+            animator.SetFloat("Speed", move.magnitude);
         }
 
         Vector2 position = body.position;
@@ -78,6 +79,7 @@ public class PlayerController : Unit
         // fires selected physical attack
         if (Input.GetButtonDown("Fire1"))
         {
+            animator.SetTrigger("Attack");
             // attack in direction player is facing
             Vector3 look = new Vector3(attackDir.x, attackDir.y, 0);
 
@@ -103,8 +105,9 @@ public class PlayerController : Unit
         }
 
         // fires selected magical attack
-        if (Input.GetButtonDown("Fire2"))
+        if (Input.GetButtonDown("Fire2") && useMagic)
         {
+            animator.SetTrigger("Attack");
             Debug.Log("fire magic");
             magic.Fire(attackDir);
         }

@@ -27,6 +27,8 @@ public class Unit : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
 
         magic = GetComponentInChildren<Particles>();
+
+        useMagic = false;
     }
 
     // Update is called once per frame

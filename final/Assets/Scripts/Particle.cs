@@ -44,6 +44,7 @@ public class Particle : MonoBehaviour
             return;
         }
 
+        Debug.Log("moving particle. pos = " + body.position);
         body.MovePosition(body.position + (vel * dt));
 
         life--;

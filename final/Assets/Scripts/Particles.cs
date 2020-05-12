@@ -22,17 +22,23 @@ public class Particles : MonoBehaviour
     Vector2 fireDir;
 
     // Start is called before the first frame update
-    void Start()
+    //void Start()
+    void Awake()
     {
         particles = new List<Particle>();
         //particles = new Dictionary<GameObject, Vector3>();
         numParticles = genRate * dt;
+        Debug.Log("genRate: " + genRate + " dt: " + dt);
+        Debug.Log("Particle: " + particle);
+
+        if (numParticles == 0) numParticles = 50;
 
         origin = this.GetComponentInParent<Rigidbody2D>();
     }
 
     public void Fire(Vector2 dir)
     {
+        Debug.Log("firing in direction " + dir);
         fire = 60;
         fireDir = dir;
     }
@@ -54,6 +60,8 @@ public class Particles : MonoBehaviour
         //    particles[p] = particles[p] - new Vector3(0, 0, 1); // subtract one from life
         //    //particles[p] = particles[p] + (Vector3)(move * dt); // add position
         //}
+
+        if (Time.timeScale == 0) return;
         for (int i = 0; i < particles.Count; i++)
         {
             particles[i].Move();
@@ -69,12 +77,18 @@ public class Particles : MonoBehaviour
     // generate particles around a single point
     public void GenerateParticles(Vector2 vel)
     {
-        if (vel == null) return;
+        if (vel == null)
+        {
+            Debug.Log("null velocity");
+            return;
+        }
 
         //Debug.Log("no return. vel = " + vel);
+        Debug.Log("num particles: " + numParticles);
         Vector2 startVel = new Vector2(vel.x, vel.y);
         for (int i = 0; i < numParticles; i++)
         {
+            Debug.Log("in loop");
             //particles.Add(new Particle(origin.position.x, origin.position.y));
             GameObject p = Instantiate(particle, origin.position + new Vector2(Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f)), Quaternion.identity);
             //particles[p] = new Vector3(vel.x, vel.y, maxLife);
@@ -88,7 +102,7 @@ public class Particles : MonoBehaviour
 
         }
 
-        //Debug.Log("length after generating particles: " + particles.Count);
+        Debug.Log("length after generating particles: " + particles.Count);
     }
 
     public void Clean()

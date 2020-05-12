@@ -24,6 +24,7 @@ public class Dungeon : MonoBehaviour
     public GUIStyle style = new GUIStyle();
     public GUIContent inventoryButton;
     public GUIContent craftingButton;
+    bool caveGUI = false;
 
     public void Update()
     {
@@ -175,10 +176,11 @@ public class Dungeon : MonoBehaviour
         } // end instantiating room
 
         // instantiate non-enemy obstacles in room
-        //foreach (GameObject obs in obstacles.Keys)
+        //Debug.Log("obstacles  num: " + obstacles.Count);
         foreach (Vector2Int loc in obstacles.Keys)
         {
             //Vector2Int loc = obstacles[obs];
+            //Debug.Log("add student");
             GameObject instance = Instantiate(obstacles[loc], new Vector3(loc.x, floor.GetLength(0) - loc.y - 1, 0f), Quaternion.identity) as GameObject;
             instance.transform.SetParent(roomHolder);
         }
@@ -191,7 +193,7 @@ public class Dungeon : MonoBehaviour
         }
 
         // place existing enemies/generate and place new ones
-        PlaceEnemies(room);
+        if (room.GetCave() != 1) PlaceEnemies(room);
 
 
         List<Enemy> enemies = room.GetEnemies();
@@ -206,6 +208,12 @@ public class Dungeon : MonoBehaviour
         {
 
             UpdateEnemy(e);
+        }
+
+        if (room.GetCave() == 1) // lecture cave
+        {
+            playerController.useMagic = true;
+            caveGUI = true;
         }
     } // end MoveRoom
 
@@ -236,7 +244,9 @@ public class Dungeon : MonoBehaviour
             GameObject[] listEnemies = GameManager.instance.GetTestEnemies();
             //j - 1, floor.GetLength(0) - i - 1
             //GameObject newEnemy = Instantiate(listEnemies[Random.Range(0, listEnemies.Length)], new Vector2(spot.x, spot.y), Quaternion.identity);
-            GameObject newEnemy = Instantiate(listEnemies[Random.Range(0, listEnemies.Length)], new Vector2(spot.x, boardRows - spot.y), Quaternion.identity);
+            GameObject newEnemy;
+            if (Random.Range(0,1000) % 100 == 0) newEnemy = Instantiate(listEnemies[0], new Vector2(spot.x, boardRows - spot.y), Quaternion.identity);
+            else newEnemy = Instantiate(listEnemies[Random.Range(1, listEnemies.Length)], new Vector2(spot.x, boardRows - spot.y), Quaternion.identity);
             newEnemy.transform.SetParent(this.transform);
             //Debug.Log("enemies loop: enemies count " + enemies.Count + " new enemies count " + newEnemies.Count);
         }
@@ -363,12 +373,26 @@ public class Dungeon : MonoBehaviour
         SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
         Debug.Log("finished loading scene");
     }
+    void CaveDialog(int windowID)
+    {
+        GUI.Label(new Rect(0, 15, 250, 75), "You appear to have walked into some kind of impromptu lecture. You sit and listen for a while, picking up some useful knowledge.");
+        GUI.Label(new Rect(0, 90, 250, 50), "You are now able to use magic! Press 'g' or use the Fire2 button to cast a spell.");
+        if (GUI.Button(new Rect(0,130,100,40), "Close"))
+        {
+            caveGUI = false;
+        }
+    }
 
     private void OnGUI()
     {
         if (GameManager.isPaused)
         {
             GUI.Window(0, new Rect(750, 250, 250, 265), PauseMenu, "Menu");
+        }
+
+        if (caveGUI)
+        {
+            GUI.Window(5, new Rect(250, 250, 250, 180), CaveDialog, "");
         }
         if (!playerController.IsDead()) return;
 
