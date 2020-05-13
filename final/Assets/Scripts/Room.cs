@@ -260,6 +260,7 @@ public class Room
         GameObject[] floors = GameManager.instance.GetFloors();
         GameObject[] doors = GameManager.instance.GetDoors();
         GameObject[] walls = GameManager.instance.GetWalls();
+        GameObject[] obstacles = GameManager.instance.GetObstacles();
 
         // count number of doors
         //int count = 0;
@@ -275,7 +276,7 @@ public class Room
             {
                 // default to floor
                 GameObject tile = floors[0];
-                if (Random.Range(0, 999) % 99 == 0 && floors.Length > 1) tile = floors[1];
+                if (Random.Range(0, 999) % 199 == 0 && floors.Length > 1) tile = floors[1];
 
                 // change to wall or door if on edge of board
                 if (i == 0 || j == 0 || i == rows + 1 || j == cols + 1)
@@ -374,8 +375,8 @@ public class Room
 
         // chance of generating cave 1 if the room isn't the first room
         // and there's only one door (aka a dead end)
-        //if (!first && count == 1 && magicChance > 0 && (Random.Range(0, 100) % magicChance) == 0 )
-        if (!first)
+        if (!first && count == 1 && magicChance > 0 && (Random.Range(0, 100) % magicChance) == 0)
+        //if (!first)  // used for debugging/testing - makes all rooms act like cave 1
         {
             //CreateCave(1);
             cave = 1;
@@ -387,11 +388,13 @@ public class Room
         {
             // increase chances of finding magic cave
             magicChance -= 1;
-            PlaceRandom(walls);
+            //PlaceRandom(walls);
+            PlaceRandom(obstacles);
         }
         else
         {
-            PlaceRandom(walls);
+            PlaceRandom(obstacles);
+            //PlaceRandom(walls);
         }
 
         // prevent first room from having no doors because that's no fun
@@ -401,7 +404,7 @@ public class Room
         }
     }
 
-    // places wall tiles in random locations throughout the room
+    // places obstacles in random locations throughout the room without blocking doors
     public void PlaceRandom(GameObject[] objects)
     {
         // set up list of open spots
@@ -432,7 +435,14 @@ public class Room
             //tiles[location.x, location.y] = objects[Random.Range(0, objects.Length)];
             //obstacles[objects[Random.Range(0, objects.Length)]] = location;
             if (cave == 1) obstacles[location] = objects[Random.Range(1, objects.Length)];
-            else obstacles[location] = objects[Random.Range(0, objects.Length)];
+            else
+            {
+                int obs = Random.Range(0, 1000);
+                if (obs % 300 == 0) obstacles[location] = objects[0];
+                else if (objects.Length > 1 && obs % 100 == 0) obstacles[location] = objects[1];
+                else if (objects.Length > 2) obstacles[location] = objects[Random.Range(2, objects.Length)];
+                else obstacles[location] = objects[Random.Range(0, objects.Length)]; // shouldn't happen
+            }
 
             //tiles[location.y, location.x] = GameManager.instance.walls[0];
             spots.Remove(location);

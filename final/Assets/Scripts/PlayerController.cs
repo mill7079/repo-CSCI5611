@@ -10,6 +10,8 @@ public class PlayerController : Unit
     public float attackAngle;
     private Vector2 attackDir;
     public float detectRadius;
+    private float experience;
+    private int level;
 
     // sprite
     //private SpriteRenderer sprite;
@@ -29,6 +31,7 @@ public class PlayerController : Unit
         attackDir = lookDirection;
         //sprite = gameObject.GetComponent<SpriteRenderer>();
         //spriteSelected = false;
+        level = 1;
     }
 
     // Update is called once per frame
@@ -98,7 +101,7 @@ public class PlayerController : Unit
                 if (Vector2.Angle(look, toEnemy) < attackAngle)
                 {
                     // enemy is in range
-                    e.Damage(attack, false);
+                    experience += e.Damage(attack, false);
                     //Debug.Log("attacked enemy");
                 }
             }
@@ -112,6 +115,8 @@ public class PlayerController : Unit
             magic.Fire(attackDir);
         }
 
+        LevelUp();
+
     }
 
     public Room GetCurrentRoom()
@@ -119,23 +124,38 @@ public class PlayerController : Unit
         return currentRoom;
     }
 
-    //public Point GetPos() { return new Point(body.position); }
-
+    // move to next room
     public bool MoveTo(Room destination)
     {
-        // TODO move to location of door
         if (destination == null) return false;
         currentRoom = destination;
         return true;
     }
 
+    // move to specific location
     public void SetLocation(Vector2 pos)
     {
-        //body.MovePosition(pos);
+        // not sure why i'm not just using this.transform? hm
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         player.transform.position = pos;
     }
 
+    public void LevelUp()
+    {
+        if (experience >= level*1000)
+        {
+            level++;
+            experience = 0;
+            maxHealth += 10;
+            currentHealth = maxHealth;
+            attack += 1;
+        }
+    }
+
+    public float GetCurrentExperience()
+    {
+        return experience / (level * 1000);
+    }
     //void StartMenu(int windowID)
     //{
     //    if (GUI.Button(new Rect(0, 10, 150, 490), "!"))

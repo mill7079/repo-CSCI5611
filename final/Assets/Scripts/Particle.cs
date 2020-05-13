@@ -6,14 +6,16 @@ public class Particle : MonoBehaviour
 {
     //private Vector2 pos;
     private Vector2 vel;
-    private float dt = 0.18f;
+    public float dt = 0.18f;
     //private GameObject sprite;
     private Rigidbody2D body;
     //private Collider2D collide;
 
-    private int life = 100;
+    private float life;
     private float damage;
     private string origin;
+
+    public bool interact;  // true if trigger causes particle to disappear
 
     //public Particle(GameObject s, Vector2 v, int damage)
     //{
@@ -29,23 +31,25 @@ public class Particle : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
     }
 
-    public void SetUp(Vector2 velocity, float damage, string originTag)
+    public void SetUp(Vector2 velocity, float damage, string originTag, float maxLife)
     {
         vel = velocity;
         this.damage = damage;
         origin = originTag;
+        life = maxLife;
     }
 
     public void Move()
     {
-        if (body == null)
+        if (body == null || Time.timeScale == 0)
         {
-            Debug.Log("no rigidbody");
+            //Debug.Log("no rigidbody ");
             return;
         }
 
-        Debug.Log("moving particle. pos = " + body.position);
+        //Debug.Log("moving particle. pos = " + body.position);
         body.MovePosition(body.position + (vel * dt));
+        //body.MovePosition(body.position + (vel * Time.deltaTime));
 
         life--;
     }
@@ -57,7 +61,7 @@ public class Particle : MonoBehaviour
 
     public void HitObstacle()
     {
-        life = 0;
+        if (interact) life = 0;
     }
 
     public float Hit()
@@ -67,10 +71,12 @@ public class Particle : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        //Debug.Log(collision.tag + " "+ origin);
         if (collision.CompareTag("Particle")) return;
         if (collision.CompareTag(origin) && collision.CompareTag("Player")) return;
 
-        Debug.Log("tag: " + collision.tag);
+        Debug.Log("obstacle");
+        //Debug.Log("tag: " + collision.tag);
         Enemy e = collision.GetComponent<Enemy>();
         if (e != null)
         {

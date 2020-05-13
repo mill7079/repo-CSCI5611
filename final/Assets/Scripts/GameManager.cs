@@ -8,14 +8,13 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public static bool isPaused = false;
     public Dungeon dungeon;
 
-    // unity whyyyyy
     public GameObject[] walls;
     public GameObject[] floors;
     public GameObject[] doors;
+    public GameObject[] obstacles; // inner obstacles
 
     public GameObject[] testEnemies;
     public GameObject[] students;
-    public Sprite[] playerSprites;
 
     public int numObstacles = 10;
 
@@ -48,6 +47,7 @@ public class GameManager : MonoBehaviour
     public GameObject[] GetDoors() { return doors; }
     public GameObject[] GetFloors() { return floors; }
     public GameObject[] GetTestEnemies() { return testEnemies; }
+    public GameObject[] GetObstacles() { return obstacles; }
     //public GameObject GetPlayer() { return player; }
 
     // Update is called once per frame

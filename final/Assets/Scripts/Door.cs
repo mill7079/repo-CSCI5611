@@ -10,7 +10,6 @@ public class Door : MonoBehaviour
         PlayerController player = collision.GetComponent<PlayerController>();
         if (player != null)
         {
-            Debug.Log("went through door. use magic? " + player.useMagic);
             BoxCollider2D door = this.GetComponent<BoxCollider2D>();
 
             Room cur = player.GetCurrentRoom();

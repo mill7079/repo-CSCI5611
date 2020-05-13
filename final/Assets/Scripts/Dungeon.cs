@@ -12,6 +12,7 @@ public class Dungeon : MonoBehaviour
 
     public int numPoints = 500;  // number of points in PRM 
     public float neighborRadius = boardRows / 3.0f;  // used for generating PRM
+    private float separation = 2; // boids separation force
 
     GameObject player;
     PlayerController playerController;
@@ -313,6 +314,24 @@ public class Dungeon : MonoBehaviour
         return closest;
     }
 
+    public float Near(Enemy e1, Enemy e2)
+    {
+        //float sep_rad = sep_force * agent.rad;
+        //if (rad + sep_rad > agent.pos.sub(pos).mag())
+        //{
+        //    return ((rad + sep_rad) - agent.pos.sub(pos).mag()) / 2.0;
+        //}
+        //else return -1;
+        Vector2 enemyPos1 = e1.GetPos().GetPos();
+        Vector2 enemyPos2 = e2.GetPos().GetPos();
+        float sepRadius = separation / 2;
+        if ((enemyPos1 - enemyPos2).magnitude < sepRadius)
+        {
+            return ((sepRadius - (enemyPos1 - enemyPos2).magnitude) / 2.0f);
+        }
+        else return -1.0f;
+    }
+
     // update positions of enemies, re-finding path if required
     public void UpdateEnemy(Enemy e)
     {
@@ -322,6 +341,38 @@ public class Dungeon : MonoBehaviour
         //}
         Point ePos = e.GetPos();
         Point playerPos = playerController.GetPos();
+
+        // boids separation
+        int count = 0;
+        Vector2 push = new Vector2(0, 0);
+        for (int i = 0; i < newEnemies.Count;i++)
+        {
+            float overlap = Near(newEnemies[i], e);
+            if (overlap > 0)
+            {
+                //push = push.add(pos.sub(a.pos).normalize().mult(overlap*(sep_force/2)));
+                push = push + ((ePos.GetPos() - newEnemies[i].GetPos().GetPos()).normalized) * overlap * separation/2;
+                count++;
+            }
+        }
+        for (int i = 0; i < current.GetEnemies().Count; i++)
+        {
+            float overlap = Near(current.GetEnemies()[i], e);
+            if (overlap > 0)
+            {
+                //push = push.add(pos.sub(a.pos).normalize().mult(overlap*(sep_force/2)));
+                push += ((ePos.GetPos() - newEnemies[i].GetPos().GetPos()).normalized) * overlap * separation / 2;
+                count++;
+            }
+        }
+
+        if (count > 0)
+        {
+            Vector2 move = (push / count) * Time.deltaTime;
+            Rigidbody2D body = e.GetComponent<Rigidbody2D>();
+            body.MovePosition(body.position + move);
+        }
+            //pos = pos.add(push.div(count).mult(dt));
 
         // only do the pathfinding if the player is close enough to the enemy to be detected
         if (Vector2.Distance(ePos.GetPos(), playerPos.GetPos()) > playerController.detectRadius){
@@ -369,13 +420,14 @@ public class Dungeon : MonoBehaviour
     }
     void Restart()
     {
-        Debug.Log("pressed restart");
-        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
-        Debug.Log("finished loading scene");
+        //Debug.Log("pressed restart");
+        //SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+        //Debug.Log("finished loading scene");
     }
     void CaveDialog(int windowID)
     {
-        GUI.Label(new Rect(0, 15, 250, 75), "You appear to have walked into some kind of impromptu lecture. You sit and listen for a while, picking up some useful knowledge.");
+        GUI.Label(new Rect(0, 15, 250, 75), "You appear to have walked into some kind of lecture hall. You sit and listen for a while, picking up some useful information on particle systems.");
         GUI.Label(new Rect(0, 90, 250, 50), "You are now able to use magic! Press 'g' or use the Fire2 button to cast a spell.");
         if (GUI.Button(new Rect(0,130,100,40), "Close"))
         {

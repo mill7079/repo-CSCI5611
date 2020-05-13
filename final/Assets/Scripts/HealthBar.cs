@@ -19,7 +19,18 @@ public class HealthBar : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Time.timeScale == 0) return;
+        if (CompareTag("ExperienceBar"))
+        {
+            PlayerController p = current as PlayerController;
+            scale.x = p.GetCurrentExperience();
+            transform.localScale = scale;
+            return;
+        }
+
         scale.x = current.GetCurrentHealth();
         transform.localScale = scale;
+
+        
     }
 }

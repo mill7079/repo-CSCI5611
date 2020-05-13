@@ -52,13 +52,15 @@ public class Unit : MonoBehaviour
     // get the position of the unit
     public Point GetPos()
     {
+        Debug.Log("body: "+body);
         return new Point(body.position);
     }
 
     // unit takes damage from an attack
     // if the attack was from a spell, damage is particle-based so has to ignore defense
         // until I figure out a better way of taking defense into account
-    public void Damage(float att, bool isParticle) 
+    //public void Damage(float att, bool isParticle)
+    public float Damage(float att, bool isParticle)
     {
         if (isParticle)
         {
@@ -69,6 +71,17 @@ public class Unit : MonoBehaviour
             else currentHealth -= (att - defense);
         }
 
-        if (currentHealth <= 0) isDead = true;
+        if (currentHealth <= 0)
+        {
+            isDead = true;
+            return maxHealth * (att/3);
+        }
+        return 0;
+    }
+
+    public void Heal(float heal)
+    {
+        currentHealth += heal;
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
     }
 }
