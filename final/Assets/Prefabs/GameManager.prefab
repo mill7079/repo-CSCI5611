@@ -1,0 +1,161 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &9096751762198965250
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9096751762198965249}
+  - component: {fileID: 9096751762198965248}
+  - component: {fileID: 9096751762198965251}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9096751762198965249
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9096751762198965250}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.477423, y: 0.570069, z: -0.7116103}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9096751762198965248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9096751762198965250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 212f86504063a485195aa24029825b68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dungeon: {fileID: 0}
+  walls:
+  - {fileID: 1118877281118911588, guid: 3e262a963c31c4648819de7abb35f4cb, type: 3}
+  floors:
+  - {fileID: 8394642897938901244, guid: 17394d943af424de4b6aefa75a5cab70, type: 3}
+  - {fileID: 1504332264885871321, guid: c4f7f642af0dc446ca1dd0f8c30c02fd, type: 3}
+  doors:
+  - {fileID: 3328410020412514787, guid: dd278952e42964ec4be8d8c63fed4eb0, type: 3}
+  obstacles:
+  - {fileID: 5602329465403312824, guid: c2111b8cce13b47cf9a9a0f7856079f4, type: 3}
+  - {fileID: 3776048723270006762, guid: 35c52a1a3bbd34f0da30ecabf5659314, type: 3}
+  - {fileID: 1118877281118911588, guid: 3e262a963c31c4648819de7abb35f4cb, type: 3}
+  - {fileID: 7094116803593110753, guid: 70564390168c14ffc83279823c5dc941, type: 3}
+  testEnemies:
+  - {fileID: 1586013074840299008, guid: 383e24e29824840b0ad20ad273ddbd2c, type: 3}
+  - {fileID: 3522676482100419794, guid: 423c82f97d7ef4664ac02bb3f91e14eb, type: 3}
+  - {fileID: 1786267186442039683, guid: 66309e79f2fa840d2b754358e0f65539, type: 3}
+  - {fileID: 5094399923447561530, guid: 185a97d38aba84ec7995dea1ee7f5c45, type: 3}
+  students:
+  - {fileID: 8002576522235198130, guid: 762e8ebd442344b1eac204570b00a3b0, type: 3}
+  - {fileID: 8923241245635740754, guid: 435fb059b4d1041fcb65879cb692d3bb, type: 3}
+  - {fileID: 7525761577818343537, guid: 2313827a056b7467f9aab20f281f581f, type: 3}
+  - {fileID: 641273516995364250, guid: 8e189faf7e6bd4bc49b9faf34e953423, type: 3}
+  - {fileID: 6428860369975139004, guid: 8f55a848204cd470e8182a03f2ea71d7, type: 3}
+  - {fileID: 1936698147499015248, guid: 690e94b214d9d4431ad9092fcc67b1b4, type: 3}
+  numObstacles: 50
+--- !u!114 &9096751762198965251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9096751762198965250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6941243d9dd9346e3b543097495334fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  numPoints: 1000
+  neighborRadius: 2.6666667
+  style:
+    m_Name: Game Over
+    m_Normal:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 1, g: 1, b: 1, a: 1}
+    m_Hover:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Active:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Focused:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnNormal:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnHover:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnActive:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnFocused:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Border:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Margin:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Padding:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Overflow:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 40
+    m_FontStyle: 3
+    m_Alignment: 4
+    m_WordWrap: 0
+    m_RichText: 1
+    m_TextClipping: 0
+    m_ImagePosition: 0
+    m_ContentOffset: {x: 0, y: 0}
+    m_FixedWidth: 0
+    m_FixedHeight: 0
+    m_StretchWidth: 1
+    m_StretchHeight: 0
+  inventoryButton:
+    m_Text: Inventory
+    m_Image: {fileID: 2800000, guid: a6b50006ce1c441f299949b7e5015e1e, type: 3}
+    m_Tooltip: 
+  craftingButton:
+    m_Text: Crafting
+    m_Image: {fileID: 2800000, guid: 7f787ea51786d466d8ab72a98b0c4b82, type: 3}
+    m_Tooltip: 

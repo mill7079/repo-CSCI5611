@@ -1,0 +1,39 @@
+﻿<Properties StartupConfiguration="{858C28F2-1B8C-9FF8-BF09-4B58E2AD881A}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Room.cs">
+    <Files>
+      <File FileName="Assets/Scripts/Enemy2.cs" Line="55" Column="52" />
+      <File FileName="Assets/Scripts/PlayerController.cs" Line="151" Column="24" />
+      <File FileName="Assets/Scripts/Unit.cs" Line="77" Column="39" />
+      <File FileName="Assets/Scripts/Dungeon.cs" Line="425" Column="74" />
+      <File FileName="Assets/Scripts/Menu.cs" Line="16" Column="1" />
+      <File FileName="Assets/Scripts/Room.cs" Line="379" Column="16" />
+      <File FileName="Assets/Scripts/Particles.cs" Line="156" Column="81" />
+      <File FileName="Assets/Scripts/Particle.cs" Line="74" Column="50" />
+      <File FileName="Assets/Scripts/Door.cs" Line="12" Column="10" />
+      <File FileName="Assets/Scripts/HealthBar.cs" Line="22" Column="41" />
+      <File FileName="Assets/Scripts/GameManager.cs" Line="50" Column="59" />
+      <File FileName="Assets/Scripts/Obstacle.cs" Line="23" Column="35" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="final" expanded="True">
+            <Node name="Assets" expanded="True">
+              <Node name="Scripts" expanded="True">
+                <Node name="Old" expanded="True" />
+                <Node name="Room.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="1a273941-fa80-463a-9e5f-98879578def9" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

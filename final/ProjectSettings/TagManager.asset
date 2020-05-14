@@ -5,6 +5,13 @@ TagManager:
   serializedVersion: 2
   tags:
   - Wall
+  - Floor
+  - Enemy
+  - Door
+  - Particle
+  - SpriteData
+  - HealthBar
+  - ExperienceBar
   layers:
   - Default
   - TransparentFX
@@ -14,10 +21,10 @@ TagManager:
   - UI
   - 
   - 
-  - Blocking
-  - 
-  - 
-  - 
+  - Units
+  - Obstacles
+  - Configuration
+  - Confiner
   - 
   - 
   - 
@@ -41,4 +48,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Floor
+    uniqueID: 1000674865
+    locked: 0
+  - name: Units
+    uniqueID: 1575323573
     locked: 0
